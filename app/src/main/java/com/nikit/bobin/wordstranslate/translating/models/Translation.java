@@ -22,4 +22,21 @@ public class Translation {
     public String getTranslatedText() {
         return translatedText;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Translation that = (Translation) o;
+        if (!direction.equals(that.direction)) return false;
+        return translatedText.equals(that.translatedText);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = direction.hashCode();
+        result = 31 * result + translatedText.hashCode();
+        return result;
+    }
 }

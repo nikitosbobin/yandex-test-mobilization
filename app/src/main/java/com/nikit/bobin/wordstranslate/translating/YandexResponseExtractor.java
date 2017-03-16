@@ -22,16 +22,13 @@ import okhttp3.Response;
 public class YandexResponseExtractor implements IYandexResponseExtractor {
 
     @Override
-    public Language[] extractSupportedLanguages(Response response)
-            throws ResponseHasNotTargetDataException, NotSuccessfulResponseException {
+    public Language[] extractSupportedLanguages(Response response) {
         Ensure.notNull(response, "response");
         Ensure.okHttpResponseIsSuccess(response, "response");
 
         Pattern pattern = Pattern.compile("^.*ui=([a-z]+).*$");
         try {
             JSONObject responseBody = new JSONObject(response.body().string());
-            ensureYandexApiResponseIsSuccess(responseBody);
-
             JSONObject langs = responseBody.getJSONObject("langs");
             ArrayList<Language> result = new ArrayList<>(16);
             Iterator<String> keys = langs.keys();
@@ -55,15 +52,12 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
     }
 
     @Override
-    public Direction[] extractSupportedDirections(Response response)
-            throws ResponseHasNotTargetDataException, NotSuccessfulResponseException {
+    public Direction[] extractSupportedDirections(Response response) {
         Ensure.notNull(response, "response");
         Ensure.okHttpResponseIsSuccess(response, "response");
 
         try {
             JSONObject responseBody = new JSONObject(response.body().string());
-            ensureYandexApiResponseIsSuccess(responseBody);
-
             JSONArray dirs = responseBody.getJSONArray("dirs");
             Direction[] result = new Direction[dirs.length()];
             for (int i = 0; i < result.length; ++i)
@@ -77,8 +71,7 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
     }
 
     @Override
-    public Translation extractTranslation(Response response)
-            throws ResponseHasNotTargetDataException, NotSuccessfulResponseException {
+    public Translation extractTranslation(Response response) {
         Ensure.notNull(response, "response");
         Ensure.okHttpResponseIsSuccess(response, "response");
 

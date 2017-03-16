@@ -1,6 +1,6 @@
 package com.nikit.bobin.wordstranslate.translating.exceptions;
 
-public class NotSuccessfulResponseException extends Exception {
+public class NotSuccessfulResponseException extends RuntimeException {
     public NotSuccessfulResponseException(String message) {
         super(message);
     }

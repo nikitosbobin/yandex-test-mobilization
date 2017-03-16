@@ -1,0 +1,76 @@
+package com.nikit.bobin.wordstranslate;
+
+import com.nikit.bobin.wordstranslate.translating.models.Direction;
+import com.nikit.bobin.wordstranslate.translating.models.Language;
+
+import java.util.Locale;
+
+import okhttp3.MediaType;
+import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
+public class TestData {
+    public static Response createFakeResponse(int code, String body, String requestUrl) {
+        Request request = new Request.Builder()
+                .method("POST", RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"), ""))
+                .url(requestUrl)
+                .build();
+        return new Response.Builder()
+                .code(code)
+                .request(request)
+                .protocol(Protocol.HTTP_1_1)
+                .body(ResponseBody.create(MediaType.parse("application/json"), body))
+                .build();
+    }
+
+    public static String createTranslationJson(String direction, String text) {
+        if (text == null)
+            return String.format("{ \"code\": 200, \"lang\": \"%s\", \"text\": [] }", direction);
+        return String.format("{ \"code\": 200, \"lang\": \"%s\", \"text\": [\"%s\"] }", direction, text);
+    }
+
+    public static String createEmptyJsonWithCode(int code) {
+        return String.format("{ \"code\": %d}", code);
+    }
+
+    public static String createFailJson(int code) {
+        return String.format(Locale.getDefault(), "{\"code\":%d,\"message\":\"Bad message\"}", code);
+    }
+
+    public static String createLangsJson() {
+        return "{\"dirs\":[\"ru-en\",\"ru-fr\",\"en-fr\",\"en-ru\",\"fr-en\",\"fr-ru\"]," +
+                "\"langs\":{\"ru\":\"Russian\",\"en\":\"English\",\"fr\":\"French\"}}";
+    }
+
+    public static Language[] getExtractedLangs() {
+        Language languageRu = new Language("ru");
+        languageRu.addTitle(new Language("ru"), "Russian");
+
+        Language languageEn = new Language("en");
+        languageEn.addTitle(new Language("en"), "English");
+
+        Language languageFr = new Language("fr");
+        languageFr.addTitle(new Language("fr"), "French");
+
+
+        return new Language[] {languageRu, languageEn, languageFr};
+    }
+
+    public static String createDirectionsJson() {
+        return "{\"dirs\":[\"ru-en\",\"ru-fr\",\"en-fr\",\"en-ru\",\"fr-en\",\"fr-ru\"]}";
+    }
+
+    public static Direction[] getExtractedDirections() {
+        return new Direction[] {
+                Direction.parse("ru-en"),
+                Direction.parse("ru-fr"),
+                Direction.parse("en-fr"),
+                Direction.parse("en-ru"),
+                Direction.parse("fr-en"),
+                Direction.parse("fr-ru")
+        };
+    }
+}

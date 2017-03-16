@@ -26,6 +26,7 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.1.0'
     testCompile 'junit:junit:4.12'
+    testCompile 'org.json:json:20160810'
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'org.jdeferred:jdeferred-android-aar:1.2.3'
 }

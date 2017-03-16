@@ -34,7 +34,7 @@ public class Language_Tests {
     }
 
     @Test
-    public void getKey_should_correctly_detect_equality() {
+    public void equals_should_correctly_detect_equality() {
         Language ruLang1 = new Language("ru");
         Language ruLang2 = new Language("ru");
 
@@ -44,7 +44,7 @@ public class Language_Tests {
     }
 
     @Test
-    public void getKey_should_correctly_return_hash_code() {
+    public void hashCode_should_correctly_return_hash_code() {
         Language ruLang1 = new Language("ru");
         Language ruLang2 = new Language("ru");
 

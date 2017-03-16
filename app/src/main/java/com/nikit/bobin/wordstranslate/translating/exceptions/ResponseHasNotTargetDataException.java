@@ -1,6 +1,6 @@
 package com.nikit.bobin.wordstranslate.translating.exceptions;
 
-public class ResponseHasNotTargetDataException extends Exception {
+public class ResponseHasNotTargetDataException extends RuntimeException {
     public ResponseHasNotTargetDataException(String message) {
         super(message);
     }
