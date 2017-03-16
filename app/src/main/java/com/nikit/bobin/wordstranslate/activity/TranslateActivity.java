@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.logging.SimpleLogger;
+import com.nikit.bobin.wordstranslate.net.HttpMethod;
 import com.nikit.bobin.wordstranslate.net.HttpSender;
 import com.nikit.bobin.wordstranslate.net.IHttpSender;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
@@ -40,19 +41,16 @@ public class TranslateActivity extends AppCompatActivity {
         httpSender = new HttpSender(deferredManager);
         ITranslator translator = new YandexTranslator(deferredManager, httpSender, true, log);
 
-        translator.getSupportedLangsAsync("ru")
-                .then(new DoneCallback<HashMap<String, String>>() {
+        httpSender
+                .sendRequest(
+                        "https://translate.yandex.net/api/v1.5/tr.json/getLangs?ui=en&key=trnsl.1.1.20170315T155530Z.982270abc72ef811.6b65d3680beb5b85a2f7ee473c7033c589c743a2",
+                        HttpMethod.POST,
+                        "")
+                .then(new DoneCallback<Response>() {
                     @Override
-                    public void onDone(HashMap<String, String> result) {
-                        log.info("fdfdsf");
-                    }
-                })
-                .fail(new FailCallback<Throwable>() {
-                    @Override
-                    public void onFail(Throwable result) {
-                        log.info("fail");
+                    public void onDone(Response result) {
+                        log.info(result.request().url().toString());
                     }
                 });
-
     }
 }

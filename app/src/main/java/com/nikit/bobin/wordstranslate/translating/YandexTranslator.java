@@ -8,7 +8,6 @@ import com.nikit.bobin.wordstranslate.net.IHttpSender;
 
 import org.jdeferred.DeferredManager;
 import org.jdeferred.DoneFilter;
-import org.jdeferred.FailCallback;
 import org.jdeferred.Promise;
 import org.json.JSONArray;
 import org.json.JSONObject;
