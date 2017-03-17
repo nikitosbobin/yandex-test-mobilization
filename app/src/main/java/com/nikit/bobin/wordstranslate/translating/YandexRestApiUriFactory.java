@@ -44,4 +44,24 @@ public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
 
         return String.format("%slookup?key=%s&lang=%s", yandexDictionaryApiPrefix, dictionaryKey, direction.toString());
     }
+
+    @Override
+    public String detectLang(Language... possibleLangs) {
+        Ensure.notNull(possibleLangs, "possibleLangs");
+        String hint = "";
+
+        if (possibleLangs.length > 0) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("&hint=");
+            for (int i = 0; i < possibleLangs.length; ++i)
+            {
+                builder.append(possibleLangs[i].toString());
+                if (i != possibleLangs.length - 1)
+                    builder.append(',');
+            }
+            hint = builder.toString();
+        }
+
+        return String.format("%sdetect?key=%s%s", yandexTranslatorApiPrefix, translationKey, hint);
+    }
 }

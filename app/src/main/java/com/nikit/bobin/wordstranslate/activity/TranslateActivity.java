@@ -40,25 +40,28 @@ public class TranslateActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        log.info(input.getText().toString());
         translator
                 .translateAsync(new Translation(input.getText().toString(), "en-ru"))
                 .then(new DoneCallback<TranslatedText>() {
-                    @Override
                     public void onDone(final TranslatedText result) {
-                        if (!result.isSuccess())
+                        if (!result.isSuccess()) {
                             Toast.makeText(TranslateActivity.this, "Translation failed", Toast.LENGTH_SHORT).show();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                output.setText(result.getTranslatedText());
-                                output.setVisibility(View.VISIBLE);
-                                YoYo.with(Techniques.SlideInLeft)
-                                        .duration(300)
-                                        .playOn(output);
-                            }
-                        });
+                            return;
+                        }
+                        output.setText(result.getTranslatedText());
+                        slideInOutputView();
                     }
                 });
+    }
+
+    private void slideInOutputView() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                output.setVisibility(View.VISIBLE);
+                YoYo.with(Techniques.SlideInLeft).duration(300).playOn(output);
+            }
+        });
     }
 }

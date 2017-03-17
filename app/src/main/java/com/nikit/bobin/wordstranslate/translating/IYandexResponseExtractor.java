@@ -9,4 +9,5 @@ import okhttp3.Response;
 public interface IYandexResponseExtractor {
     Language[] extractLanguages(Response response);
     TranslatedText extractTranslation(Response response, Translation translation);
+    Language extractDetectedLanguage(Response response);
 }

@@ -9,4 +9,5 @@ import org.jdeferred.Promise;
 public interface ITranslator {
     Promise<TranslatedText, Throwable, Void> translateAsync(Translation translation);
     Promise<Language[], Throwable, Void> getLanguagesAsync();
+    Promise<Language, Throwable, Void> detectLanguageAsync(String text);
 }

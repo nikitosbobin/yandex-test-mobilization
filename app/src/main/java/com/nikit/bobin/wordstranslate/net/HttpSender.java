@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.nikit.bobin.wordstranslate.logging.ILog;
 
 import org.jdeferred.DeferredManager;
 import org.jdeferred.Promise;
@@ -23,12 +24,16 @@ public class HttpSender implements IHttpSender {
     private DeferredManager deferredManager;
     private OkHttpClient client;
     private final String defaultMediaType = "application/x-www-form-urlencoded";
-    public HttpSender(OkHttpClient httpClient, DeferredManager deferredManager) {
+    private ILog log;
+
+    public HttpSender(OkHttpClient httpClient, DeferredManager deferredManager, ILog log) {
         Ensure.notNull(httpClient, "httpClient");
         Ensure.notNull(deferredManager, "deferredManager");
+        Ensure.notNull(log, "log");
 
         this.deferredManager = deferredManager;
         client = httpClient;
+        this.log = log;
     }
 
     @Override
@@ -74,7 +79,7 @@ public class HttpSender implements IHttpSender {
                 url,
                 method,
                 body.getBytes(Charset.forName("utf-8")),
-                "application/x-www-form-urlencoded").execute();
+                defaultMediaType).execute();
     }
 
     private Promise<Response, Throwable, Void> createPromise(
@@ -93,6 +98,7 @@ public class HttpSender implements IHttpSender {
     }
 
     private Call createCall(String url, HttpMethod method, byte[] body, String mediaType) {
+        log.info("Perform HTTP %s request to: %s", method.name(), url);
         RequestBody requestBody = null;
         if (body != null && mediaType != null) {
             requestBody = RequestBody.create(MediaType.parse(mediaType), body);

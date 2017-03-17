@@ -1,5 +1,6 @@
 package com.nikit.bobin.wordstranslate.ioc;
 
+import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.HttpSender;
 import com.nikit.bobin.wordstranslate.net.IHttpSender;
 
@@ -21,7 +22,7 @@ public class NetModule {
 
     @Provides
     @Singleton
-    IHttpSender provideHttpSender(DeferredManager deferredManager, OkHttpClient httpClient) {
-        return new HttpSender(httpClient, deferredManager);
+    IHttpSender provideHttpSender(DeferredManager deferredManager, OkHttpClient httpClient, ILog log) {
+        return new HttpSender(httpClient, deferredManager, log);
     }
 }

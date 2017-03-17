@@ -70,6 +70,20 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
         }
     }
 
+    @Override
+    public Language extractDetectedLanguage(Response response) {
+        try {
+            JSONObject responseBody = new JSONObject(response.body().string());
+            ensureYandexApiResponseIsSuccess(responseBody);
+            String lang = responseBody.getString("lang");
+            return new Language(lang);
+        } catch (JSONException e) {
+            throw new ResponseHasNotTargetDataException("Response body could not convert to JSONObject", e);
+        } catch (IOException e) {
+            throw new ResponseHasNotTargetDataException("Response body has IOException", e);
+        }
+    }
+
     private static void ensureYandexApiResponseIsSuccess(JSONObject response)
         throws NotSuccessfulResponseException{
         try {

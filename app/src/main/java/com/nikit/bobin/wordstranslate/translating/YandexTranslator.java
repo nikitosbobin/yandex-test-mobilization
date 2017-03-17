@@ -88,6 +88,22 @@ public class YandexTranslator implements ITranslator {
         return response;
     }
 
+    @Override
+    public Promise<Language, Throwable, Void> detectLanguageAsync(String text) {
+        Ensure.notNullOrEmpty(text, "text");
+
+        String detectLangUri = uriFactory.detectLang(new Language("ru"), new Language("en"));
+
+        return httpSender
+                .sendRequestAsync(detectLangUri, HttpMethod.POST, "text=" + text)
+                .then(new DoneFilter<Response, Language>() {
+                    @Override
+                    public Language filterDone(Response result) {
+                        return responseExtractor.extractDetectedLanguage(result);
+                    }
+                });
+    }
+
     //todo: for this create promise factory
     private <TResult> Promise<TResult, Throwable, Void> createPromiseFromResult(final TResult result) {
         return deferredManager.when(new Callable<TResult>() {
