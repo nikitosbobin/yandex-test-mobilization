@@ -23,11 +23,12 @@ public class HttpSender implements IHttpSender {
     private DeferredManager deferredManager;
     private OkHttpClient client;
     private final String defaultMediaType = "application/x-www-form-urlencoded";
-    public HttpSender(DeferredManager deferredManager) {
+    public HttpSender(OkHttpClient httpClient, DeferredManager deferredManager) {
+        Ensure.notNull(httpClient, "httpClient");
         Ensure.notNull(deferredManager, "deferredManager");
 
         this.deferredManager = deferredManager;
-        client = new OkHttpClient();
+        client = httpClient;
     }
 
     @Override

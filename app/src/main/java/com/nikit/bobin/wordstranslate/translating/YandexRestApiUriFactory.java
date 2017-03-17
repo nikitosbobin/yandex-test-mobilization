@@ -19,13 +19,6 @@ public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
         this.dictionaryKey = dictionaryKey;
     }
 
-    public YandexRestApiUriFactory() {
-        this(
-                "trnsl.1.1.20170315T155530Z.982270abc72ef811.6b65d3680beb5b85a2f7ee473c7033c589c743a2",
-                "dict.1.1.20170317T125256Z.5b1c51624e355923.679ec4c6fe21aca55d9e69779966b0b53d8147cf"
-        );
-    }
-
     @Override
     public String getLangs() {
         return String.format("%sgetLangs?key=%s", yandexTranslatorApiPrefix, translationKey);
