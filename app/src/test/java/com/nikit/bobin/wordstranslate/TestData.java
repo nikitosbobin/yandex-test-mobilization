@@ -26,6 +26,10 @@ public class TestData {
                 .build();
     }
 
+    public static Response createEmptyResponse() {
+        return createFakeResponse(200, "", "http://dummy");
+    }
+
     public static String createTranslationJson(String direction, String text) {
         if (text == null)
             return String.format("{ \"code\": 200, \"lang\": \"%s\", \"text\": [] }", direction);
@@ -46,15 +50,9 @@ public class TestData {
     }
 
     public static Language[] getExtractedLangs() {
-        Language languageRu = new Language("ru");
-        languageRu.addTitle(new Language("ru"), "Russian");
-
-        Language languageEn = new Language("en");
-        languageEn.addTitle(new Language("en"), "English");
-
-        Language languageFr = new Language("fr");
-        languageFr.addTitle(new Language("fr"), "French");
-
+        Language languageRu = new Language("ru", "Russian");
+        Language languageEn = new Language("en", "English");
+        Language languageFr = new Language("fr", "French");
 
         return new Language[] {languageRu, languageEn, languageFr};
     }

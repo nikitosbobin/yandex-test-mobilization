@@ -29,4 +29,5 @@ dependencies {
     testCompile 'org.json:json:20160810'
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'org.jdeferred:jdeferred-android-aar:1.2.3'
+    compile 'com.afollestad:ason:1.4.6'
 }

@@ -31,4 +31,24 @@ public class TranslatedText {
     public Translation getTranslation() {
         return translation;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TranslatedText that = (TranslatedText) o;
+        if (success != that.success) return false;
+        if (translatedText != null ? !translatedText.equals(that.translatedText) : that.translatedText != null)
+            return false;
+        return translation.equals(that.translation);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (success ? 1 : 0);
+        result = 31 * result + (translatedText != null ? translatedText.hashCode() : 0);
+        result = 31 * result + translation.hashCode();
+        return result;
+    }
 }

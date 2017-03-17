@@ -19,8 +19,17 @@ public class Translation_Tests {
     }
 
     @Test(expected = NullPointerException.class)
-    public void should_fail_if_direction_is_null() {
-        new Translation("text", null);
+    public void should_fail_if_direction_obj_is_null() {
+        new Translation("text", (Direction) null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void should_fail_if_direction_str_is_null() {
+        new Translation("text", (String) null);
+    }
+    @Test(expected = IllegalArgumentException.class)
+    public void should_fail_if_direction_str_is_empty() {
+        new Translation("text", "");
     }
 
     @Test

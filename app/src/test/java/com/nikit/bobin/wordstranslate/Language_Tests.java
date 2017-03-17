@@ -13,7 +13,7 @@ public class Language_Tests {
 
     @Before
     public void setUp() {
-        ruLang = new Language("ru");
+        ruLang = new Language("ru", "title");
     }
 
     @Test(expected = NullPointerException.class)
@@ -89,51 +89,5 @@ public class Language_Tests {
         Language[] directions = ruLang.getDirections();
 
         Assert.assertArrayEquals(expectedDirections, directions);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void addTitle_should_fail_when_lang_key_is_null() {
-        ruLang.addTitle(null, "title");
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void addTitle_should_fail_when_title_is_null() {
-        ruLang.addTitle(new Language("en"), null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void addTitle_should_fail_when_title_is_empty() {
-        ruLang.addTitle(new Language("en"), "");
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void getTitle_should_fail_when_lang_key_is_null() {
-        ruLang.getTitle(null);
-    }
-
-    @Test
-    public void should_save_and_return_title_for_target_lang() {
-        ruLang.addTitle(new Language("en"), "title");
-
-        String title = ruLang.getTitle(new Language("en"));
-
-        assertEquals("title", title);
-    }
-
-    @Test
-    public void should_save_some_titles_and_return_title_for_target_lang() {
-        ruLang.addTitle(new Language("en"), "titleEn");
-        ruLang.addTitle(new Language("ru"), "titleRus");
-
-        String title = ruLang.getTitle(new Language("en"));
-
-        assertEquals("titleEn", title);
-    }
-
-    @Test
-    public void should_return_empty_title_when_not_saved() {
-        String title = ruLang.getTitle(new Language("en"));
-
-        assertEquals(null, title);
     }
 }

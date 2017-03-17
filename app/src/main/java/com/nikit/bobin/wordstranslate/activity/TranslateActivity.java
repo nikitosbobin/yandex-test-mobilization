@@ -25,6 +25,10 @@ public class TranslateActivity extends AppCompatActivity {
         IYandexResponseExtractor extractor = new YandexResponseExtractor();
         IYandexRestApiUriFactory factory = new YandexRestApiUriFactory();
 
+        Language language = new Language("fdfs") {
+            int t = 0;
+        };
+
         ITranslator translator = new YandexTranslator(
                 deferredManager,
                 httpSender,

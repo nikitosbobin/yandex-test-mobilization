@@ -16,6 +16,14 @@ public class Translation {
         this.originalText = originalText;
     }
 
+    public Translation(String originalText, String direction) {
+        Ensure.notNullOrEmpty(originalText, "originalText");
+        Ensure.notNullOrEmpty(direction, "direction");
+
+        this.direction = Direction.parse(direction);
+        this.originalText = originalText;
+    }
+
     public Direction getDirection() {
         return direction;
     }

@@ -14,17 +14,27 @@ public class YandexRestApiUriFactory_Tests {
 
     @Before
     public void setUp() {
-        factory = new YandexRestApiUriFactory("appKey");
+        factory = new YandexRestApiUriFactory("appKey", "dictKey");
     }
 
     @Test(expected = NullPointerException.class)
     public void should_fail_when_app_key_is_null() {
-        new YandexRestApiUriFactory(null);
+        new YandexRestApiUriFactory(null, "dictKey");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void should_fail_when_dict_key_is_null() {
+        new YandexRestApiUriFactory("appKey", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void should_fail_when_app_key_is_empty() {
-        new YandexRestApiUriFactory("");
+        new YandexRestApiUriFactory("", "dictKey");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void should_fail_when_dict_key_is_empty() {
+        new YandexRestApiUriFactory("appKey", "");
     }
 
     @Test
@@ -46,10 +56,19 @@ public class YandexRestApiUriFactory_Tests {
     }
 
     @Test
-    public void translate() {
+    public void translate_should_return_correct_uri() {
         String expectedUrl = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=appKey&lang=en-ru";
 
         String actualUrl = factory.translate(Direction.parse("en-ru"));
+
+        assertEquals(expectedUrl, actualUrl);
+    }
+
+    @Test
+    public void dictionaryLookup_should_return_correct_uri() {
+        String expectedUrl = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=dictKey&lang=en-ru";
+
+        String actualUrl = factory.dictionaryLookup(Direction.parse("en-ru"));
 
         assertEquals(expectedUrl, actualUrl);
     }
