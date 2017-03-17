@@ -2,38 +2,24 @@ package com.nikit.bobin.wordstranslate.translating.models;
 
 import com.nikit.bobin.wordstranslate.core.Ensure;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Objects;
 
 //todo: to struct
 public class Language {
     private String key;
-    private HashMap<Language, String> titles;
+    private String title;
     private HashSet<Language> directions;
 
-    public Language(String key) {
+    public Language(String key, String title) {
         Ensure.notNullOrEmpty(key, "key");
 
         this.key = key;
-        titles = new HashMap<>();
+        this.title = title;
         directions = new HashSet<>();
     }
 
-    public void addTitle(Language langKey, String title) {
-        Ensure.notNullOrEmpty(title, "title");
-        Ensure.notNull(langKey, "langKey");
-
-        titles.put(langKey, title);
-    }
-
-    public String getTitle(Language langKey) {
-        Ensure.notNull(langKey, "langKey");
-
-        if (titles.containsKey(langKey))
-            return titles.get(langKey);
-
-        return null;
+    public Language(String key) {
+        this(key, null);
     }
 
     public void addDirection(Language direction, Language... otherDirections) {
@@ -56,6 +42,10 @@ public class Language {
 
     public String getKey() {
         return key;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     @Override

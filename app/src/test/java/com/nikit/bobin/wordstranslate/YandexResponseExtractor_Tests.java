@@ -25,7 +25,7 @@ public class YandexResponseExtractor_Tests {
 
     @Test(expected = NullPointerException.class)
     public void extractSupportedLanguages_should_fail_when_response_is_null() throws Exception {
-        extractor.extractSupportedLanguages(null);
+        extractor.extractLanguages(null);
     }
 
     @Test(expected = NullPointerException.class)
@@ -40,7 +40,7 @@ public class YandexResponseExtractor_Tests {
 
     @Test(expected = NotSuccessfulResponseException.class)
     public void extractSupportedLanguages_should_fail_when_response_is_not_success() throws Exception{
-        extractor.extractSupportedLanguages(TestData.createFakeResponse(400, "", "http://fake"));
+        extractor.extractLanguages(TestData.createFakeResponse(400, "", "http://fake"));
     }
 
     @Test(expected = NotSuccessfulResponseException.class)
@@ -103,7 +103,7 @@ public class YandexResponseExtractor_Tests {
         Response fakeResponse = TestData.createFakeResponse(200, langsJson, "http://do-translate/?ui=en");
         Language[] expectedLanguages = TestData.getExtractedLangs();
 
-        Language[] languages = extractor.extractSupportedLanguages(fakeResponse);
+        Language[] languages = extractor.extractLanguages(fakeResponse);
 
         assertArrayEquals(expectedLanguages, languages);
         assertEquals("Russian", languages[0].getTitle(new Language("en")));
@@ -115,14 +115,14 @@ public class YandexResponseExtractor_Tests {
     public void extractSupportedLanguages_should_fail_when_yandex_response_is_not_json() throws Exception {
         Response fakeResponse = TestData.createFakeResponse(200, "not json", "http://do-translate/");
 
-        extractor.extractSupportedLanguages(fakeResponse);
+        extractor.extractLanguages(fakeResponse);
     }
 
     @Test(expected = ResponseHasNotTargetDataException.class)
     public void extractSupportedLanguages_should_fail_when_yandex_response_json_is_empty() throws Exception {
         Response fakeResponse = TestData.createFakeResponse(200, "{}", "http://do-translate/");
 
-        extractor.extractSupportedLanguages(fakeResponse);
+        extractor.extractLanguages(fakeResponse);
     }
 
     @Test

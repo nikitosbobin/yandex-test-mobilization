@@ -5,6 +5,7 @@ import com.nikit.bobin.wordstranslate.translating.exceptions.NotSuccessfulRespon
 import com.nikit.bobin.wordstranslate.translating.exceptions.ResponseHasNotTargetDataException;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
+import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
 
 import org.json.JSONArray;
@@ -13,36 +14,34 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import okhttp3.Response;
 
 public class YandexResponseExtractor implements IYandexResponseExtractor {
 
     @Override
-    public Language[] extractSupportedLanguages(Response response) {
+    public Language[] extractLanguages(Response response) {
         Ensure.notNull(response, "response");
         Ensure.okHttpResponseIsSuccess(response, "response");
 
-        Pattern pattern = Pattern.compile("^.*ui=([a-z]+).*$");
         try {
             JSONObject responseBody = new JSONObject(response.body().string());
             JSONObject langs = responseBody.getJSONObject("langs");
+
             ArrayList<Language> result = new ArrayList<>(16);
             Iterator<String> keys = langs.keys();
 
             while (keys.hasNext()) {
                 String key = keys.next();
-                Language currentLang = new Language(key);
-                Matcher matcher = pattern.matcher(response.request().url().toString());
-                if (matcher.matches()) {
-                    String title = langs.getString(key);
-                    currentLang.addTitle(new Language(matcher.group(1)), title);
-                }
+                Language currentLang = new Language(key, langs.getString(key));
                 result.add(currentLang);
             }
+
+            if (responseBody.has("dirs"))
+                fillDirections(result, responseBody.getJSONArray("dirs"));
+
             return result.toArray(new Language[result.size()]);
         } catch (JSONException e) {
             throw new ResponseHasNotTargetDataException("Response body could not convert to JSONObject", e);
@@ -52,28 +51,9 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
     }
 
     @Override
-    public Direction[] extractSupportedDirections(Response response) {
+    public TranslatedText extractTranslation(Response response, Translation translation) {
         Ensure.notNull(response, "response");
-        Ensure.okHttpResponseIsSuccess(response, "response");
-
-        try {
-            JSONObject responseBody = new JSONObject(response.body().string());
-            JSONArray dirs = responseBody.getJSONArray("dirs");
-            Direction[] result = new Direction[dirs.length()];
-            for (int i = 0; i < result.length; ++i)
-                result[i] = Direction.parse(dirs.getString(i));
-            return result;
-        } catch (JSONException e) {
-            throw new ResponseHasNotTargetDataException("Response body could not convert to JSONObject", e);
-        } catch (IOException e) {
-            throw new ResponseHasNotTargetDataException("Response body has IOException", e);
-        }
-    }
-
-    @Override
-    public Translation extractTranslation(Response response) {
-        Ensure.notNull(response, "response");
-        Ensure.okHttpResponseIsSuccess(response, "response");
+        Ensure.notNull(translation, "translation");
 
         try {
             JSONObject responseBody = new JSONObject(response.body().string());
@@ -81,9 +61,8 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
 
             JSONArray text = responseBody.getJSONArray("text");
             if (text.length() == 0)
-                return null;
-            String lang = responseBody.getString("lang");
-            return new Translation(text.getString(0), Direction.parse(lang));
+                return TranslatedText.fail(translation);
+            return TranslatedText.success(text.getString(0), translation);
         } catch (JSONException e) {
             throw new ResponseHasNotTargetDataException("Response body could not convert to JSONObject", e);
         } catch (IOException e) {
@@ -100,6 +79,20 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
                         String.format("Response not success, actual code is: %s", code));
         } catch (JSONException e) {
             throw new NotSuccessfulResponseException("Response has not Yandex api code", e);
+        }
+    }
+
+    private void fillDirections(ArrayList<Language> languages, JSONArray dirs) throws JSONException {
+        HashMap<String, Language> langsTable = new HashMap<>();
+        for (Language l : languages)
+            langsTable.put(l.getKey(), l);
+
+        for (int i = 0; i < dirs.length(); ++i) {
+            String dir = dirs.getString(i);
+            Direction direction = Direction.parse(dir);
+            String from = direction.getFrom().toString();
+            if (langsTable.containsKey(from))
+                langsTable.get(from).addDirection(direction.getTo());
         }
     }
 }

@@ -8,6 +8,7 @@ import com.nikit.bobin.wordstranslate.core.Ensure;
 import org.jdeferred.DeferredManager;
 import org.jdeferred.Promise;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.concurrent.Callable;
 
@@ -21,7 +22,7 @@ import okhttp3.Response;
 public class HttpSender implements IHttpSender {
     private DeferredManager deferredManager;
     private OkHttpClient client;
-
+    private final String defaultMediaType = "application/x-www-form-urlencoded";
     public HttpSender(DeferredManager deferredManager) {
         Ensure.notNull(deferredManager, "deferredManager");
 
@@ -30,32 +31,49 @@ public class HttpSender implements IHttpSender {
     }
 
     @Override
-    public Promise<Response, Throwable, Void> sendRequest(
+    public Promise<Response, Throwable, Void> sendRequestAsync(
             @NonNull String url,
             @NonNull HttpMethod method,
             @Nullable byte[] body,
             @Nullable String mediaType) {
         Ensure.notNullOrEmpty(url, "url");
         Ensure.urlIsPresent(url, "url");
-
+        if (body == null)
+            return createPromise(url, method, new byte[0], defaultMediaType);
         return createPromise(url, method, body, mediaType);
     }
-
+//todo: refactor
     @Override
-    public Promise<Response, Throwable, Void> sendRequest(
+    public Promise<Response, Throwable, Void> sendRequestAsync(
             @NonNull String url,
             @NonNull HttpMethod method) {
-        return sendRequest(url, method, null, null);
+        return sendRequestAsync(url, method, null);
     }
 
     @Override
-    public Promise<Response, Throwable, Void> sendRequest(
+    public Promise<Response, Throwable, Void> sendRequestAsync(
             @NonNull String url,
             @NonNull HttpMethod method,
             @Nullable String body) {
+        byte[] bodyBytes;
+        if (body == null) bodyBytes = new byte[0];
+        else bodyBytes = body.getBytes(Charset.forName("utf-8"));
+        return sendRequestAsync(url, method, bodyBytes, defaultMediaType);
+    }
+
+    @Override
+    public Response sendRequest(@NonNull String url, @NonNull HttpMethod method, @Nullable String body)
+            throws IOException {
+        Ensure.notNullOrEmpty(url, "url");
+        Ensure.urlIsPresent(url, "url");
+
         if (body == null)
-            return sendRequest(url, method, null, null);
-        return sendRequest(url, method, body.getBytes(Charset.forName("utf-8")), "application/x-www-form-urlencoded");
+            return createCall(url, method, null, null).execute();
+        return createCall(
+                url,
+                method,
+                body.getBytes(Charset.forName("utf-8")),
+                "application/x-www-form-urlencoded").execute();
     }
 
     private Promise<Response, Throwable, Void> createPromise(

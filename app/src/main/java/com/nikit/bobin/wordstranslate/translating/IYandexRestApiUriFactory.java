@@ -7,4 +7,5 @@ public interface IYandexRestApiUriFactory {
     String getLangs();
     String getLangs(Language ui);
     String translate(Direction direction);
+    String dictionaryLookup(Direction direction);
 }

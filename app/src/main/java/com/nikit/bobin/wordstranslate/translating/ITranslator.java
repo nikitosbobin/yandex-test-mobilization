@@ -1,11 +1,12 @@
 package com.nikit.bobin.wordstranslate.translating;
 
+import com.nikit.bobin.wordstranslate.translating.models.Language;
+import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
+import com.nikit.bobin.wordstranslate.translating.models.Translation;
+
 import org.jdeferred.Promise;
 
-import java.util.HashMap;
-
 public interface ITranslator {
-    Promise<String, Throwable, Void> translateAsync(String word, String direction);
-    Promise<HashMap<String, String>, Throwable, Void> getSupportedLangsAsync(final String uiLang);
-    Promise<String[], Throwable, Void> getSupportedDirectionsAsync();
+    Promise<TranslatedText, Throwable, Void> translateAsync(Translation translation);
+    Promise<Language[], Throwable, Void> getLanguagesAsync();
 }
