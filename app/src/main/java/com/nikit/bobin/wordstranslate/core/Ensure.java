@@ -1,9 +1,11 @@
 package com.nikit.bobin.wordstranslate.core;
 
 import com.nikit.bobin.wordstranslate.translating.exceptions.NotSuccessfulResponseException;
+import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
 
 import okhttp3.Response;
 
@@ -32,5 +34,17 @@ public class Ensure {
             throws NotSuccessfulResponseException {
         if (!response.isSuccessful())
             throw new NotSuccessfulResponseException(String.format("OkHttp response: %s is not success", name));
+    }
+
+    public static void languageHasTitle(Language language, String name) {
+        String title = language.getTitle();
+        if (title == null && title.equals(""))
+            throw new IllegalArgumentException(String.format("Language implementation: [%s] " +
+                    "should has non empty title", name));
+    }
+
+    public static <T> void notEmpty(T[] array, String name) {
+        if (array.length == 0)
+            throw new IllegalArgumentException(String.format("Array: [%s] should not be empty", name));
     }
 }

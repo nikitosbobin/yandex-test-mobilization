@@ -5,39 +5,19 @@ import com.nikit.bobin.wordstranslate.core.Ensure;
 import java.util.HashSet;
 
 //todo: to struct
-public class Language {
+public class Language implements Comparable<Language>{
     private String key;
     private String title;
-    private HashSet<Language> directions;
 
     public Language(String key, String title) {
         Ensure.notNullOrEmpty(key, "key");
 
         this.key = key;
         this.title = title;
-        directions = new HashSet<>();
     }
 
     public Language(String key) {
         this(key, null);
-    }
-
-    public void addDirection(Language direction, Language... otherDirections) {
-        Ensure.notNull(direction, "direction");
-        Ensure.notNull(otherDirections, "otherDirections");
-
-        directions.add(direction);
-
-        for (Language dir : otherDirections)
-            directions.add(dir);
-    }
-
-    public boolean hasDirection(Language direction) {
-        return directions.contains(direction);
-    }
-
-    public Language[] getDirections() {
-        return directions.toArray(new Language[directions.size()]);
     }
 
     public String getKey() {
@@ -46,6 +26,12 @@ public class Language {
 
     public String getTitle() {
         return title;
+    }
+
+    public void setTitle(String title) {
+        Ensure.notNullOrEmpty(title, "title");
+
+        this.title = title;
     }
 
     @Override
@@ -64,5 +50,12 @@ public class Language {
     @Override
     public String toString() {
         return getKey();
+    }
+
+    @Override
+    public int compareTo(Language o) {
+        if (title != null && o.title != null)
+            return title.compareTo(o.title);
+        return key.compareTo(o.key);
     }
 }

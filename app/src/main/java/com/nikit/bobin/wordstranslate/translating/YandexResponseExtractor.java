@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import okhttp3.Response;
 
@@ -38,9 +40,6 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
                 Language currentLang = new Language(key, langs.getString(key));
                 result.add(currentLang);
             }
-
-            if (responseBody.has("dirs"))
-                fillDirections(result, responseBody.getJSONArray("dirs"));
 
             return result.toArray(new Language[result.size()]);
         } catch (JSONException e) {
@@ -93,20 +92,6 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
                         String.format("Response not success, actual code is: %s", code));
         } catch (JSONException e) {
             throw new NotSuccessfulResponseException("Response has not Yandex api code", e);
-        }
-    }
-
-    private void fillDirections(ArrayList<Language> languages, JSONArray dirs) throws JSONException {
-        HashMap<String, Language> langsTable = new HashMap<>();
-        for (Language l : languages)
-            langsTable.put(l.getKey(), l);
-
-        for (int i = 0; i < dirs.length(); ++i) {
-            String dir = dirs.getString(i);
-            Direction direction = Direction.parse(dir);
-            String from = direction.getFrom().toString();
-            if (langsTable.containsKey(from))
-                langsTable.get(from).addDirection(direction.getTo());
         }
     }
 }

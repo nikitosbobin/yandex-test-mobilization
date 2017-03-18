@@ -53,41 +53,4 @@ public class Language_Tests {
 
         assertEquals(ruLang1HashCode, ruLang2HashCode);
     }
-
-    @Test(expected = NullPointerException.class)
-    public void addDirection_should_fail_when_direction_is_null() {
-        ruLang.addDirection(null);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void addDirection_should_fail_when_other_directions_is_null() {
-        ruLang.addDirection(new Language("en"), null);
-    }
-
-    @Test
-    public void should_save_and_detect_existed_direction() {
-        ruLang.addDirection(new Language("en"));
-
-        boolean directionExists = ruLang.hasDirection(new Language("en"));
-
-        assertEquals(true, directionExists);
-    }
-
-    @Test
-    public void should_not_detect_not_existed_direction() {
-        boolean directionExists = ruLang.hasDirection(new Language("en"));
-
-        assertEquals(false, directionExists);
-    }
-
-    @Test
-    public void should_return_all_saved_directions() {
-        ruLang.addDirection(new Language("en"));
-        ruLang.addDirection(new Language("fr"));
-        Language[] expectedDirections = new Language[] {new Language("en"), new Language("fr")};
-
-        Language[] directions = ruLang.getDirections();
-
-        Assert.assertArrayEquals(expectedDirections, directions);
-    }
 }

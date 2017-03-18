@@ -4,6 +4,11 @@ public class TranslatedText {
     private boolean success;
     private String translatedText;
     private Translation translation;
+    private int id;
+
+    private TranslatedText() {
+        id = -1;
+    }
 
     public static TranslatedText success(String translatedtext, Translation translation) {
         TranslatedText result = new TranslatedText();
@@ -16,6 +21,15 @@ public class TranslatedText {
     public static TranslatedText fail(Translation translation) {
         TranslatedText result = new TranslatedText();
         result.success = false;
+        result.translation = translation;
+        return result;
+    }
+
+    public static TranslatedText fromDatabase(int id, String translatedtext, Translation translation) {
+        TranslatedText result = new TranslatedText();
+        result.success = true;
+        result.id = id;
+        result.translatedText = translatedtext;
         result.translation = translation;
         return result;
     }
@@ -50,5 +64,9 @@ public class TranslatedText {
         result = 31 * result + (translatedText != null ? translatedText.hashCode() : 0);
         result = 31 * result + translation.hashCode();
         return result;
+    }
+
+    public int getId() {
+        return id;
     }
 }
