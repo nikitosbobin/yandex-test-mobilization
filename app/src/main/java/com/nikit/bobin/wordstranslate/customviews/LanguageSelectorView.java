@@ -41,6 +41,7 @@ public class LanguageSelectorView extends RelativeLayout implements
     private final int GROUP_ID_TO_LANGUAGE_MENU = 1;
     private YoYo.AnimationComposer rotateAnimation;
     private YoYo.AnimationComposer fadeInAnimation;
+    private Runnable swapListener;
 
     public LanguageSelectorView(Context context) {
         super(context);
@@ -132,6 +133,8 @@ public class LanguageSelectorView extends RelativeLayout implements
                 fadeInAnimation.playOn(languageFromView);
                 fadeInAnimation.playOn(languageToView);
                 swap();
+                if (swapListener != null)
+                    swapListener.run();
                 break;
         }
     }
@@ -170,5 +173,9 @@ public class LanguageSelectorView extends RelativeLayout implements
 
     public Direction getDirection() {
         return new Direction(languageFrom, languageTo);
+    }
+
+    public void setOnSwapListener(Runnable onSwapListener) {
+        swapListener = onSwapListener;
     }
 }

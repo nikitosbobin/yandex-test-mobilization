@@ -1,22 +1,26 @@
 package com.nikit.bobin.wordstranslate.history;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.nikit.bobin.wordstranslate.R;
+import com.nikit.bobin.wordstranslate.core.Ensure;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 public class TranslationHistoryAdapter extends BaseAdapter {
-    private Context context;
     private IStorage<TranslatedText> translatedTextIStorage;
     private LayoutInflater lInflater;
+    private TranslatedText currentTranslation;
+    private int lastCount;
 
     public TranslationHistoryAdapter(Context context, IStorage<TranslatedText> translatedTextIStorage) {
-        this.context = context;
         this.translatedTextIStorage = translatedTextIStorage;
         lInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -24,17 +28,25 @@ public class TranslationHistoryAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return translatedTextIStorage.getCount();
+        int count = translatedTextIStorage.getCount();
+        if (currentTranslation != null)
+            count++;
+        return count;
     }
 
     @Override
     public TranslatedText getItem(int position) {
-        return translatedTextIStorage.getSavedItems()[position];
+        if (currentTranslation == null)
+            return translatedTextIStorage.getSavedItemsReversed()[position];
+        if (position == 0)
+            return currentTranslation;
+        return translatedTextIStorage.getSavedItemsReversed()[position - 1];
     }
 
     @Override
     public long getItemId(int position) {
-        return translatedTextIStorage.getSavedItems()[position].getId();
+        return 55;
+        //return getItem(position).getId();
     }
 
     @Override
@@ -51,7 +63,18 @@ public class TranslationHistoryAdapter extends BaseAdapter {
         original.setText(item.getTranslation().getOriginalText());
         translated.setText(item.getTranslatedText());
         direction.setText(item.getTranslation().getDirection().toString().toUpperCase());
-
+        if (currentTranslation != null && position == 0 && lastCount != getCount()) {
+            YoYo.with(Techniques.FadeInLeft)
+                    .duration(400)
+                    .playOn(view);
+            lastCount = getCount();
+        }
         return view;
+    }
+
+    public void setCurrentTranslatedText(@Nullable TranslatedText translatedText) {
+        Ensure.inUiThread();
+
+        currentTranslation = translatedText;
     }
 }

@@ -11,7 +11,7 @@ import android.view.View;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.nikit.bobin.wordstranslate.R;
-import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.Tab2Fragment;
+import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTranslationsFragment;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslateActivityPagerAdapter;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment;
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
@@ -38,7 +38,9 @@ public class MainActivity extends AppCompatActivity implements MaterialTabListen
         PagerAdapter pagerAdapter = new TranslateActivityPagerAdapter(
                 getSupportFragmentManager(),
                 new String[]{"Translate", "Favourite"},
-                new Fragment[]{new TranslationFragment().setSelectorView(selectorView), new Tab2Fragment()});
+                new Fragment[] {
+                        new TranslationFragment().setSelectorView(selectorView).setContext(this),
+                        new FavoriteTranslationsFragment()});
 
         viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             public void onPageSelected(int position) {

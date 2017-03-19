@@ -24,7 +24,7 @@ public class SimpleLogger implements ILog {
     }
 
     @Override
-    public void info(String format, String... args) {
+    public void info(String format, Object... args) {
         info(String.format(format, args));
     }
 
@@ -39,7 +39,7 @@ public class SimpleLogger implements ILog {
     }
 
     @Override
-    public void debug(String format, String... args) {
+    public void debug(String format, Object... args) {
         debug(String.format(format, args));
     }
 
@@ -54,7 +54,7 @@ public class SimpleLogger implements ILog {
     }
 
     @Override
-    public void warn(String format, String... args) {
+    public void warn(String format, Object... args) {
         warn(String.format(format, args));
     }
 
@@ -69,7 +69,7 @@ public class SimpleLogger implements ILog {
     }
 
     @Override
-    public void error(String format, String... args) {
+    public void error(String format, Object... args) {
         error(String.format(format, args));
     }
 }

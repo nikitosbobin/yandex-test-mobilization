@@ -5,6 +5,7 @@ public class TranslatedText {
     private String translatedText;
     private Translation translation;
     private int id;
+    private boolean isFavorite;
 
     private TranslatedText() {
         id = -1;
@@ -25,12 +26,14 @@ public class TranslatedText {
         return result;
     }
 
-    public static TranslatedText fromDatabase(int id, String translatedtext, Translation translation) {
+    public static TranslatedText fromDatabase(int id, String translatedText, String originalText,
+                                              String direction, boolean isFavorite) {
         TranslatedText result = new TranslatedText();
         result.success = true;
         result.id = id;
-        result.translatedText = translatedtext;
-        result.translation = translation;
+        result.translatedText = translatedText;
+        result.translation = new Translation(originalText, Direction.parse(direction));
+        result.isFavorite = isFavorite;
         return result;
     }
 
@@ -68,5 +71,9 @@ public class TranslatedText {
 
     public int getId() {
         return id;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
     }
 }

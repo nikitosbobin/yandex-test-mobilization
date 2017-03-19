@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.AppBarLayout
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:background="@color/colorPrimary"
-    android:elevation="2dp"
-    android:theme="@style/Base.ThemeOverlay.AppCompat.Dark">
-    <com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView
-        android:id="@+id/lang_selector"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginEnd="15dp" />
-</android.support.v7.widget.Toolbar>
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:theme="@style/Base.ThemeOverlay.AppCompat.Dark">
+        <com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView
+            android:id="@+id/lang_selector"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginEnd="15dp" />
+
+    </android.support.v7.widget.Toolbar>
+</android.support.design.widget.AppBarLayout>
+
+
