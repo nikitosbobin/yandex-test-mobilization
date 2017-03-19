@@ -9,8 +9,6 @@
         android:width="2dip"
         android:color="#F6F6F6" />
 
-    <corners android:radius="2dip" />
-
     <padding
         android:bottom="7dip"
         android:left="7dip"

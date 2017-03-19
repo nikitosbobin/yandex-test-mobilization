@@ -47,4 +47,10 @@ public class Ensure {
         if (array.length == 0)
             throw new IllegalArgumentException(String.format("Array: [%s] should not be empty", name));
     }
+
+    public static void inUiThread() {
+        String name = Thread.currentThread().getName();
+        if (!name.equals("main"))
+            throw new IllegalThreadStateException("This method should called from main thread");
+    }
 }

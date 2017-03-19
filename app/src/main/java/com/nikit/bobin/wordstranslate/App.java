@@ -1,6 +1,7 @@
 package com.nikit.bobin.wordstranslate;
 
 import android.app.Application;
+import android.os.Handler;
 
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
 import com.nikit.bobin.wordstranslate.ioc.AppComponent;
@@ -32,8 +33,15 @@ public class App extends Application {
         translator
                 .getLanguagesAsync()
                 .then(new DoneCallback<Language[]>() {
-                    public void onDone(Language[] result) {
-                        LanguageSelectorView.setSupportedLanguages(result);
+                    public void onDone(final Language[] result) {
+                        Handler mainHandler = new Handler(getMainLooper());
+                        Runnable myRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                LanguageSelectorView.setSupportedLanguages(result);
+                            }
+                        };
+                        mainHandler.post(myRunnable);
                     }
                 });
     }

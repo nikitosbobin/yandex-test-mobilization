@@ -3,6 +3,7 @@ package com.nikit.bobin.wordstranslate.customviews;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,8 +58,10 @@ public class LanguageSelectorView extends RelativeLayout implements
     }
 
     public static void setSupportedLanguages(Language[] supportedLanguages) {
+        Ensure.inUiThread();
         Ensure.notNull(supportedLanguages, "supportedLanguages");
 
+        Log.d("logs", supportedLanguages.length + "");
         supportedLanguages = supportedLanguages.clone();
         Arrays.sort(supportedLanguages);
         LanguageSelectorView.supportedLanguages = supportedLanguages;

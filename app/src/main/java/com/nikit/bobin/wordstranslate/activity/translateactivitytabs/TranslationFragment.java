@@ -1,10 +1,12 @@
-package com.nikit.bobin.wordstranslate.activity;
+package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -15,7 +17,6 @@ import com.nikit.bobin.wordstranslate.history.IStorage;
 import com.nikit.bobin.wordstranslate.history.TranslationHistoryAdapter;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
-import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
 
@@ -26,27 +27,36 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
-public class TranslateActivity extends AppCompatActivity implements TextWatcher {
-    @Inject ILog log;
-    @Inject ITranslator translator;
-    @Inject IStorage<TranslatedText> historyStorage;
+public class TranslationFragment extends Fragment implements TextWatcher {
     @BindView(R.id.history_list) ListView historyList;
     @BindView(R.id.editText) EditText input;
-    @BindView(R.id.lang_selector) LanguageSelectorView selectorView;
+    @Inject ITranslator translator;
+    @Inject IStorage<TranslatedText> historyStorage;
+    @Inject ILog log;
+
+    private LanguageSelectorView selectorView;
+
+    public TranslationFragment() {
+        super();
+    }
+
+    public TranslationFragment setSelectorView(LanguageSelectorView selectorView) {
+        this.selectorView = selectorView;
+        return this;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_translate);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_translation, container, false);
 
-        // dependency injection
-        App.getComponent().injectsMainActivity(this);
-        ButterKnife.bind(this);
+        App.getComponent().injectTranslationFragment(this);
+        ButterKnife.bind(this, view);
 
-        TranslationHistoryAdapter adapter = new TranslationHistoryAdapter(this, historyStorage);
+        TranslationHistoryAdapter adapter = new TranslationHistoryAdapter(getContext(), historyStorage);
         historyList.setAdapter(adapter);
         input.addTextChangedListener(this);
+        return view;
     }
 
     @Override
