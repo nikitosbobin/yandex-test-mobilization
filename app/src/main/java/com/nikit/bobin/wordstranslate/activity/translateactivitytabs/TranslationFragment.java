@@ -1,27 +1,25 @@
 package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
-import android.content.Context;
+import android.animation.Animator;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
 import com.nikit.bobin.wordstranslate.history.IStorage;
-import com.nikit.bobin.wordstranslate.history.TranslationHistoryAdapter;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
@@ -36,46 +34,37 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TranslationFragment extends Fragment implements TextWatcher, View.OnClickListener {
-    @BindView(R.id.history_list)
-    ListView historyList;
-    @BindView(R.id.editText)
+public class TranslationFragment extends ToolBarControlFragment implements TextWatcher, View.OnClickListener {
+    @BindView(R.id.translation_input)
     EditText input;
     @BindView(R.id.clear_button)
     ImageView clearButton;
+    @BindView(R.id.direction_label)
+    TextView direction;
+    @BindView(R.id.original_text_label)
+    TextView original;
+    @BindView(R.id.translated_text_label)
+    TextView translated;
+    @BindView(R.id.current_translation)
+    CardView translationCard;
     @Inject
     ITranslator translator;
     @Inject
     IStorage<TranslatedText> historyStorage;
     @Inject
     ILog log;
-    private Handler uiThreadHandler;
-    private LanguageSelectorView selectorView;
-    private Context context;
+    @BindView(R.id.lang_selector)
+    LanguageSelectorView selectorView;
     private TranslatedText currentTranslation;
-    private TranslationHistoryAdapter adapter;
     private Date lastTextEditingDate;
 
     public TranslationFragment() {
         super();
     }
 
-    public TranslationFragment setSelectorView(LanguageSelectorView selectorView) {
-        this.selectorView = selectorView;
-        selectorView.setOnSwapListener(new Runnable() {
-            @Override
-            public void run() {
-                Editable text = input.getText();
-                onTextChanged(text, 0, 0, text.length());
-            }
-        });
-        return this;
-    }
-
-    public TranslationFragment setContext(Context context) {
-        this.context = context;
-        uiThreadHandler = new Handler(context.getMainLooper());
-        return this;
+    @Override
+    CharSequence getTitle() {
+        return "Translation";
     }
 
     @Override
@@ -86,11 +75,17 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
         App.getComponent().injectTranslationFragment(this);
         ButterKnife.bind(this, view);
 
-        adapter = new TranslationHistoryAdapter(getContext(), historyStorage);
-        historyList.setAdapter(adapter);
         input.addTextChangedListener(this);
         clearButton.setOnClickListener(this);
-        registerForContextMenu(historyList);
+
+        selectorView.setOnSwapListener(new Runnable() {
+            @Override
+            public void run() {
+                Editable text = input.getText();
+                onTextChanged(text, 0, 0, text.length());
+            }
+        });
+
         return view;
     }
 
@@ -109,8 +104,7 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
         lastTextEditingDate = now;
         if (s.length() == 0) {
             clearButton.setVisibility(View.GONE);
-            adapter.setCurrentTranslatedText(null);
-            historyList.invalidateViews();
+            clearTranslationCard();
             return;
         }
         clearButton.setVisibility(View.VISIBLE);
@@ -120,11 +114,10 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
                     public void onDone(final TranslatedText result) {
                         if (!result.isSuccess()) return;
                         currentTranslation = result;
-                        uiThreadHandler.post(new Runnable() {
+                        runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                adapter.setCurrentTranslatedText(result);
-                                historyList.invalidateViews();
+                                fillTranslationCard(result, translationCard.getVisibility() == View.VISIBLE);
                             }
                         });
                     }
@@ -149,7 +142,6 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
         TranslatedText[] items = historyStorage.getSavedItemsReversed();
         if (items.length == 0 || (items.length > 0 && !items[0].equals(currentTranslation))) {
             historyStorage.saveOrUpdateItem(currentTranslation);
-            adapter.setCurrentTranslatedText(null);
         }
     }
 
@@ -159,23 +151,30 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
         menu.add(0, Menu.FIRST, Menu.NONE, "Delete");
     }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        if (item.getItemId() == Menu.FIRST) {
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-            int position = info.position;
-            TranslatedText[] savedItems = historyStorage.getSavedItemsReversed();
-            if (savedItems.length < position + 1) {
-                adapter.setCurrentTranslatedText(null);
-                historyList.invalidateViews();
-                return true;
-            }
-            TranslatedText toDelete = historyStorage.getSavedItemsReversed()[position];
-            if (historyStorage.delete(toDelete)) {
-                historyList.invalidateViews();
-                return true;
-            }
+    private void clearTranslationCard() {
+        translated.setText("");
+        original.setText("");
+        direction.setText("");
+        YoYo.with(Techniques.SlideOutDown)
+                .duration(300)
+                .onEnd(new YoYo.AnimatorCallback() {
+                    @Override
+                    public void call(Animator animator) {
+                        translationCard.setVisibility(View.GONE);
+                    }
+                })
+                .playOn(translationCard);
+    }
+
+    private void fillTranslationCard(TranslatedText translatedText, boolean alreadyOnScreen) {
+        translated.setText(translatedText.getTranslatedText());
+        original.setText(translatedText.getTranslation().getOriginalText());
+        direction.setText(translatedText.getTranslation().getDirection().toString().toUpperCase());
+        if (!alreadyOnScreen) {
+            translationCard.setVisibility(View.VISIBLE);
+            YoYo.with(Techniques.SlideInUp)
+                    .duration(300)
+                    .playOn(translationCard);
         }
-        return super.onContextItemSelected(item);
     }
 }

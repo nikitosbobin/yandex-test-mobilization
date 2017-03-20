@@ -1,6 +1,7 @@
 package com.nikit.bobin.wordstranslate.customviews;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.nikit.bobin.wordstranslate.R;

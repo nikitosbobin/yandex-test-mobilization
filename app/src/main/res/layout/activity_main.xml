@@ -8,19 +8,11 @@
     android:background="@color/colorBackground"
     tools:context="com.nikit.bobin.wordstranslate.activity.MainActivity">
 
-    <include
-        android:id="@+id/tool_bar"
-        layout="@layout/translation_activity_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:drawable/dialog_holo_light_frame"/>
-
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/materialTabHost"
-        android:layout_below="@+id/tool_bar" />
+        android:layout_above="@+id/materialTabHost" />
 
     <it.neokree.materialtabs.MaterialTabHost
         android:id="@+id/materialTabHost"

@@ -45,8 +45,7 @@ public class TranslationHistoryAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 55;
-        //return getItem(position).getId();
+        return getItem(position).getId();
     }
 
     @Override
@@ -63,6 +62,9 @@ public class TranslationHistoryAdapter extends BaseAdapter {
         original.setText(item.getTranslation().getOriginalText());
         translated.setText(item.getTranslatedText());
         direction.setText(item.getTranslation().getDirection().toString().toUpperCase());
+        if (firstItemIsTemporary() && position == 0) {
+            view.setOnLongClickListener(null);
+        }
         if (currentTranslation != null && position == 0 && lastCount != getCount()) {
             YoYo.with(Techniques.FadeInLeft)
                     .duration(400)
@@ -76,5 +78,9 @@ public class TranslationHistoryAdapter extends BaseAdapter {
         Ensure.inUiThread();
 
         currentTranslation = translatedText;
+    }
+
+    public boolean firstItemIsTemporary() {
+        return currentTranslation != null;
     }
 }

@@ -5,13 +5,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class TranslateActivityPagerAdapter extends FragmentStatePagerAdapter {
-    private final String[] titles;
-    private final Fragment[] fragments;
+    private final ToolBarControlFragment[] fragments;
 
-    public TranslateActivityPagerAdapter(FragmentManager fm, String[] titles, Fragment[] fragments) {
+    public TranslateActivityPagerAdapter(FragmentManager fm, ToolBarControlFragment[] fragments) {
         super(fm);
 
-        this.titles = titles;
         this.fragments = fragments;
     }
 
@@ -27,6 +25,6 @@ public class TranslateActivityPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return titles[position];
+        return fragments[position].getTitle();
     }
 }

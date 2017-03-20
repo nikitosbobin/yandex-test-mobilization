@@ -2,6 +2,7 @@ package com.nikit.bobin.wordstranslate;
 
 import android.app.Application;
 import android.os.Handler;
+import android.util.Log;
 
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
 import com.nikit.bobin.wordstranslate.ioc.AppComponent;
@@ -10,6 +11,7 @@ import com.nikit.bobin.wordstranslate.translating.ITranslator;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import org.jdeferred.DoneCallback;
+import org.jdeferred.FailCallback;
 
 import javax.inject.Inject;
 
@@ -42,6 +44,12 @@ public class App extends Application {
                             }
                         };
                         mainHandler.post(myRunnable);
+                    }
+                })
+                .fail(new FailCallback<Throwable>() {
+                    @Override
+                    public void onFail(Throwable result) {
+                        Log.e("logs", result.getMessage());
                     }
                 });
     }

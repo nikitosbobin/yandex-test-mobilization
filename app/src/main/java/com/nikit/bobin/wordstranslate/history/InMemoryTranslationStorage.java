@@ -8,6 +8,7 @@ import java.util.Collections;
 
 public class InMemoryTranslationStorage implements IStorage<TranslatedText> {
     private ArrayList<TranslatedText> translations;
+    private Runnable itemsUpdateListener;
 
     public InMemoryTranslationStorage() {
         translations = new ArrayList<>(32);
@@ -27,9 +28,11 @@ public class InMemoryTranslationStorage implements IStorage<TranslatedText> {
 
     @Override
     public boolean saveOrUpdateItem(TranslatedText translatedText) {
-        if (!translatedText.isSuccess())
+        if (translatedText == null || !translatedText.isSuccess())
             return false;
         translations.add(translatedText);
+        if (itemsUpdateListener != null)
+            itemsUpdateListener.run();
         return true;
     }
 
@@ -40,6 +43,16 @@ public class InMemoryTranslationStorage implements IStorage<TranslatedText> {
 
     @Override
     public boolean delete(TranslatedText translatedText) {
-        return translations.remove(translatedText);
+        if (translations.remove(translatedText)) {
+            if (itemsUpdateListener != null)
+                itemsUpdateListener.run();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void setOnItemsUpdateListener(Runnable onItemsUpdateListener) {
+        itemsUpdateListener = onItemsUpdateListener;
     }
 }

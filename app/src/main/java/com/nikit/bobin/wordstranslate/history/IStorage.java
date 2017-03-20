@@ -6,4 +6,5 @@ public interface IStorage<TItem> {
     boolean saveOrUpdateItem(TItem item);
     int getCount();
     boolean delete(TItem item);
+    void setOnItemsUpdateListener(Runnable onItemsUpdateListener);
 }
