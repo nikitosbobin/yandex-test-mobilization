@@ -10,6 +10,7 @@ import com.nikit.bobin.wordstranslate.translating.models.Translation;
 
 import org.jdeferred.DeferredManager;
 import org.jdeferred.DoneFilter;
+import org.jdeferred.FailCallback;
 import org.jdeferred.Promise;
 
 import java.util.concurrent.Callable;
@@ -81,6 +82,13 @@ public class YandexTranslator implements ITranslator {
         Promise<Language[], Throwable, Void> response = httpSender
                 .sendRequestAsync(getLangsUrl, HttpMethod.POST)
                 .then(extractLanguages());
+        response.fail(new FailCallback<Throwable>() {
+            @Override
+            public void onFail(Throwable result) {
+                int y  =0 ;
+            }
+        });
+
 
         if (cache != null)
             response = response.then(cache.addLanguagesFilter());

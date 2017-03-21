@@ -1,6 +1,7 @@
 package com.nikit.bobin.wordstranslate.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -8,8 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTranslationsFragment;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.SettingsFragment;
-import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.ToolBarControlFragment;
-import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslateActivityPagerAdapter;
+import com.nikit.bobin.wordstranslate.adapters.TranslateActivityPagerAdapter;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment;
 
 import butterknife.BindView;
@@ -22,7 +22,7 @@ import it.neokree.materialtabs.MaterialTabListener;
 public class MainActivity extends AppCompatActivity implements MaterialTabListener {
     @BindView(R.id.materialTabHost) MaterialTabHost tabHost;
     @BindView(R.id.viewPager) ViewPager viewPager;
-    private ToolBarControlFragment[] fragments;
+    private Fragment[] fragments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +31,10 @@ public class MainActivity extends AppCompatActivity implements MaterialTabListen
 
         ButterKnife.bind(this);
 
-        fragments = new ToolBarControlFragment[] {
-                new TranslationFragment().setContext(this),
-                new FavoriteTranslationsFragment().setContext(this),
-                new SettingsFragment().setContext(this)
+        fragments = new Fragment[] {
+                new TranslationFragment(),
+                new FavoriteTranslationsFragment(),
+                new SettingsFragment()
         };
 
         PagerAdapter pagerAdapter = new TranslateActivityPagerAdapter(

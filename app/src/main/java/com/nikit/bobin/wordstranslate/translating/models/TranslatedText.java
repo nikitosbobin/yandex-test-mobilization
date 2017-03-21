@@ -76,4 +76,8 @@ public class TranslatedText {
     public boolean isFavorite() {
         return isFavorite;
     }
+
+    public void setIsFavorite(boolean value) {
+        isFavorite = value;
+    }
 }

@@ -40,7 +40,8 @@ public class App extends Application {
                         Runnable myRunnable = new Runnable() {
                             @Override
                             public void run() {
-                                LanguageSelectorView.setSupportedLanguages(result);
+                                if (result != null)
+                                    LanguageSelectorView.setSupportedLanguages(result);
                             }
                         };
                         mainHandler.post(myRunnable);

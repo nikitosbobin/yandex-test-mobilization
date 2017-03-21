@@ -1,7 +1,6 @@
 package com.nikit.bobin.wordstranslate.customviews;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -13,7 +12,6 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.balysv.materialripple.MaterialRippleLayout;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.nikit.bobin.wordstranslate.R;
@@ -31,7 +29,6 @@ public class LanguageSelectorView extends RelativeLayout implements
         View.OnClickListener, PopupMenu.OnMenuItemClickListener {
     private Language languageFrom;
     private Language languageTo;
-    private boolean surely;
     private static Language[] supportedLanguages;
     @BindView(R.id.from_language_view) TextView languageFromView;
     @BindView(R.id.to_language_view) TextView languageToView;
@@ -68,7 +65,8 @@ public class LanguageSelectorView extends RelativeLayout implements
         supportedLanguages = supportedLanguages.clone();
         Arrays.sort(supportedLanguages);
         LanguageSelectorView.supportedLanguages = supportedLanguages;
-        instance.updateSupportedLangs();
+        if (instance != null)
+            instance.updateSupportedLangs();
     }
 
     private void updateSupportedLangs() {
@@ -103,15 +101,6 @@ public class LanguageSelectorView extends RelativeLayout implements
         updateSupportedLangs();
         rotateAnimation = YoYo.with(new RotateAnimator()).duration(300);
         fadeInAnimation = YoYo.with(Techniques.FadeIn).duration(300);
-    }
-
-    public void setSupposedLanguageFrom(Language from) {
-        Ensure.notNull(from, "from");
-        Ensure.languageHasTitle(from, "from");
-
-        languageFrom = from;
-        this.surely = false;
-        invalidate();
     }
 
     public void clearLangs() {

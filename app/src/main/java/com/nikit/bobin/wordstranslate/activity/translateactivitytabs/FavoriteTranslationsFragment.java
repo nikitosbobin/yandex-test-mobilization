@@ -1,7 +1,5 @@
 package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,45 +10,40 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.balysv.materialripple.MaterialRippleLayout;
 import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
-import com.nikit.bobin.wordstranslate.history.IStorage;
-import com.nikit.bobin.wordstranslate.history.TranslationHistoryAdapter;
-import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
+import com.nikit.bobin.wordstranslate.functional.OnItemsUpdateListener;
+import com.nikit.bobin.wordstranslate.history.ITranslationsDatabase;
+import com.nikit.bobin.wordstranslate.adapters.TranslationHistoryAdapter;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FavoriteTranslationsFragment extends ToolBarControlFragment implements View.OnClickListener {
+public class FavoriteTranslationsFragment extends Fragment
+        implements View.OnClickListener, OnItemsUpdateListener {
     @BindView(R.id.favorite_list)
     ListView favoriteListView;
     @BindView(R.id.favorite_button)
     ImageView favoriteButton;
     @Inject
-    IStorage<TranslatedText> translatedTextStorage;
+    ITranslationsDatabase translationsDatabase;
     @BindView(R.id.favorite_fragment_title)
     TextView title;
     private TranslationHistoryAdapter adapter;
     private Drawable allListImage;
     private Drawable favoriteListImage;
     private boolean favoriteFiltered;
+    private Handler uiHandler;
 
     public FavoriteTranslationsFragment() {
         super();
-    }
-
-    @Override
-    public ToolBarControlFragment setContext(Context context) {
-        allListImage = context.getResources().getDrawable(R.drawable.all_list);
-        favoriteListImage = context.getResources().getDrawable(R.drawable.favorite_list);
-        return super.setContext(context);
     }
 
     @Override
@@ -61,37 +54,24 @@ public class FavoriteTranslationsFragment extends ToolBarControlFragment impleme
         App.getComponent().injectFavoriteTranslationsFragment(this);
         ButterKnife.bind(this, view);
 
+        uiHandler = new Handler(getContext().getMainLooper());
+        adapter = new TranslationHistoryAdapter(getContext(), translationsDatabase);
+        allListImage = getResources().getDrawable(R.drawable.all_list);
+        favoriteListImage = getResources().getDrawable(R.drawable.favorite_list);
+
         favoriteButton.setOnClickListener(this);
-        /*translatedTextStorage.setOnItemsUpdateListener(new Runnable() {
-            @Override
-            public void run() {
-                uiThreadExecuter.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        //favoriteListView.invalidateViews();
-                    }
-                });
-            }
-        });*/
-        //registerForContextMenu(historyListView);
-        init();
+        translationsDatabase.setOnItemsUpdateListener(this);
+
+        favoriteListView.setAdapter(adapter);
+        registerForContextMenu(favoriteListView);
+
         return view;
-    }
-
-    private void init() {
-        adapter = new TranslationHistoryAdapter(getContext(), translatedTextStorage);
-        //favoriteListView.setAdapter(adapter);
-    }
-
-    @Override
-    CharSequence getTitle() {
-        return "Favorite";
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(0, Menu.FIRST, Menu.NONE, "Delete");
+        menu.add(0, Menu.FIRST, Menu.NONE, R.string.delete);
     }
 
     @Override
@@ -106,12 +86,27 @@ public class FavoriteTranslationsFragment extends ToolBarControlFragment impleme
             if (favoriteFiltered) {
                 favoriteButton.setImageDrawable(allListImage);
                 favoriteFiltered = false;
-                title.setText("History");
+                title.setText(R.string.history);
+                adapter.setFavoriteFilteringState(false);
+                favoriteListView.invalidateViews();
             } else {
                 favoriteButton.setImageDrawable(favoriteListImage);
                 favoriteFiltered = true;
-                title.setText("Favorite");
+                title.setText(R.string.favorite);
+                adapter.setFavoriteFilteringState(true);
+                favoriteListView.invalidateViews();
             }
         }
+    }
+
+    @Override
+    public void onDatabaseChange() {
+        if (uiHandler != null)
+            uiHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    favoriteListView.invalidateViews();
+                }
+            });
     }
 }

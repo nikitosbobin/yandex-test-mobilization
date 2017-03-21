@@ -1,7 +1,11 @@
 package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
 import android.animation.Animator;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,7 +23,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
-import com.nikit.bobin.wordstranslate.history.IStorage;
+import com.nikit.bobin.wordstranslate.history.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
@@ -34,7 +38,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TranslationFragment extends ToolBarControlFragment implements TextWatcher, View.OnClickListener {
+public class TranslationFragment extends Fragment implements TextWatcher, View.OnClickListener {
     @BindView(R.id.translation_input)
     EditText input;
     @BindView(R.id.clear_button)
@@ -50,21 +54,17 @@ public class TranslationFragment extends ToolBarControlFragment implements TextW
     @Inject
     ITranslator translator;
     @Inject
-    IStorage<TranslatedText> historyStorage;
-    @Inject
     ILog log;
     @BindView(R.id.lang_selector)
     LanguageSelectorView selectorView;
+    @Inject
+    ITranslationsDatabase translationsDatabase;
     private TranslatedText currentTranslation;
     private Date lastTextEditingDate;
+    private Handler uiHandler;
 
     public TranslationFragment() {
         super();
-    }
-
-    @Override
-    CharSequence getTitle() {
-        return "Translation";
     }
 
     @Override
@@ -86,7 +86,12 @@ public class TranslationFragment extends ToolBarControlFragment implements TextW
             }
         });
 
+        uiHandler = new Handler(getContext().getMainLooper());
         return view;
+    }
+
+    private void runOnUiThread(Runnable runnable) {
+        uiHandler.post(runnable);
     }
 
     @Override
@@ -139,9 +144,9 @@ public class TranslationFragment extends ToolBarControlFragment implements TextW
     }
 
     private void commitTranslation() {
-        TranslatedText[] items = historyStorage.getSavedItemsReversed();
+        TranslatedText[] items = translationsDatabase.getAllTranslations(true);
         if (items.length == 0 || (items.length > 0 && !items[0].equals(currentTranslation))) {
-            historyStorage.saveOrUpdateItem(currentTranslation);
+            translationsDatabase.addOrUpdate(currentTranslation);
         }
     }
 

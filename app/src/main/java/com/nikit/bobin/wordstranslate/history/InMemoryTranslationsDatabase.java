@@ -1,5 +1,6 @@
 package com.nikit.bobin.wordstranslate.history;
 
+import com.nikit.bobin.wordstranslate.functional.OnItemsUpdateListener;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 import java.util.ArrayList;
@@ -7,10 +8,15 @@ import java.util.Collections;
 
 public class InMemoryTranslationsDatabase implements ITranslationsDatabase {
     private ArrayList<TranslatedText> translations;
-    private Runnable onItemsUpdateListener;
+    private OnItemsUpdateListener onItemsUpdateListener;
 
     public InMemoryTranslationsDatabase() {
         translations = new ArrayList<>();
+    }
+
+    @Override
+    public TranslatedText getById(int id) {
+        return null;
     }
 
     @Override
@@ -31,7 +37,7 @@ public class InMemoryTranslationsDatabase implements ITranslationsDatabase {
 
     @Override
     public TranslatedText[] getFavoriteTranslations(boolean orderDescending) {
-        ArrayList<TranslatedText> list = new ArrayList<>(translations);
+        ArrayList<TranslatedText> list = new ArrayList<>(translations.size());
         for (TranslatedText t : translations)
             if (t.isFavorite())
                 list.add(t);
@@ -49,9 +55,11 @@ public class InMemoryTranslationsDatabase implements ITranslationsDatabase {
     public boolean addOrUpdate(TranslatedText translatedText) {
         if (translatedText == null || !translatedText.isSuccess())
             return false;
-        translations.add(translatedText);
+        if (!translations.contains(translatedText)) {
+            translations.add(translatedText);
+        }
         if (onItemsUpdateListener != null)
-            onItemsUpdateListener.run();
+            onItemsUpdateListener.onDatabaseChange();
         return true;
     }
 
@@ -61,14 +69,14 @@ public class InMemoryTranslationsDatabase implements ITranslationsDatabase {
             return false;
         if (translations.remove(translatedText)) {
             if (onItemsUpdateListener != null)
-                onItemsUpdateListener.run();
+                onItemsUpdateListener.onDatabaseChange();
             return true;
         }
         return false;
     }
 
     @Override
-    public void setOnItemsUpdateListener(Runnable onItemsUpdateListener) {
+    public void setOnItemsUpdateListener(OnItemsUpdateListener onItemsUpdateListener) {
         this.onItemsUpdateListener = onItemsUpdateListener;
     }
 }

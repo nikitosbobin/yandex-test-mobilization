@@ -26,11 +26,10 @@ public class TranslationModule {
             DeferredManager deferredManager,
             IHttpSender httpSender,
             ILog log,
-            Language systemLanguage,
             IYandexRestApiUriFactory uriFactory,
             IYandexResponseExtractor responseExtractor) {
         return new YandexTranslator(deferredManager, httpSender, true, log,
-                systemLanguage, uriFactory, responseExtractor);
+                new Language(Locale.getDefault().getLanguage()), uriFactory, responseExtractor);
     }
 
     @Provides
@@ -45,16 +44,5 @@ public class TranslationModule {
     @Singleton
     IYandexResponseExtractor provideResponseExtractor() {
         return new YandexResponseExtractor();
-    }
-
-    @Provides
-    @Singleton
-    Language provideSystemLanguage() {
-        String displayLanguage = Locale.getDefault().getDisplayLanguage().toLowerCase(Locale.getDefault());
-        if (displayLanguage.length() > 2)
-            displayLanguage = "en";
-        else
-            displayLanguage = displayLanguage.charAt(0) + "" + displayLanguage.charAt(1);
-        return new Language(displayLanguage);
     }
 }
