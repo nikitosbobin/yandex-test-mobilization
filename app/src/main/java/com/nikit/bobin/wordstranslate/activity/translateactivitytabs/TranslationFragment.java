@@ -85,7 +85,8 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
                 onTextChanged(text, 0, 0, text.length());
             }
         });
-
+        if (!translationsDatabase.isConnected())
+            translationsDatabase.connect(getContext());
         uiHandler = new Handler(getContext().getMainLooper());
         return view;
     }

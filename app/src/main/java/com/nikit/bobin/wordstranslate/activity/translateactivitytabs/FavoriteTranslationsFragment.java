@@ -20,6 +20,7 @@ import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.functional.OnItemsUpdateListener;
 import com.nikit.bobin.wordstranslate.history.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.adapters.TranslationHistoryAdapter;
+import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 import javax.inject.Inject;
 
@@ -54,6 +55,9 @@ public class FavoriteTranslationsFragment extends Fragment
         App.getComponent().injectFavoriteTranslationsFragment(this);
         ButterKnife.bind(this, view);
 
+        if (!translationsDatabase.isConnected())
+            translationsDatabase.connect(getContext());
+
         uiHandler = new Handler(getContext().getMainLooper());
         adapter = new TranslationHistoryAdapter(getContext(), translationsDatabase);
         allListImage = getResources().getDrawable(R.drawable.all_list);
@@ -76,7 +80,13 @@ public class FavoriteTranslationsFragment extends Fragment
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        return super.onContextItemSelected(item);
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        TranslatedText text = adapter.getItem(info.position);
+        if (translationsDatabase.delete(text)) {
+            favoriteListView.invalidateViews();
+            return true;
+        }
+        return false;
     }
 
     @Override

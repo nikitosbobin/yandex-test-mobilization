@@ -2,6 +2,7 @@ package com.nikit.bobin.wordstranslate.ioc;
 
 import com.nikit.bobin.wordstranslate.history.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.history.InMemoryTranslationsDatabase;
+import com.nikit.bobin.wordstranslate.history.TranslationsDatabase;
 
 import javax.inject.Singleton;
 
@@ -14,6 +15,6 @@ public class StorageModule {
     @Provides
     @Singleton
     ITranslationsDatabase provideTranslationsDatabase() {
-        return new InMemoryTranslationsDatabase();
+        return new TranslationsDatabase();
     }
 }

@@ -1,8 +1,11 @@
 package com.nikit.bobin.wordstranslate.history;
 
+import android.content.Context;
+
 import com.nikit.bobin.wordstranslate.functional.OnItemsUpdateListener;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -78,5 +81,20 @@ public class InMemoryTranslationsDatabase implements ITranslationsDatabase {
     @Override
     public void setOnItemsUpdateListener(OnItemsUpdateListener onItemsUpdateListener) {
         this.onItemsUpdateListener = onItemsUpdateListener;
+    }
+
+    @Override
+    public void connect(Context context) {
+
+    }
+
+    @Override
+    public boolean isConnected() {
+        return true;
+    }
+
+    @Override
+    public void close() throws IOException {
+
     }
 }
