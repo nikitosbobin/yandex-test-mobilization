@@ -1,4 +1,4 @@
-package com.nikit.bobin.wordstranslate.history;
+package com.nikit.bobin.wordstranslate.storage;
 
 import android.content.Context;
 
@@ -8,7 +8,7 @@ import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import java.io.Closeable;
 
 public interface ITranslationsDatabase extends Closeable {
-    TranslatedText getById(int id);
+    TranslatedText getById(long id);
     TranslatedText[] getAllTranslations(boolean orderDescending);
     int getAllTranslationsCount();
     TranslatedText[] getFavoriteTranslations(boolean orderDescending);

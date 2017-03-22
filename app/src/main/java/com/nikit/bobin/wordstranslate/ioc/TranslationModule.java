@@ -1,13 +1,15 @@
 package com.nikit.bobin.wordstranslate.ioc;
 
-import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.IHttpSender;
+import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
+import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
 import com.nikit.bobin.wordstranslate.translating.IYandexResponseExtractor;
 import com.nikit.bobin.wordstranslate.translating.IYandexRestApiUriFactory;
 import com.nikit.bobin.wordstranslate.translating.YandexResponseExtractor;
 import com.nikit.bobin.wordstranslate.translating.YandexRestApiUriFactory;
 import com.nikit.bobin.wordstranslate.translating.YandexTranslator;
+import com.nikit.bobin.wordstranslate.translating.YandexTranslatorCache;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import org.jdeferred.DeferredManager;
@@ -25,11 +27,24 @@ public class TranslationModule {
     ITranslator provideTranslator(
             DeferredManager deferredManager,
             IHttpSender httpSender,
-            ILog log,
             IYandexRestApiUriFactory uriFactory,
-            IYandexResponseExtractor responseExtractor) {
-        return new YandexTranslator(deferredManager, httpSender, true, log,
-                new Language(Locale.getDefault().getLanguage()), uriFactory, responseExtractor);
+            IYandexResponseExtractor responseExtractor,
+            YandexTranslatorCache yandexTranslatorCache) {
+        return new YandexTranslator(
+                deferredManager,
+                httpSender,
+                new Language(Locale.getDefault().getLanguage()),
+                uriFactory,
+                responseExtractor,
+                yandexTranslatorCache);
+    }
+
+    @Provides
+    @Singleton
+    YandexTranslatorCache provideYandexTranslatorCache(
+            ILanguagesDatabase languagesDatabase,
+            ITranslationsDatabase translationsDatabase) {
+        return new YandexTranslatorCache(translationsDatabase, languagesDatabase);
     }
 
     @Provides

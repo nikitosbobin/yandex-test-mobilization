@@ -6,22 +6,96 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/appBarLayout">
 
         <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@color/colorPrimary"
             android:id="@+id/settings_toolbar"
-            android:theme="@style/Base.ThemeOverlay.AppCompat.Dark">
+            android:theme="@style/Base.ThemeOverlay.AppCompat.Light">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="15dp">
 
+                <TextView
+                    android:text="@string/settings"
+                    android:textSize="20sp"
+                    android:textColor="@color/colorHint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/favorite_fragment_title"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true" />
             </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
+
+    <Switch
+        android:text="@string/predict_lang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:id="@+id/determine_lang_switch"
+        android:textSize="18sp"
+        android:layout_below="@+id/appBarLayout"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"/>
+
+    <Switch
+        android:text="@string/show_dictionary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/determine_lang_switch"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        android:id="@+id/show_dictionary_switch"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
+
+    <Switch
+        android:text="@string/caching"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:layout_below="@+id/show_dictionary_switch"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"
+        android:id="@+id/caching_switch"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:text="@string/about"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/about_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/clear_favorite_button"
+        android:layout_marginBottom="25dp" />
+
+    <Button
+        android:text="@string/clear_favorites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/clear_favorite_button"
+        android:layout_above="@+id/about_button"
+        android:layout_alignEnd="@+id/clear_history_button"
+        android:layout_marginBottom="25dp" />
+
+    <Button
+        android:text="@string/clear_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/clear_history_button"
+        android:layout_above="@+id/clear_favorite_button"
+        android:layout_alignEnd="@+id/caching_switch"
+        android:layout_marginBottom="25dp" />
 
 </RelativeLayout>

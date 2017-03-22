@@ -24,76 +24,58 @@ public class YandexTranslator implements ITranslator {
     private IHttpSender httpSender;
 
     private DeferredManager deferredManager;
-    private ILog log;
 
     private YandexTranslatorCache cache;
 
     public YandexTranslator(
             DeferredManager deferredManager,
             IHttpSender httpSender,
-            boolean enableCaching,
-            ILog log,
             Language ui,
             IYandexRestApiUriFactory uriFactory,
-            IYandexResponseExtractor responseExtractor) {
+            IYandexResponseExtractor responseExtractor,
+            YandexTranslatorCache cache) {
         Ensure.notNull(deferredManager, "deferredManager");
         Ensure.notNull(httpSender, "httpSender");
-        Ensure.notNull(log, "log");
         Ensure.notNull(uriFactory, "uriFactory");
         Ensure.notNull(responseExtractor, "responseExtractor");
         Ensure.notNull(ui, "ui");
+        Ensure.notNull(cache, "cache");
 
         this.deferredManager = deferredManager;
         this.httpSender = httpSender;
-        this.log = log;
         this.uriFactory = uriFactory;
         this.responseExtractor = responseExtractor;
         this.ui = ui;
-
-        if (enableCaching)
-            cache = new YandexTranslatorCache();
+        this.cache = cache;
     }
 
     @Override
     public Promise<TranslatedText, Throwable, Void> translateAsync(final Translation translation) {
         Ensure.notNull(translation, "translation");
 
-        if (cache != null && cache.hasTranslation(translation))
+        if (cache.hasTranslation(translation))
             return createPromiseFromResult(cache.getTranslation(translation));
 
         String translateUrl = uriFactory.translate(translation.getDirection());
 
-        Promise<TranslatedText, Throwable, Void> response = httpSender
-                .sendRequestAsync(translateUrl, HttpMethod.POST, "text=" + translation.getOriginalText())//todo: add screen
-                .then(extractTranslation(translation));
-        if (cache != null)
-            response = response.then(cache.addTranslationFilter());
-
-        return response;
+        return httpSender
+                .sendRequestAsync(translateUrl, HttpMethod.POST, "text=" + translation.getOriginalText())
+                //todo: add screening
+                .then(extractTranslation(translation))
+                .then(cache.addTranslationFilter());
     }
 
     @Override
     public Promise<Language[], Throwable, Void> getLanguagesAsync() {
-        if (cache != null && cache.langsCached())
-            return createPromiseFromResult(cache.getLanguages());
+        if (cache.langsCached(ui))
+            return createPromiseFromResult(cache.getLanguages(ui));
 
         String getLangsUrl = uriFactory.getLangs(ui);
 
-        Promise<Language[], Throwable, Void> response = httpSender
+        return httpSender
                 .sendRequestAsync(getLangsUrl, HttpMethod.POST)
-                .then(extractLanguages());
-        response.fail(new FailCallback<Throwable>() {
-            @Override
-            public void onFail(Throwable result) {
-                int y  =0 ;
-            }
-        });
-
-
-        if (cache != null)
-            response = response.then(cache.addLanguagesFilter());
-
-        return response;
+                .then(extractLanguages())
+                .then(cache.addLanguagesFilter(ui));
     }
 
     @Override

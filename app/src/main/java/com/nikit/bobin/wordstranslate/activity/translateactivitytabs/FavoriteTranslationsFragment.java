@@ -17,9 +17,11 @@ import android.widget.TextView;
 
 import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
+import com.nikit.bobin.wordstranslate.functional.CurrentTranslationChangeListener;
 import com.nikit.bobin.wordstranslate.functional.OnItemsUpdateListener;
-import com.nikit.bobin.wordstranslate.history.ITranslationsDatabase;
+import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.adapters.TranslationHistoryAdapter;
+import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 import javax.inject.Inject;
@@ -28,13 +30,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FavoriteTranslationsFragment extends Fragment
-        implements View.OnClickListener, OnItemsUpdateListener {
+        implements View.OnClickListener, OnItemsUpdateListener, AdapterView.OnItemClickListener {
     @BindView(R.id.favorite_list)
     ListView favoriteListView;
     @BindView(R.id.favorite_button)
     ImageView favoriteButton;
     @Inject
     ITranslationsDatabase translationsDatabase;
+    @Inject
+    ILog log;
     @BindView(R.id.favorite_fragment_title)
     TextView title;
     private TranslationHistoryAdapter adapter;
@@ -42,6 +46,7 @@ public class FavoriteTranslationsFragment extends Fragment
     private Drawable favoriteListImage;
     private boolean favoriteFiltered;
     private Handler uiHandler;
+    private CurrentTranslationChangeListener onCurrentTranslationChangeListener;
 
     public FavoriteTranslationsFragment() {
         super();
@@ -55,9 +60,6 @@ public class FavoriteTranslationsFragment extends Fragment
         App.getComponent().injectFavoriteTranslationsFragment(this);
         ButterKnife.bind(this, view);
 
-        if (!translationsDatabase.isConnected())
-            translationsDatabase.connect(getContext());
-
         uiHandler = new Handler(getContext().getMainLooper());
         adapter = new TranslationHistoryAdapter(getContext(), translationsDatabase);
         allListImage = getResources().getDrawable(R.drawable.all_list);
@@ -67,8 +69,8 @@ public class FavoriteTranslationsFragment extends Fragment
         translationsDatabase.setOnItemsUpdateListener(this);
 
         favoriteListView.setAdapter(adapter);
+        favoriteListView.setOnItemClickListener(this);
         registerForContextMenu(favoriteListView);
-
         return view;
     }
 
@@ -118,5 +120,29 @@ public class FavoriteTranslationsFragment extends Fragment
                     favoriteListView.invalidateViews();
                 }
             });
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (onCurrentTranslationChangeListener != null)
+            onCurrentTranslationChangeListener.onChangeTranslation(id);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        log.debug("pause");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        log.debug("save");
+    }
+
+    public FavoriteTranslationsFragment addOnCurrentTranslationChangeListener(
+            CurrentTranslationChangeListener onCurrentTranslationChangeListener) {
+        this.onCurrentTranslationChangeListener = onCurrentTranslationChangeListener;
+        return this;
     }
 }

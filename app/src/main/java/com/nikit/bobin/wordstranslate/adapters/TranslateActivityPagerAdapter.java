@@ -9,9 +9,9 @@ public class TranslateActivityPagerAdapter extends FragmentStatePagerAdapter {
 
     public TranslateActivityPagerAdapter(FragmentManager fm, Fragment[] fragments) {
         super(fm);
-
         this.fragments = fragments;
     }
+
 
     @Override
     public Fragment getItem(int position) {

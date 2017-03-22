@@ -1,4 +1,4 @@
-package com.nikit.bobin.wordstranslate.history;
+package com.nikit.bobin.wordstranslate.storage;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,12 +9,11 @@ import android.util.Log;
 import com.nikit.bobin.wordstranslate.functional.OnItemsUpdateListener;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class TranslationsDatabase implements ITranslationsDatabase, Closeable {
+public class TranslationsDatabase implements ITranslationsDatabase {
     private final String DB_NAME = "translations.db";
     private final String TRANSLATIONS_TABLE_NAME = "translations";
     private OnItemsUpdateListener onItemsUpdateListener;
@@ -30,7 +29,7 @@ public class TranslationsDatabase implements ITranslationsDatabase, Closeable {
     }
 
     @Override
-    public TranslatedText getById(int id) {
+    public TranslatedText getById(long id) {
         Cursor cursor = database.rawQuery(
                 String.format("select id, translated, original, direction, favorite from %s where id=%d",
                         TRANSLATIONS_TABLE_NAME, id), null);
@@ -124,10 +123,7 @@ public class TranslationsDatabase implements ITranslationsDatabase, Closeable {
                     new String[]{id + ""});
             boolean updated = update != 0;
             if (updated) {
-                count = null;
-                favoriteCount = null;
-                favoriteTranslations = null;
-                allTranslations = null;
+                clearCache();
                 if (onItemsUpdateListener != null)
                     onItemsUpdateListener.onDatabaseChange();
             }
@@ -135,10 +131,7 @@ public class TranslationsDatabase implements ITranslationsDatabase, Closeable {
         }
         if (onItemsUpdateListener != null)
             onItemsUpdateListener.onDatabaseChange();
-        count = null;
-        favoriteCount = null;
-        favoriteTranslations = null;
-        allTranslations = null;
+        clearCache();
         return true;
     }
 
@@ -152,10 +145,7 @@ public class TranslationsDatabase implements ITranslationsDatabase, Closeable {
         if (anyDeleted) {
             if (onItemsUpdateListener != null)
                 onItemsUpdateListener.onDatabaseChange();
-            count = null;
-            favoriteCount = null;
-            favoriteTranslations = null;
-            allTranslations = null;
+            clearCache();
         }
         return anyDeleted;
     }
@@ -203,5 +193,12 @@ public class TranslationsDatabase implements ITranslationsDatabase, Closeable {
         if (isConnected()) {
             database.close();
         }
+    }
+
+    private void clearCache() {
+        count = null;
+        favoriteCount = null;
+        allTranslations = null;
+        favoriteTranslations = null;
     }
 }

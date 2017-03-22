@@ -7,6 +7,8 @@ import android.util.Log;
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
 import com.nikit.bobin.wordstranslate.ioc.AppComponent;
 import com.nikit.bobin.wordstranslate.ioc.DaggerAppComponent;
+import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
+import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
@@ -17,13 +19,20 @@ import javax.inject.Inject;
 
 public class App extends Application {
     private static AppComponent component;
-    @Inject ITranslator translator;
+    @Inject
+    ITranslator translator;
+    @Inject
+    ITranslationsDatabase translationsDatabase;
+    @Inject
+    ILanguagesDatabase languagesDatabase;
 
     @Override
     public void onCreate() {
         super.onCreate();
         component = DaggerAppComponent.create();
         component.injectApp(this);
+        translationsDatabase.connect(this);
+        languagesDatabase.connect(this);
         initSupportedLanguages();
     }
 

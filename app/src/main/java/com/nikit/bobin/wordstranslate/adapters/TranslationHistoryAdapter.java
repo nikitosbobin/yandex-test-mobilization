@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nikit.bobin.wordstranslate.R;
-import com.nikit.bobin.wordstranslate.history.ITranslationsDatabase;
+import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 public class TranslationHistoryAdapter extends BaseAdapter {

@@ -5,4 +5,11 @@
     <string name="favorite">Избранное</string>
     <string name="tap_to_start_translate">Нажмите, чтобы начать перевод</string>
     <string name="delete">Удалить</string>
+    <string name="settings">Настройки</string>
+    <string name="caching">Кэшировать перевод для уменьшения трафика</string>
+    <string name="about">О программе</string>
+    <string name="clear_favorites">Очистить избранные</string>
+    <string name="clear_history">Очистить историю</string>
+    <string name="show_dictionary">Показывать словарь</string>
+    <string name="predict_lang">Определять язык</string>
 </resources>

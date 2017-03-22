@@ -11,6 +11,7 @@ import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTra
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.SettingsFragment;
 import com.nikit.bobin.wordstranslate.adapters.TranslateActivityPagerAdapter;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment;
+import com.nikit.bobin.wordstranslate.functional.CurrentTranslationChangeListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,7 +20,7 @@ import it.neokree.materialtabs.MaterialTabHost;
 import it.neokree.materialtabs.MaterialTabListener;
 
 
-public class MainActivity extends AppCompatActivity implements MaterialTabListener {
+public class MainActivity extends AppCompatActivity implements MaterialTabListener, CurrentTranslationChangeListener {
     @BindView(R.id.materialTabHost) MaterialTabHost tabHost;
     @BindView(R.id.viewPager) ViewPager viewPager;
     private Fragment[] fragments;
@@ -33,13 +34,14 @@ public class MainActivity extends AppCompatActivity implements MaterialTabListen
 
         fragments = new Fragment[] {
                 new TranslationFragment(),
-                new FavoriteTranslationsFragment(),
+                new FavoriteTranslationsFragment().addOnCurrentTranslationChangeListener(this),
                 new SettingsFragment()
         };
 
         PagerAdapter pagerAdapter = new TranslateActivityPagerAdapter(
                 getSupportFragmentManager(),
                 fragments);
+
 
         viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             public void onPageSelected(int position) {
@@ -72,5 +74,11 @@ public class MainActivity extends AppCompatActivity implements MaterialTabListen
     @Override
     public void onTabUnselected(MaterialTab tab) {
         //ignore
+    }
+
+    @Override
+    public void onChangeTranslation(long translationId) {
+        viewPager.setCurrentItem(0);
+        ((TranslationFragment) fragments[0]).setCurrentTranslation(translationId);
     }
 }

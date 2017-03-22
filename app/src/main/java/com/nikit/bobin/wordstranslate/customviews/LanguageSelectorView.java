@@ -1,6 +1,7 @@
 package com.nikit.bobin.wordstranslate.customviews;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -24,7 +25,6 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
 public class LanguageSelectorView extends RelativeLayout implements
         View.OnClickListener, PopupMenu.OnMenuItemClickListener {
     private Language languageFrom;
@@ -41,6 +41,7 @@ public class LanguageSelectorView extends RelativeLayout implements
     private YoYo.AnimationComposer rotateAnimation;
     private YoYo.AnimationComposer fadeInAnimation;
     private Runnable swapListener;
+    private SharedPreferences preferences;
 
     public LanguageSelectorView(Context context) {
         super(context);
@@ -101,12 +102,7 @@ public class LanguageSelectorView extends RelativeLayout implements
         updateSupportedLangs();
         rotateAnimation = YoYo.with(new RotateAnimator()).duration(300);
         fadeInAnimation = YoYo.with(Techniques.FadeIn).duration(300);
-    }
-
-    public void clearLangs() {
-        languageFrom = null;
-        languageTo = null;
-        invalidate();
+        preferences = getContext().getSharedPreferences("prefs", Context.MODE_PRIVATE);
     }
 
     @Override
