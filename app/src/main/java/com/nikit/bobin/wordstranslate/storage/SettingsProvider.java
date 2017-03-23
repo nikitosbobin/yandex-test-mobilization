@@ -1,29 +1,49 @@
 package com.nikit.bobin.wordstranslate.storage;
 
-import android.content.res.Resources;
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.nikit.bobin.wordstranslate.core.Ensure;
 
 public class SettingsProvider {
+    private final String CACHING = "caching";
+    private final String DICTIONARY = "dictionary";
+    private final String PREDICTION = "prediction";
+    private SharedPreferences preferences;
+
+    public SettingsProvider(Context context) {
+        Ensure.notNull(context, "context");
+
+        preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+    }
+
     public void setEnableCaching(boolean value) {
-        throw new Resources.NotFoundException();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(CACHING, value);
+        editor.commit();
     }
 
     public boolean isEnableCaching() {
-        throw new Resources.NotFoundException();
+        return preferences.getBoolean(CACHING, true);
     }
 
     public void setEnableDictionary(boolean value) {
-        throw new Resources.NotFoundException();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(DICTIONARY, value);
+        editor.commit();
     }
 
     public boolean isEnableDictionary() {
-        throw new Resources.NotFoundException();
+        return preferences.getBoolean(DICTIONARY, true);
     }
 
     public void setEnableLangPrediction(boolean value) {
-        throw new Resources.NotFoundException();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(PREDICTION, value);
+        editor.commit();
     }
 
     public boolean isEnableLangPrediction() {
-        throw new Resources.NotFoundException();
+        return preferences.getBoolean(PREDICTION, true);
     }
 }

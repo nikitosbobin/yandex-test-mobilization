@@ -51,6 +51,7 @@ public class TranslationHistoryAdapter extends BaseAdapter {
         return getItem(position).getId();
     }
 
+    // todo: create custom view for remove closures
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view = convertView;

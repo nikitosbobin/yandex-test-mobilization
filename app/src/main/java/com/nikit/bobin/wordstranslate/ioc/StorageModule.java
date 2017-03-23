@@ -3,6 +3,8 @@ package com.nikit.bobin.wordstranslate.ioc;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.storage.LanguagesDatabase;
+import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
+import com.nikit.bobin.wordstranslate.storage.SettingsProviderFactory;
 import com.nikit.bobin.wordstranslate.storage.TranslationsDatabase;
 
 import javax.inject.Singleton;
@@ -22,5 +24,11 @@ public class StorageModule {
     @Singleton
     ILanguagesDatabase provideLanguagesDatabase() {
         return new LanguagesDatabase();
+    }
+
+    @Provides
+    @Singleton
+    SettingsProviderFactory provideSettingsProviderFactory() {
+        return new SettingsProviderFactory();
     }
 }

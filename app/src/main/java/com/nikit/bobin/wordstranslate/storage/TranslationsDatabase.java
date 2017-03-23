@@ -151,6 +151,24 @@ public class TranslationsDatabase implements ITranslationsDatabase {
     }
 
     @Override
+    public void deleteAllTranslations() {
+        if (database.delete(TRANSLATIONS_TABLE_NAME, null, null) > 0) {
+            clearCache();
+            if (onItemsUpdateListener != null)
+                onItemsUpdateListener.onDatabaseChange();
+        }
+    }
+
+    @Override
+    public void deleteAllFavorites() {
+        if (database.delete(TRANSLATIONS_TABLE_NAME, "favorite=?", new String[] {1 + ""}) > 0) {
+            clearCache();
+            if (onItemsUpdateListener != null)
+                onItemsUpdateListener.onDatabaseChange();
+        }
+    }
+
+    @Override
     public void setOnItemsUpdateListener(OnItemsUpdateListener onItemsUpdateListener) {
         this.onItemsUpdateListener = onItemsUpdateListener;
     }

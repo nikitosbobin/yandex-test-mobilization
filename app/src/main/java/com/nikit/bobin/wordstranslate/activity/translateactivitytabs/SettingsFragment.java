@@ -2,6 +2,7 @@ package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +11,18 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
+import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
+import com.nikit.bobin.wordstranslate.storage.SettingsProviderFactory;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     @BindView(R.id.determine_lang_switch)
@@ -31,30 +38,69 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     @BindView(R.id.about_button)
     Button aboutButton;
     @Inject
+    SettingsProviderFactory settingsProviderFactory;
+    @Inject
+    ITranslationsDatabase translationsDatabase;
     private SettingsProvider settingsProvider;
 
-    private void bindListeners() {
+    public SettingsFragment() {
+        super();
+    }
+
+    private void initControls() {
         clearHistoryButton.setOnClickListener(this);
         clearFavoritesButton.setOnClickListener(this);
         aboutButton.setOnClickListener(this);
+
         languagePredictSwitch.setOnCheckedChangeListener(this);
         dictionarySwitch.setOnCheckedChangeListener(this);
         cachingSwitch.setOnCheckedChangeListener(this);
+
+        languagePredictSwitch.setChecked(settingsProvider.isEnableLangPrediction());
+        dictionarySwitch.setChecked(settingsProvider.isEnableDictionary());
+        cachingSwitch.setChecked(settingsProvider.isEnableCaching());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        App.getComponent().injectSettingsFragment(this);
+        ButterKnife.bind(this, view);
+        settingsProvider = settingsProviderFactory.createSettingsProvider(getContext());
+        initControls();
+        return view;
     }
 
     private void clearHistory() {
-        throw new Resources.NotFoundException();
+        new MaterialDialog.Builder(getContext())
+                .title(R.string.confirm_delete)
+                .content(R.string.history_delete_dialog)
+                .positiveText(R.string.delete)
+                .negativeText(R.string.cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        translationsDatabase.deleteAllTranslations();
+                    }
+                })
+                .show();
     }
 
     private void clearFavorites() {
-        throw new Resources.NotFoundException();
+        new MaterialDialog.Builder(getContext())
+                .title(R.string.confirm_delete)
+                .content(R.string.favorite_delete_dialog)
+                .positiveText(R.string.delete)
+                .negativeText(R.string.cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        translationsDatabase.deleteAllFavorites();
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -80,7 +126,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
                 settingsProvider.setEnableCaching(isChecked);
                 break;
             case R.id.determine_lang_switch:
-                settingsProvider.setEnableDictionary(isChecked);
+                settingsProvider.setEnableLangPrediction(isChecked);
                 break;
             case R.id.show_dictionary_switch:
                 settingsProvider.setEnableDictionary(isChecked);

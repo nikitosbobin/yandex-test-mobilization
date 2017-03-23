@@ -12,4 +12,8 @@
     <string name="clear_history">Очистить историю</string>
     <string name="show_dictionary">Показывать словарь</string>
     <string name="predict_lang">Определять язык</string>
+    <string name="confirm_delete">Подтвердите удаление</string>
+    <string name="cancel">Отмена</string>
+    <string name="favorite_delete_dialog">Вы действительно хотите очистить избранные переводы?</string>
+    <string name="history_delete_dialog">Вы действительно хотите очистить всю историю перевода?</string>
 </resources>
