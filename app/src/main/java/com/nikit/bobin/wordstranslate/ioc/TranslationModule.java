@@ -1,8 +1,12 @@
 package com.nikit.bobin.wordstranslate.ioc;
 
+import android.content.Context;
+
+import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.net.IHttpSender;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
+import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
 import com.nikit.bobin.wordstranslate.translating.IYandexResponseExtractor;
 import com.nikit.bobin.wordstranslate.translating.IYandexRestApiUriFactory;
@@ -23,13 +27,29 @@ import dagger.Provides;
 
 @Module
 public class TranslationModule {
+    private final App app;
+
+    public TranslationModule(App app) {
+        this.app = app;
+    }
+
+    @Provides
+    @Singleton
+    public Context provideContext() {
+        return app;
+    }
+
     @Provides
     ITranslator provideTranslator(
             DeferredManager deferredManager,
             IHttpSender httpSender,
             IYandexRestApiUriFactory uriFactory,
             IYandexResponseExtractor responseExtractor,
-            YandexTranslatorCache yandexTranslatorCache) {
+            YandexTranslatorCache yandexTranslatorCache,
+            SettingsProvider settingsProvider) {
+        boolean enableCaching = settingsProvider.isEnableCaching();
+        if (!enableCaching)
+            yandexTranslatorCache = null;
         return new YandexTranslator(
                 deferredManager,
                 httpSender,

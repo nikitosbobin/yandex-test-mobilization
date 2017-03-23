@@ -16,4 +16,5 @@
     <string name="cancel">Отмена</string>
     <string name="favorite_delete_dialog">Вы действительно хотите очистить избранные переводы?</string>
     <string name="history_delete_dialog">Вы действительно хотите очистить всю историю перевода?</string>
+    <string name="test">Тест</string>
 </resources>

@@ -7,9 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -21,13 +19,17 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
+import com.nikit.bobin.wordstranslate.customviews.TranslationCard;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.logging.ILog;
+import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
+import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import org.jdeferred.DoneCallback;
+import org.jdeferred.FailCallback;
 
 import javax.inject.Inject;
 
@@ -39,14 +41,8 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
     EditText input;
     @BindView(R.id.clear_button)
     ImageView clearButton;
-    @BindView(R.id.direction_label)
-    TextView direction;
-    @BindView(R.id.original_text_label)
-    TextView original;
-    @BindView(R.id.translated_text_label)
-    TextView translated;
     @BindView(R.id.current_translation)
-    CardView translationCard;
+    TranslationCard translationCard;
     @Inject
     ITranslator translator;
     @Inject
@@ -55,9 +51,10 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
     LanguageSelectorView selectorView;
     @Inject
     ITranslationsDatabase translationsDatabase;
+    @Inject
+    SettingsProvider settingsProvider;
     private TranslatedText currentTranslation;
     private Handler uiHandler;
-
     public TranslationFragment() {
         super();
     }
@@ -98,11 +95,13 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
         }
         clearButton.setVisibility(View.VISIBLE);
         Translation targetTranslation = new Translation(s.toString(), selectorView.getDirection());
-        if (currentTranslation == null || !targetTranslation.equals(currentTranslation.getTranslation()))
-            PerformTranslation(targetTranslation);
+        if (currentTranslation == null || !targetTranslation.equals(currentTranslation.getTranslation())) {
+            performTranslation(targetTranslation);
+            performDictionary(targetTranslation);
+        }
     }
 
-    private void PerformTranslation(Translation targetTranslation) {
+    private void performTranslation(Translation targetTranslation) {
         translator
                 .translateAsync(targetTranslation)
                 .then(new DoneCallback<TranslatedText>() {
@@ -119,6 +118,23 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
                 });
     }
 
+    private void performDictionary(Translation targetTranslation) {
+        if (!needDictionary() || targetTranslation.getWordCount() != 1)
+            return;
+        translator
+                .getWordLookupAsync(targetTranslation)
+                .then(new DoneCallback<WordLookup>() {
+                    public void onDone(final WordLookup result) {
+                        if (result != null)
+                            uiHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    translationCard.setLookup(result);
+                                }
+                            });
+                    }
+                });
+    }
     @Override
     public void afterTextChanged(Editable s) {
         //ignore
@@ -140,16 +156,7 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
         }
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(0, Menu.FIRST, Menu.NONE, "Delete");
-    }
-
     private void clearTranslationCard() {
-        translated.setText("");
-        original.setText("");
-        direction.setText("");
         YoYo.with(Techniques.SlideOutDown)
                 .duration(300)
                 .onEnd(new YoYo.AnimatorCallback() {
@@ -162,9 +169,7 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
     }
 
     public void fillTranslationCard(TranslatedText translatedText) {
-        translated.setText(translatedText.getTranslatedText());
-        original.setText(translatedText.getTranslation().getOriginalText());
-        direction.setText(translatedText.getTranslation().getDirection().toString().toUpperCase());
+        translationCard.fillTranslation(translatedText);
         if (translationCard.getVisibility() != View.VISIBLE) {
             translationCard.setVisibility(View.VISIBLE);
             YoYo.with(Techniques.SlideInUp)
@@ -180,5 +185,9 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
             fillTranslationCard(item);
             input.setText(item.getTranslation().getOriginalText());
         }
+    }
+
+    private boolean needDictionary() {
+        return settingsProvider.isEnableDictionary();
     }
 }

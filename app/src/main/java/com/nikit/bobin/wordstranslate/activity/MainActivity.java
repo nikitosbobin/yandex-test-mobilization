@@ -6,12 +6,22 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
+import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTranslationsFragment;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.SettingsFragment;
 import com.nikit.bobin.wordstranslate.adapters.TranslateActivityPagerAdapter;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment;
 import com.nikit.bobin.wordstranslate.functional.CurrentTranslationChangeListener;
+import com.nikit.bobin.wordstranslate.net.IHttpSender;
+import com.nikit.bobin.wordstranslate.translating.ITranslator;
+import com.nikit.bobin.wordstranslate.translating.models.Translation;
+import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
+
+import org.jdeferred.DoneCallback;
+import org.jdeferred.FailCallback;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,9 +31,13 @@ import it.neokree.materialtabs.MaterialTabListener;
 
 
 public class MainActivity extends AppCompatActivity implements MaterialTabListener, CurrentTranslationChangeListener {
-    @BindView(R.id.materialTabHost) MaterialTabHost tabHost;
-    @BindView(R.id.viewPager) ViewPager viewPager;
+    @BindView(R.id.materialTabHost)
+    MaterialTabHost tabHost;
+    @BindView(R.id.viewPager)
+    ViewPager viewPager;
     private Fragment[] fragments;
+    @Inject
+    ITranslator translator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +45,9 @@ public class MainActivity extends AppCompatActivity implements MaterialTabListen
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+        App.getComponent().injectsMainActivity(this);
 
-        fragments = new Fragment[] {
+        fragments = new Fragment[]{
                 new TranslationFragment(),
                 new FavoriteTranslationsFragment().addOnCurrentTranslationChangeListener(this),
                 new SettingsFragment()

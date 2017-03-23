@@ -27,21 +27,22 @@ import butterknife.ButterKnife;
 
 public class LanguageSelectorView extends RelativeLayout implements
         View.OnClickListener, PopupMenu.OnMenuItemClickListener {
-    private Language languageFrom;
-    private Language languageTo;
-    private static Language[] supportedLanguages;
+    private final int GROUP_ID_FROM_LANGUAGE_MENU = 0;
+    private final int GROUP_ID_TO_LANGUAGE_MENU = 1;
+
     @BindView(R.id.from_language_view) TextView languageFromView;
     @BindView(R.id.to_language_view) TextView languageToView;
     @BindView(R.id.language_selector_arrow) ImageView arrow;
+
+    private Language languageFrom;
+    private Language languageTo;
+    private static Language[] supportedLanguages;
     private PopupMenu languageFromMenu;
     private PopupMenu languageToMenu;
     private static LanguageSelectorView instance;
-    private final int GROUP_ID_FROM_LANGUAGE_MENU = 0;
-    private final int GROUP_ID_TO_LANGUAGE_MENU = 1;
     private YoYo.AnimationComposer rotateAnimation;
     private YoYo.AnimationComposer fadeInAnimation;
     private Runnable swapListener;
-    private SharedPreferences preferences;
 
     public LanguageSelectorView(Context context) {
         super(context);
@@ -102,7 +103,6 @@ public class LanguageSelectorView extends RelativeLayout implements
         updateSupportedLangs();
         rotateAnimation = YoYo.with(new RotateAnimator()).duration(300);
         fadeInAnimation = YoYo.with(Techniques.FadeIn).duration(300);
-        preferences = getContext().getSharedPreferences("prefs", Context.MODE_PRIVATE);
     }
 
     @Override

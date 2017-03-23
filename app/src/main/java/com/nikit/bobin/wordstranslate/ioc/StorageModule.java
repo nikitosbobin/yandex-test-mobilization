@@ -1,10 +1,11 @@
 package com.nikit.bobin.wordstranslate.ioc;
 
+import android.content.Context;
+
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.storage.LanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
-import com.nikit.bobin.wordstranslate.storage.SettingsProviderFactory;
 import com.nikit.bobin.wordstranslate.storage.TranslationsDatabase;
 
 import javax.inject.Singleton;
@@ -28,7 +29,7 @@ public class StorageModule {
 
     @Provides
     @Singleton
-    SettingsProviderFactory provideSettingsProviderFactory() {
-        return new SettingsProviderFactory();
+    SettingsProvider provideSettingsProvider(Context context) {
+        return new SettingsProvider(context);
     }
 }

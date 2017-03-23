@@ -17,7 +17,6 @@ import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
-import com.nikit.bobin.wordstranslate.storage.SettingsProviderFactory;
 
 import javax.inject.Inject;
 
@@ -38,10 +37,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     @BindView(R.id.about_button)
     Button aboutButton;
     @Inject
-    SettingsProviderFactory settingsProviderFactory;
-    @Inject
     ITranslationsDatabase translationsDatabase;
-    private SettingsProvider settingsProvider;
+    @Inject
+    SettingsProvider settingsProvider;
 
     public SettingsFragment() {
         super();
@@ -68,7 +66,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
 
         App.getComponent().injectSettingsFragment(this);
         ButterKnife.bind(this, view);
-        settingsProvider = settingsProviderFactory.createSettingsProvider(getContext());
         initControls();
         return view;
     }

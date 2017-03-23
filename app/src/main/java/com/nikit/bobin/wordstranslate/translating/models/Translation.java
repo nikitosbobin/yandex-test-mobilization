@@ -6,6 +6,7 @@ import com.nikit.bobin.wordstranslate.core.Ensure;
 public class Translation {
     private Direction direction;
     private String originalText;
+    private int wordCount;
 
     //test: originalText
     public Translation(String originalText, Direction direction) {
@@ -14,6 +15,7 @@ public class Translation {
 
         this.direction = direction;
         this.originalText = originalText;
+        wordCount = originalText.split(" ").length;
     }
 
     public Translation(String originalText, String direction) {
@@ -46,5 +48,9 @@ public class Translation {
         int result = direction.hashCode();
         result = 31 * result + originalText.hashCode();
         return result;
+    }
+
+    public int getWordCount() {
+        return wordCount;
     }
 }

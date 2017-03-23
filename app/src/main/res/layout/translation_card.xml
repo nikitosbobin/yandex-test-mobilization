@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentStart="true"
+    android:layout_below="@+id/translation_input"
+    android:layout_margin="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:text="@string/test"
+            android:id="@+id/original_text_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp" />
+
+        <TextView
+            android:text="@string/test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:id="@+id/translated_text_label"
+            android:layout_below="@+id/original_text_label"
+            android:layout_alignStart="@+id/original_text_label" />
+
+        <ListView
+            android:id="@+id/lookup_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/translated_text_label"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:layout_alignParentStart="true"
+            android:layout_margin="15dp"
+            android:layout_below="@+id/translated_text_label" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

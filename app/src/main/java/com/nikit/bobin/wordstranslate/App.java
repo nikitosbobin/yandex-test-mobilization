@@ -7,6 +7,7 @@ import android.util.Log;
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
 import com.nikit.bobin.wordstranslate.ioc.AppComponent;
 import com.nikit.bobin.wordstranslate.ioc.DaggerAppComponent;
+import com.nikit.bobin.wordstranslate.ioc.TranslationModule;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
@@ -29,7 +30,9 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        component = DaggerAppComponent.create();
+        component = DaggerAppComponent.builder()
+                .translationModule(new TranslationModule(this))
+                .build();
         component.injectApp(this);
         translationsDatabase.connect(this);
         languagesDatabase.connect(this);
