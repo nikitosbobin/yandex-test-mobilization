@@ -3,6 +3,8 @@ package com.nikit.bobin.wordstranslate.storage;
 import android.content.Context;
 
 import com.nikit.bobin.wordstranslate.functional.OnItemsUpdateListener;
+import com.nikit.bobin.wordstranslate.translating.models.Direction;
+import com.nikit.bobin.wordstranslate.translating.models.Language;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 import java.io.Closeable;
@@ -10,6 +12,7 @@ import java.io.Closeable;
 public interface ITranslationsDatabase extends Closeable {
     TranslatedText getById(long id);
     TranslatedText[] getAllTranslations(boolean orderDescending);
+    Direction[] getTopDirections(int topCount);
     int getAllTranslationsCount();
     TranslatedText[] getFavoriteTranslations(boolean orderDescending);
     int getFavoriteTranslationsCount();

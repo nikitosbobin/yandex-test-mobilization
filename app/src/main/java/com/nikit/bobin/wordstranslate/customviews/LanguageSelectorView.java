@@ -1,10 +1,8 @@
 package com.nikit.bobin.wordstranslate.customviews;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +19,6 @@ import com.nikit.bobin.wordstranslate.core.Ensure;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
-
-import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -51,7 +47,7 @@ public class LanguageSelectorView extends RelativeLayout implements
     private PopupMenu languageToMenu;
     private YoYo.AnimationComposer rotateAnimation;
     private YoYo.AnimationComposer fadeInAnimation;
-    private Runnable swapListener;
+    private OnLanguagesChangeListener onLanguagesChangeListener;
 
     public LanguageSelectorView(Context context) {
         super(context);
@@ -76,8 +72,8 @@ public class LanguageSelectorView extends RelativeLayout implements
         menuFrom.clear();
         menuTo.clear();
         if (supportedLanguages.length > 0) {
-            setLanguageFrom(supportedLanguages[0]);
-            setLanguageTo(supportedLanguages[0]);
+            setLanguageFrom(supportedLanguages[0], false);
+            setLanguageTo(supportedLanguages[0], false);
         }
         for (int i = 0; i < supportedLanguages.length; ++i) {
             String currentLangTitle = supportedLanguages[i].getTitle();
@@ -119,8 +115,6 @@ public class LanguageSelectorView extends RelativeLayout implements
                 fadeInAnimation.playOn(languageFromView);
                 fadeInAnimation.playOn(languageToView);
                 swap();
-                if (swapListener != null)
-                    swapListener.run();
                 break;
         }
     }
@@ -130,10 +124,10 @@ public class LanguageSelectorView extends RelativeLayout implements
         int groupId = item.getGroupId();
         switch (groupId) {
             case GROUP_ID_FROM_LANGUAGE_MENU:
-                setLanguageFrom(supportedLanguages[item.getItemId()]);
+                setLanguageFrom(supportedLanguages[item.getItemId()], true);
                 break;
             case GROUP_ID_TO_LANGUAGE_MENU:
-                setLanguageTo(supportedLanguages[item.getItemId()]);
+                setLanguageTo(supportedLanguages[item.getItemId()], true);
                 break;
         }
         return true;
@@ -143,28 +137,42 @@ public class LanguageSelectorView extends RelativeLayout implements
         if (languageFrom == null || languageTo == null)
             return;
         Language tmpTo = languageTo;
-        setLanguageTo(languageFrom);
-        setLanguageFrom(tmpTo);
+        setLanguageTo(languageFrom, false);
+        setLanguageFrom(tmpTo, false);
+        notifyChange();
     }
 
-    public void setLanguageFrom(Language from) {
+    public void setLanguageFrom(Language from, boolean needNotify) {
         Ensure.notNull(from, "from");
         Ensure.inUiThread();
 
         languageFrom = from;
         languageFromView.setText(languageFrom.getTitle());
+        if (needNotify)
+            notifyChange();
     }
 
-    private void setLanguageTo(Language to) {
+    private void setLanguageTo(Language to, boolean needNotify) {
         languageTo = to;
         languageToView.setText(languageTo.getTitle());
+        if (needNotify)
+            notifyChange();
     }
 
     public Direction getDirection() {
         return new Direction(languageFrom, languageTo);
     }
 
-    public void setOnSwapListener(Runnable onSwapListener) {
-        swapListener = onSwapListener;
+    public void setOnLanguagesChangeListener(OnLanguagesChangeListener onLanguagesChangeListener) {
+        this.onLanguagesChangeListener = onLanguagesChangeListener;
+    }
+
+    private void notifyChange() {
+        if (onLanguagesChangeListener != null)
+            onLanguagesChangeListener.onChange(getDirection());
+    }
+
+    public interface OnLanguagesChangeListener {
+        void onChange(Direction direction);
     }
 }

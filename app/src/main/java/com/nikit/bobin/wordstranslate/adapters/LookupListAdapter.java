@@ -22,7 +22,7 @@ public class LookupListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return lookup == null ? 0 : lookup.getSynonyms().length;
+        return lookup == null || lookup.isEmpty() ? 0 : lookup.getSynonyms().length;
     }
 
     @Override

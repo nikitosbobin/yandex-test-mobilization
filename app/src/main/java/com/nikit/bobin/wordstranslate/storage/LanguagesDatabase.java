@@ -43,18 +43,6 @@ public class LanguagesDatabase implements ILanguagesDatabase {
     }
 
     @Override
-    public int getLanguagesCount() {
-        Cursor cursor = database.rawQuery(
-                String.format("select count(*) from %s", LANGUAGES_TABLE_NAME),
-                null);
-        int result = 0;
-        if (cursor.moveToFirst())
-            result = cursor.getInt(0);
-        cursor.close();
-        return result;
-    }
-
-    @Override
     public boolean replaceLanguages(Language[] languages, Language ui) {
         if (isLanguagesSaved(ui))
             return false;

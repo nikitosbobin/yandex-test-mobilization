@@ -18,7 +18,6 @@ public class TranslationCard extends RelativeLayout {
     private TextView translatedTextView;
 
     private TranslatedText translatedText;
-    private WordLookup lookup;
 
     private LookupListAdapter adapter;
 
@@ -50,8 +49,7 @@ public class TranslationCard extends RelativeLayout {
     public void setLookup(WordLookup lookup) {
         Ensure.inUiThread();
 
-        this.lookup = lookup;
-        //lookupList.setVisibility(lookup == null ? GONE : VISIBLE);
+        lookupList.setVisibility(lookup.isEmpty() ? GONE : VISIBLE);
         adapter.setNewLookup(lookup);
         lookupList.invalidateViews();
     }

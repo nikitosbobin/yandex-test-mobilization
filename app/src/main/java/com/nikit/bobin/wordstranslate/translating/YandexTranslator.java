@@ -112,7 +112,7 @@ public class YandexTranslator implements ITranslator {
     }
 
     @Override
-    public Promise<WordLookup, Throwable, Void> getWordLookupAsync(Translation translation) {
+    public Promise<WordLookup, Throwable, Void> getWordLookupAsync(final Translation translation) {
         Ensure.notNull(translation, "translation");
 
         String[] segments = translation.getOriginalText().split(" ");
@@ -140,7 +140,8 @@ public class YandexTranslator implements ITranslator {
     private DoneFilter<Response, WordLookup> extractLookup(final Translation targetTranslation) {
         return new DoneFilter<Response, WordLookup>() {
             public WordLookup filterDone(Response result) {
-                return responseExtractor.extractWordLookup(result, targetTranslation);
+                WordLookup wordLookup = responseExtractor.extractWordLookup(result, targetTranslation);
+                return wordLookup;
             }
         };
     }

@@ -91,17 +91,15 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
             JSONObject responseBody = new JSONObject(response.body().string());
             JSONArray defs = responseBody.getJSONArray("def");
             if (defs.length() == 0)
-                return null;
+                return WordLookup.empty();
             JSONObject def = defs.getJSONObject(0);
             JSONArray tr = def.getJSONArray("tr");
             SynonymGroup[] synonymGroups = new SynonymGroup[tr.length()];
             for (int i = 0; i < synonymGroups.length; ++i)
                 synonymGroups[i] = extractSynonymGroup(tr.getJSONObject(i));
             return new WordLookup(translation, synonymGroups);
-        } catch (JSONException e) {
-            throw new ResponseHasNotTargetDataException("Response body could not convert to JSONObject", e);
-        } catch (IOException e) {
-            throw new ResponseHasNotTargetDataException("Response body has IOException", e);
+        } catch (Exception e) {
+            return WordLookup.empty();
         }
     }
 

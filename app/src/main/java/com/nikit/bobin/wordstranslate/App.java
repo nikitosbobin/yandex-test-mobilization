@@ -7,6 +7,7 @@ import com.nikit.bobin.wordstranslate.ioc.DaggerAppComponent;
 import com.nikit.bobin.wordstranslate.ioc.TranslationModule;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
+import com.nikit.bobin.wordstranslate.translating.models.Direction;
 
 import java.util.Date;
 

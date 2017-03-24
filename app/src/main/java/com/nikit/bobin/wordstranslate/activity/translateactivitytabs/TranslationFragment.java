@@ -25,6 +25,7 @@ import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
+import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
@@ -32,13 +33,15 @@ import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
+import org.jdeferred.Promise;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TranslationFragment extends Fragment implements TextWatcher, View.OnClickListener {
+public class TranslationFragment extends Fragment
+        implements TextWatcher, View.OnClickListener, LanguageSelectorView.OnLanguagesChangeListener {
     @BindView(R.id.translation_input)
     EditText input;
     @BindView(R.id.clear_button)
@@ -72,13 +75,7 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
         input.addTextChangedListener(this);
         clearButton.setOnClickListener(this);
 
-        selectorView.setOnSwapListener(new Runnable() {
-            @Override
-            public void run() {
-                Editable text = input.getText();
-                onTextChanged(text, 0, 0, text.length());
-            }
-        });
+        selectorView.setOnLanguagesChangeListener(this);
         uiHandler = new Handler(getContext().getMainLooper());
         return view;
     }
@@ -100,43 +97,48 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
         if (currentTranslation == null || !targetTranslation.equals(currentTranslation.getTranslation())) {
             tryDetectLang(targetTranslation);
             performTranslation(targetTranslation);
-            performDictionary(targetTranslation);
         }
     }
 
-    private void performTranslation(Translation targetTranslation) {
-        translator
+    private void performTranslation(final Translation targetTranslation) {
+        Promise<TranslatedText, Throwable, Void> translationPromise = translator
                 .translateAsync(targetTranslation)
                 .then(new DoneCallback<TranslatedText>() {
                     public void onDone(final TranslatedText result) {
                         if (!result.isSuccess()) return;
                         currentTranslation = result;
                         uiHandler.post(new Runnable() {
-                            @Override
                             public void run() {
                                 fillTranslationCard(result);
                             }
                         });
                     }
                 });
-    }
-
-    private void performDictionary(Translation targetTranslation) {
-        if (!needDictionary() || targetTranslation.getWordCount() != 1)
+        if (!needDictionary() || targetTranslation.getWordCount() != 1) {
+            translationCard.setLookup(WordLookup.empty());
             return;
-        translator
-                .getWordLookupAsync(targetTranslation)
-                .then(new DoneCallback<WordLookup>() {
-                    public void onDone(final WordLookup result) {
-                        if (result != null)
-                            uiHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    translationCard.setLookup(result);
-                                }
-                            });
+        }
+        translationPromise
+                .then(new DoneCallback<TranslatedText>() {
+                    public void onDone(TranslatedText result) {
+                        translator
+                                .getWordLookupAsync(result.getTranslation())
+                                .then(new DoneCallback<WordLookup>() {
+                                    public void onDone(final WordLookup result) {
+                                        if (result != null)
+                                            setLookup(result);
+                                    }
+                                });
                     }
                 });
+    }
+
+    private void setLookup(final WordLookup result) {
+        uiHandler.post(new Runnable() {
+            public void run() {
+                translationCard.setLookup(result);
+            }
+        });
     }
 
     private void tryDetectLang(Translation targetTranslation) {
@@ -150,7 +152,7 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
                         uiHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                selectorView.setLanguageFrom(result);
+                                selectorView.setLanguageFrom(result, true);
                             }
                         });
                     }
@@ -213,5 +215,13 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
 
     private boolean needDictionary() {
         return settingsProvider.isEnableDictionary();
+    }
+
+    @Override
+    public void onChange(Direction direction) {
+        Editable text = input.getText();
+        if (text.length() == 0) return;
+        Translation targetTranslation = new Translation(text.toString(), direction);
+        performTranslation(targetTranslation);
     }
 }

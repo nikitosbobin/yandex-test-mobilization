@@ -9,6 +9,14 @@ public class WordLookup {
         this.synonyms = synonyms;
     }
 
+    public static WordLookup empty() {
+        return new WordLookup(null, null);
+    }
+
+    public boolean isEmpty() {
+        return translation == null && synonyms == null;
+    }
+
     public Translation getTranslation() {
         return translation;
     }

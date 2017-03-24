@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.nikit.bobin.wordstranslate.functional.OnItemsUpdateListener;
+import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 import java.io.IOException;
@@ -45,7 +46,6 @@ public class TranslationsDatabase implements ITranslationsDatabase {
     public TranslatedText[] getAllTranslations(boolean orderDescending) {
         if (allTranslations != null)
             return allTranslations;
-        Log.d("logs", "getAllTranslations");
         Cursor cursor = database.rawQuery(
                 String.format("select id, translated, original, direction, favorite from %s order by id %s",
                         TRANSLATIONS_TABLE_NAME, orderDescending ? "desc" : "asc"), null);
@@ -56,10 +56,25 @@ public class TranslationsDatabase implements ITranslationsDatabase {
     }
 
     @Override
+    public Direction[] getTopDirections(int topCount) {
+        Cursor cursor = database.rawQuery(
+                String.format("select direction, count(*) from %s group by direction order by count(*) desc limit %d",
+                        TRANSLATIONS_TABLE_NAME, topCount), null);
+        if (cursor.moveToFirst()) {
+            ArrayList<Direction> list = new ArrayList<>();
+            do {
+                Direction direction = Direction.parse(cursor.getString(0));
+                list.add(direction);
+            } while (cursor.moveToNext());
+            return list.toArray(new Direction[list.size()]);
+        }
+        return new Direction[0];
+    }
+
+    @Override
     public int getAllTranslationsCount() {
         if (count != null)
             return count;
-        Log.d("logs", "getAllTranslationsCount");
         Cursor cursor = database.rawQuery(String.format("select count(*) from %s", TRANSLATIONS_TABLE_NAME), null);
         int result = 0;
         if (cursor.moveToFirst())
@@ -76,7 +91,7 @@ public class TranslationsDatabase implements ITranslationsDatabase {
         Log.d("logs", "getFavoriteTranslations");
         Cursor cursor = database.rawQuery(
                 String.format("select id, translated, original, direction, favorite from %s where favorite=1" +
-                        " order by id %s",
+                                " order by id %s",
                         TRANSLATIONS_TABLE_NAME, orderDescending ? "desc" : "asc"), null);
         ArrayList<TranslatedText> list = readAllTranslations(cursor);
         cursor.close();
@@ -161,7 +176,7 @@ public class TranslationsDatabase implements ITranslationsDatabase {
 
     @Override
     public void deleteAllFavorites() {
-        if (database.delete(TRANSLATIONS_TABLE_NAME, "favorite=?", new String[] {1 + ""}) > 0) {
+        if (database.delete(TRANSLATIONS_TABLE_NAME, "favorite=?", new String[]{1 + ""}) > 0) {
             clearCache();
             if (onItemsUpdateListener != null)
                 onItemsUpdateListener.onDatabaseChange();
