@@ -1,6 +1,5 @@
 package com.nikit.bobin.wordstranslate.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -14,14 +13,10 @@ import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.SettingsFra
 import com.nikit.bobin.wordstranslate.adapters.TranslateActivityPagerAdapter;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment;
 import com.nikit.bobin.wordstranslate.functional.CurrentTranslationChangeListener;
-import com.nikit.bobin.wordstranslate.net.IHttpSender;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
-import com.nikit.bobin.wordstranslate.translating.models.Translation;
-import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import org.jdeferred.DoneCallback;
-import org.jdeferred.FailCallback;
 
 import javax.inject.Inject;
 
@@ -50,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements MaterialTabListen
 
         fragments = new Fragment[]{
                 new TranslationFragment(),
-                new FavoriteTranslationsFragment().addOnCurrentTranslationChangeListener(this),
+                new FavoriteTranslationsFragment().setOnCurrentTranslationChangeListener(this),
                 new SettingsFragment()
         };
 

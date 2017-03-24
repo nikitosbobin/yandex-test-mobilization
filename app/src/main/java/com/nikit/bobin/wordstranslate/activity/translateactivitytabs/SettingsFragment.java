@@ -1,6 +1,5 @@
 package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;

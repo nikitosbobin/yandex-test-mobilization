@@ -1,12 +1,9 @@
 package com.nikit.bobin.wordstranslate.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.TextView;
 
 import com.nikit.bobin.wordstranslate.App;
@@ -19,7 +16,6 @@ import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import org.jdeferred.DeferredManager;
 import org.jdeferred.DoneCallback;
-import org.jdeferred.impl.DefaultDeferredManager;
 
 import java.util.Locale;
 

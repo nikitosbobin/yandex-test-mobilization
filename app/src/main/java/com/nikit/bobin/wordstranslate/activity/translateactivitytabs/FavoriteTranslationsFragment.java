@@ -1,6 +1,5 @@
 package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -11,17 +10,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
+import com.nikit.bobin.wordstranslate.adapters.TranslationHistoryAdapter;
 import com.nikit.bobin.wordstranslate.functional.CurrentTranslationChangeListener;
 import com.nikit.bobin.wordstranslate.functional.OnItemsUpdateListener;
-import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
-import com.nikit.bobin.wordstranslate.adapters.TranslationHistoryAdapter;
 import com.nikit.bobin.wordstranslate.logging.ILog;
+import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 import javax.inject.Inject;
@@ -30,11 +30,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FavoriteTranslationsFragment extends Fragment
-        implements View.OnClickListener, OnItemsUpdateListener, AdapterView.OnItemClickListener {
+        implements OnItemsUpdateListener, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener {
     @BindView(R.id.favorite_list)
     ListView favoriteListView;
     @BindView(R.id.favorite_button)
-    ImageView favoriteButton;
+    ToggleButton favoriteButton;
     @Inject
     ITranslationsDatabase translationsDatabase;
     @Inject
@@ -42,9 +42,6 @@ public class FavoriteTranslationsFragment extends Fragment
     @BindView(R.id.favorite_fragment_title)
     TextView title;
     private TranslationHistoryAdapter adapter;
-    private Drawable allListImage;
-    private Drawable favoriteListImage;
-    private boolean favoriteFiltered;
     private Handler uiHandler;
     private CurrentTranslationChangeListener onCurrentTranslationChangeListener;
 
@@ -62,10 +59,8 @@ public class FavoriteTranslationsFragment extends Fragment
 
         uiHandler = new Handler(getContext().getMainLooper());
         adapter = new TranslationHistoryAdapter(getContext(), translationsDatabase);
-        allListImage = getResources().getDrawable(R.drawable.all_list);
-        favoriteListImage = getResources().getDrawable(R.drawable.favorite_list);
 
-        favoriteButton.setOnClickListener(this);
+        favoriteButton.setOnCheckedChangeListener(this);
         translationsDatabase.setOnItemsUpdateListener(this);
 
         favoriteListView.setAdapter(adapter);
@@ -92,26 +87,6 @@ public class FavoriteTranslationsFragment extends Fragment
     }
 
     @Override
-    public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.favorite_button) {
-            if (favoriteFiltered) {
-                favoriteButton.setImageDrawable(allListImage);
-                favoriteFiltered = false;
-                title.setText(R.string.history);
-                adapter.setFavoriteFilteringState(false);
-                favoriteListView.invalidateViews();
-            } else {
-                favoriteButton.setImageDrawable(favoriteListImage);
-                favoriteFiltered = true;
-                title.setText(R.string.favorite);
-                adapter.setFavoriteFilteringState(true);
-                favoriteListView.invalidateViews();
-            }
-        }
-    }
-
-    @Override
     public void onDatabaseChange() {
         if (uiHandler != null)
             uiHandler.post(new Runnable() {
@@ -128,9 +103,18 @@ public class FavoriteTranslationsFragment extends Fragment
             onCurrentTranslationChangeListener.onChangeTranslation(id);
     }
 
-    public FavoriteTranslationsFragment addOnCurrentTranslationChangeListener(
+    public FavoriteTranslationsFragment setOnCurrentTranslationChangeListener(
             CurrentTranslationChangeListener onCurrentTranslationChangeListener) {
         this.onCurrentTranslationChangeListener = onCurrentTranslationChangeListener;
         return this;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (buttonView.getId() == R.id.favorite_button) {
+            title.setText(isChecked ? R.string.favorite : R.string.history);
+            adapter.setFavoriteFilteringState(isChecked);
+            favoriteListView.invalidateViews();
+        }
     }
 }
