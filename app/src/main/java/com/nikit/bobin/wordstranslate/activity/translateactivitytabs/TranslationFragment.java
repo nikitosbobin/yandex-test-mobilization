@@ -3,6 +3,7 @@ package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 import android.animation.Animator;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
@@ -24,6 +25,7 @@ import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
+import com.nikit.bobin.wordstranslate.translating.models.Language;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
@@ -96,6 +98,7 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
         clearButton.setVisibility(View.VISIBLE);
         Translation targetTranslation = new Translation(s.toString(), selectorView.getDirection());
         if (currentTranslation == null || !targetTranslation.equals(currentTranslation.getTranslation())) {
+            tryDetectLang(targetTranslation);
             performTranslation(targetTranslation);
             performDictionary(targetTranslation);
         }
@@ -135,6 +138,24 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
                     }
                 });
     }
+
+    private void tryDetectLang(Translation targetTranslation) {
+        if (!needPredict() || targetTranslation.getWordCount() != 1)
+            return;
+        translator
+                .detectLanguageAsync(targetTranslation.getOriginalText())
+                .then(new DoneCallback<Language>() {
+                    @Override
+                    public void onDone(final Language result) {
+                        uiHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                selectorView.setLanguageFrom(result);
+                            }
+                        });
+                    }
+                });
+    }
     @Override
     public void afterTextChanged(Editable s) {
         //ignore
@@ -150,6 +171,7 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
     }
 
     private void commitTranslation() {
+        if (currentTranslation == null) return;
         TranslatedText[] items = translationsDatabase.getAllTranslations(true);
         if (items.length == 0 || (items.length > 0 && !items[0].equals(currentTranslation))) {
             translationsDatabase.addOrUpdate(currentTranslation);
@@ -186,6 +208,8 @@ public class TranslationFragment extends Fragment implements TextWatcher, View.O
             input.setText(item.getTranslation().getOriginalText());
         }
     }
+
+    private boolean needPredict() {return settingsProvider.isEnableLangPrediction();}
 
     private boolean needDictionary() {
         return settingsProvider.isEnableDictionary();

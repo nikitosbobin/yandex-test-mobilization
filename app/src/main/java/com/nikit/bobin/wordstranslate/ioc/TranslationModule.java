@@ -46,6 +46,7 @@ public class TranslationModule {
             IYandexRestApiUriFactory uriFactory,
             IYandexResponseExtractor responseExtractor,
             YandexTranslatorCache yandexTranslatorCache,
+            ILanguagesDatabase languagesDatabase,
             SettingsProvider settingsProvider) {
         boolean enableCaching = settingsProvider.isEnableCaching();
         if (!enableCaching)
@@ -56,6 +57,7 @@ public class TranslationModule {
                 new Language(Locale.getDefault().getLanguage()),
                 uriFactory,
                 responseExtractor,
+                languagesDatabase,
                 yandexTranslatorCache);
     }
 

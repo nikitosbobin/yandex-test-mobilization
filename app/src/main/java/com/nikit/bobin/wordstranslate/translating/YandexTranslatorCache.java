@@ -84,6 +84,14 @@ public class YandexTranslatorCache {
         };
     }
 
+    public Language getLanguage(String key, Language ui) {
+        Language[] languages = getLanguages(ui);
+        for (Language l : languages)
+            if (l.getKey().equals(key))
+                return l;
+        return new Language(key);
+    }
+
     public Language[] getLanguages(Language ui) {
         if (langsCached(ui)) {
             if (languages == null) {

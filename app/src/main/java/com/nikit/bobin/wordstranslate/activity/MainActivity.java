@@ -1,5 +1,6 @@
 package com.nikit.bobin.wordstranslate.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -15,6 +16,7 @@ import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.Translation
 import com.nikit.bobin.wordstranslate.functional.CurrentTranslationChangeListener;
 import com.nikit.bobin.wordstranslate.net.IHttpSender;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
+import com.nikit.bobin.wordstranslate.translating.models.Language;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
@@ -43,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements MaterialTabListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ButterKnife.bind(this);
         App.getComponent().injectsMainActivity(this);
 
@@ -52,6 +53,15 @@ public class MainActivity extends AppCompatActivity implements MaterialTabListen
                 new FavoriteTranslationsFragment().addOnCurrentTranslationChangeListener(this),
                 new SettingsFragment()
         };
+
+        translator
+                .detectLanguageAsync("привет")
+                .then(new DoneCallback<Language>() {
+                    @Override
+                    public void onDone(Language result) {
+                        int y = 0 ;
+                    }
+                });
 
         PagerAdapter pagerAdapter = new TranslateActivityPagerAdapter(
                 getSupportFragmentManager(),

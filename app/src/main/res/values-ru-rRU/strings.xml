@@ -17,4 +17,7 @@
     <string name="favorite_delete_dialog">Вы действительно хотите очистить избранные переводы?</string>
     <string name="history_delete_dialog">Вы действительно хотите очистить всю историю перевода?</string>
     <string name="test">Тест</string>
+    <string name="starting_app">Запуск приложения</string>
+    <string name="lang_loading">Загрузка языков</string>
+    <string name="no_internet">Отсутствует подключение к сети интернет</string>
 </resources>

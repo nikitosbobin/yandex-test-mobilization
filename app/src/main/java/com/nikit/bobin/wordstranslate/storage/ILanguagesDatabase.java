@@ -7,6 +7,7 @@ import com.nikit.bobin.wordstranslate.translating.models.Language;
 import java.io.Closeable;
 
 public interface ILanguagesDatabase extends Closeable {
+    Language getLanguage(Language language, Language ui);
     Language[] getLanguages(boolean orderDescending);
     int getLanguagesCount();
     boolean replaceLanguages(Language[] languages, Language ui);

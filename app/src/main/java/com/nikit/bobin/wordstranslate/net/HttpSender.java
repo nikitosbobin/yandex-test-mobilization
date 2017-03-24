@@ -90,9 +90,9 @@ public class HttpSender implements IHttpSender {
         return deferredManager.when(new Callable<Response>() {
             @Override
             public Response call() throws Exception {
-                Call call = createCall(url, method, body, mediaType);
-                Response response = call.execute();
-                return response;
+            Call call = createCall(url, method, body, mediaType);
+            Response response = call.execute();
+            return response;
             }
         });
     }
@@ -103,11 +103,13 @@ public class HttpSender implements IHttpSender {
         if (body != null && mediaType != null) {
             requestBody = RequestBody.create(MediaType.parse(mediaType), body);
         }
-        Request request = new Request.Builder()
-                .method(method.name(), requestBody)
-                .url(url)
-                .build();
 
-        return client.newCall(request);
+        Request.Builder builder = new Request.Builder().url(url);
+        if (okhttp3.internal.http.HttpMethod.requiresRequestBody(method.name())) {
+            builder = builder.method(method.name(), requestBody);
+        }
+        return client.newCall(builder.build());
     }
+
+
 }

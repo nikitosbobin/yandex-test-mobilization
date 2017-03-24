@@ -17,4 +17,7 @@
     <string name="favorite_delete_dialog">Do you really want to clear your favorite translations?</string>
     <string name="history_delete_dialog">Are you sure you want to clear the entire translation history?</string>
     <string name="test">Test</string>
+    <string name="starting_app">Starting</string>
+    <string name="lang_loading">Loading languages</string>
+    <string name="no_internet">Internet connection is absent</string>
 </resources>

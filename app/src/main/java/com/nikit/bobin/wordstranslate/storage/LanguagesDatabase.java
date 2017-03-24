@@ -14,7 +14,22 @@ public class LanguagesDatabase implements ILanguagesDatabase {
     private SQLiteDatabase database;
     private final String DB_NAME = "languages.db";
     private final String LANGUAGES_TABLE_NAME = "languages";
-    private Context context;
+
+    @Override
+    public Language getLanguage(Language language, Language ui) {
+        if (language != null && isLanguagesSaved(ui)) {
+            Cursor cursor = database.rawQuery(
+                    String.format("select title from %s where key='%s'",
+                            LANGUAGES_TABLE_NAME, language.getKey()),
+                    null);
+            if (cursor.moveToFirst()) {
+                String result = cursor.getString(0);
+                cursor.close();
+                return new Language(language.getKey(), result);
+            }
+        }
+        return null;
+    }
 
     @Override
     public Language[] getLanguages(boolean orderDescending) {
@@ -69,7 +84,6 @@ public class LanguagesDatabase implements ILanguagesDatabase {
     @Override
     public void connect(Context context) {
         database = getDataBase(context);
-        this.context = context;
     }
 
     @Override

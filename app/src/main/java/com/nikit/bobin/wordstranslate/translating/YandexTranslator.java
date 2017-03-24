@@ -7,6 +7,7 @@ import com.nikit.bobin.wordstranslate.core.Ensure;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.HttpMethod;
 import com.nikit.bobin.wordstranslate.net.IHttpSender;
+import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
@@ -30,6 +31,7 @@ public class YandexTranslator implements ITranslator {
     private DeferredManager deferredManager;
 
     private YandexTranslatorCache cache;
+    private ILanguagesDatabase languagesDatabase;
 
     public YandexTranslator(
             DeferredManager deferredManager,
@@ -37,13 +39,16 @@ public class YandexTranslator implements ITranslator {
             Language ui,
             IYandexRestApiUriFactory uriFactory,
             IYandexResponseExtractor responseExtractor,
+            ILanguagesDatabase languagesDatabase,
             @Nullable YandexTranslatorCache cache) {
         Ensure.notNull(deferredManager, "deferredManager");
         Ensure.notNull(httpSender, "httpSender");
         Ensure.notNull(uriFactory, "uriFactory");
         Ensure.notNull(responseExtractor, "responseExtractor");
         Ensure.notNull(ui, "ui");
+        Ensure.notNull(languagesDatabase, "languagesDatabase");
 
+        this.languagesDatabase = languagesDatabase;
         this.deferredManager = deferredManager;
         this.httpSender = httpSender;
         this.uriFactory = uriFactory;
@@ -96,11 +101,12 @@ public class YandexTranslator implements ITranslator {
         String detectLangUri = uriFactory.detectLang(new Language("ru"), new Language("en"));
 
         return httpSender
-                .sendRequestAsync(detectLangUri, HttpMethod.POST, "text=" + text)
+                .sendRequestAsync(detectLangUri+"&text=" + text, HttpMethod.GET)
                 .then(new DoneFilter<Response, Language>() {
                     @Override
                     public Language filterDone(Response result) {
-                        return responseExtractor.extractDetectedLanguage(result);
+                        Language language = responseExtractor.extractDetectedLanguage(result);
+                        return languagesDatabase.getLanguage(language, ui);
                     }
                 });
     }

@@ -15,12 +15,16 @@ import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import java.util.Arrays;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,16 +34,21 @@ public class LanguageSelectorView extends RelativeLayout implements
     private final int GROUP_ID_FROM_LANGUAGE_MENU = 0;
     private final int GROUP_ID_TO_LANGUAGE_MENU = 1;
 
-    @BindView(R.id.from_language_view) TextView languageFromView;
-    @BindView(R.id.to_language_view) TextView languageToView;
-    @BindView(R.id.language_selector_arrow) ImageView arrow;
+    @BindView(R.id.from_language_view)
+    TextView languageFromView;
+    @BindView(R.id.to_language_view)
+    TextView languageToView;
+    @BindView(R.id.language_selector_arrow)
+    ImageView arrow;
+    @Inject
+    ILanguagesDatabase languagesDatabase;
 
     private Language languageFrom;
     private Language languageTo;
-    private static Language[] supportedLanguages;
+    private Language[] supportedLanguages;
+
     private PopupMenu languageFromMenu;
     private PopupMenu languageToMenu;
-    private static LanguageSelectorView instance;
     private YoYo.AnimationComposer rotateAnimation;
     private YoYo.AnimationComposer fadeInAnimation;
     private Runnable swapListener;
@@ -57,18 +66,6 @@ public class LanguageSelectorView extends RelativeLayout implements
     public LanguageSelectorView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
-    }
-
-    public static void setSupportedLanguages(Language[] supportedLanguages) {
-        Ensure.inUiThread();
-        Ensure.notNull(supportedLanguages, "supportedLanguages");
-
-        Log.d("logs", supportedLanguages.length + "");
-        supportedLanguages = supportedLanguages.clone();
-        Arrays.sort(supportedLanguages);
-        LanguageSelectorView.supportedLanguages = supportedLanguages;
-        if (instance != null)
-            instance.updateSupportedLangs();
     }
 
     private void updateSupportedLangs() {
@@ -91,6 +88,7 @@ public class LanguageSelectorView extends RelativeLayout implements
 
     private void init() {
         inflate(getContext(), R.layout.language_selector_layout, this);
+        App.getComponent().injectSelectorView(this);
         ButterKnife.bind(this);
         languageFromView.setOnClickListener(this);
         languageToView.setOnClickListener(this);
@@ -99,10 +97,11 @@ public class LanguageSelectorView extends RelativeLayout implements
         languageToMenu = new PopupMenu(getContext(), languageToView);
         languageFromMenu.setOnMenuItemClickListener(this);
         languageToMenu.setOnMenuItemClickListener(this);
-        instance = this;
         updateSupportedLangs();
         rotateAnimation = YoYo.with(new RotateAnimator()).duration(300);
         fadeInAnimation = YoYo.with(Techniques.FadeIn).duration(300);
+        supportedLanguages = languagesDatabase.getLanguages(false);
+        updateSupportedLangs();
     }
 
     @Override
@@ -148,7 +147,10 @@ public class LanguageSelectorView extends RelativeLayout implements
         setLanguageFrom(tmpTo);
     }
 
-    private void setLanguageFrom(Language from) {
+    public void setLanguageFrom(Language from) {
+        Ensure.notNull(from, "from");
+        Ensure.inUiThread();
+
         languageFrom = from;
         languageFromView.setText(languageFrom.getTitle());
     }
