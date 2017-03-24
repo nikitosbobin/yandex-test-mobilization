@@ -128,18 +128,6 @@ public class FavoriteTranslationsFragment extends Fragment
             onCurrentTranslationChangeListener.onChangeTranslation(id);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        log.debug("pause");
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        log.debug("save");
-    }
-
     public FavoriteTranslationsFragment addOnCurrentTranslationChangeListener(
             CurrentTranslationChangeListener onCurrentTranslationChangeListener) {
         this.onCurrentTranslationChangeListener = onCurrentTranslationChangeListener;

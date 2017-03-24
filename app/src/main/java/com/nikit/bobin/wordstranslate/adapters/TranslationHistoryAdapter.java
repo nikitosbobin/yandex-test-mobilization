@@ -11,22 +11,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nikit.bobin.wordstranslate.R;
+import com.nikit.bobin.wordstranslate.customviews.TranslationView;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
-public class TranslationHistoryAdapter extends BaseAdapter {
-    private LayoutInflater inflater;
+public class TranslationHistoryAdapter extends BaseAdapter
+        implements TranslationView.OnFavoriteChangeListener {
+    private Context context;
     private final ITranslationsDatabase translationsDatabase;
     private boolean needFavoriteFiltering;
-    private Drawable activeStar;
-    private Drawable disabledStar;
 
     public TranslationHistoryAdapter(Context context, ITranslationsDatabase translationsDatabase) {
-        inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.context = context;
         this.translationsDatabase = translationsDatabase;
-        activeStar = context.getResources().getDrawable(R.drawable.favorite_active);
-        disabledStar = context.getResources().getDrawable(R.drawable.favorite_disable);
     }
 
     @Override
@@ -52,38 +49,23 @@ public class TranslationHistoryAdapter extends BaseAdapter {
         return getItem(position).getId();
     }
 
-    // todo: create custom view for remove closures
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        View view = convertView;
-        if (view == null) {
-            view = inflater.inflate(R.layout.success_translation_layout, parent, false);
-        }
+        TranslationView translationView = new TranslationView(context);
         TranslatedText item = getItem(position);
-        TextView original = (TextView) view.findViewById(R.id.original_text_label);
-        TextView translated = (TextView) view.findViewById(R.id.translated_text_label);
-        TextView direction = (TextView) view.findViewById(R.id.direction_label);
-        ImageView starButton = (ImageView) view.findViewById(R.id.star_button);
-        Log.d("current position", position+"");
-        starButton.setImageDrawable(item.isFavorite() ? activeStar : disabledStar);
-        original.setText(item.getTranslation().getOriginalText());
-        translated.setText(item.getTranslatedText());
-        direction.setText(item.getTranslation().getDirection().toString().toUpperCase());
-        starButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TranslatedText currentTranslation = getItem(position);
-                boolean favorite = currentTranslation.isFavorite();
-                currentTranslation.setIsFavorite(!favorite);
-                ((ImageView) view).setImageDrawable(currentTranslation.isFavorite() ? activeStar : disabledStar);
-                translationsDatabase.addOrUpdate(currentTranslation);
-            }
-        });
-
-        return view;
+        translationView.setTranslatedText(position, item);
+        translationView.setOnFavoriteChangeListener(this);
+        return translationView;
     }
 
     public void setFavoriteFilteringState(boolean state) {
         this.needFavoriteFiltering = state;
+    }
+
+    @Override
+    public void onFavoriteChange(int position, boolean value) {
+        TranslatedText currentTranslation = getItem(position);
+        currentTranslation.setIsFavorite(value);
+        translationsDatabase.addOrUpdate(currentTranslation);
     }
 }

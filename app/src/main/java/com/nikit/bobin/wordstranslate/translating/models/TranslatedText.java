@@ -11,10 +11,10 @@ public class TranslatedText {
         id = -1;
     }
 
-    public static TranslatedText success(String translatedtext, Translation translation) {
+    public static TranslatedText success(String translatedText, Translation translation) {
         TranslatedText result = new TranslatedText();
         result.success = true;
-        result.translatedText = translatedtext;
+        result.translatedText = translatedText;
         result.translation = translation;
         return result;
     }

@@ -17,7 +17,7 @@
 
 
             <TextView
-                android:text="Original"
+                android:text="@string/test"
                 android:textColor="@color/hard_grey"
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
                 android:layout_marginTop="20dp" />
 
             <TextView
-                android:text="Translated"
+                android:text="@string/test"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/light_grey"
@@ -39,7 +39,7 @@
                 android:layout_marginTop="10dp" />
 
             <TextView
-                android:text="RU-EN"
+                android:text="@string/test"
                 android:textColor="@color/light_grey"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,7 +50,6 @@
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                app:srcCompat="@drawable/favorite"
                 android:layout_marginEnd="16dp"
                 android:id="@+id/star_button"
                 android:alpha="50"
