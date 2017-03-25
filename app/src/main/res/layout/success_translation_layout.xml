@@ -47,16 +47,14 @@
                 android:layout_alignTop="@+id/original_text_label"
                 android:layout_alignEnd="@+id/star_button" />
 
-            <ToggleButton
+            <com.nikit.bobin.wordstranslate.customviews.CustomToggle
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginEnd="16dp"
                 android:id="@+id/star_button"
-                android:background="@drawable/star_toggle_selector"
-                android:alpha="50"
-                android:textOn=""
-                android:textOff=""
                 android:layout_marginTop="10dp"
+                app:activeImage="@drawable/favorite_active"
+                app:passiveImage="@drawable/favorite_disable"
                 android:layout_below="@+id/original_text_label"
                 android:layout_alignParentEnd="true" />
         </RelativeLayout>

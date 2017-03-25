@@ -18,6 +18,7 @@ import android.widget.ToggleButton;
 import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.adapters.TranslationHistoryAdapter;
+import com.nikit.bobin.wordstranslate.customviews.CustomToggle;
 import com.nikit.bobin.wordstranslate.functional.CurrentTranslationChangeListener;
 import com.nikit.bobin.wordstranslate.functional.OnItemsUpdateListener;
 import com.nikit.bobin.wordstranslate.logging.ILog;
@@ -30,11 +31,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FavoriteTranslationsFragment extends Fragment
-        implements OnItemsUpdateListener, AdapterView.OnItemClickListener, CompoundButton.OnCheckedChangeListener {
+        implements OnItemsUpdateListener, AdapterView.OnItemClickListener,
+        CustomToggle.OnCheckedChangeListener {
     @BindView(R.id.favorite_list)
     ListView favoriteListView;
     @BindView(R.id.favorite_button)
-    ToggleButton favoriteButton;
+    CustomToggle favoriteButton;
     @Inject
     ITranslationsDatabase translationsDatabase;
     @Inject
@@ -110,8 +112,8 @@ public class FavoriteTranslationsFragment extends Fragment
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (buttonView.getId() == R.id.favorite_button) {
+    public void onCheckedChanged(CustomToggle toggleView, boolean isChecked) {
+        if (toggleView.getId() == R.id.favorite_button) {
             title.setText(isChecked ? R.string.favorite : R.string.history);
             adapter.setFavoriteFilteringState(isChecked);
             favoriteListView.invalidateViews();

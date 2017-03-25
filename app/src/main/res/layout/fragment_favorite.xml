@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTranslationsFragment">
 
     <android.support.design.widget.AppBarLayout
@@ -20,12 +21,11 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="15dp">
 
-                <ToggleButton
+                <com.nikit.bobin.wordstranslate.customviews.CustomToggle
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/favorite_list_button_selector"
-                    android:textOn=""
-                    android:textOff=""
+                    app:passiveImage="@drawable/all_list"
+                    app:activeImage="@drawable/favorite_list"
                     android:id="@+id/favorite_button"
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true" />

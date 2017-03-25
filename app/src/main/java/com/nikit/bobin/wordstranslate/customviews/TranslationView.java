@@ -2,10 +2,8 @@ package com.nikit.bobin.wordstranslate.customviews;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.core.Ensure;
@@ -13,7 +11,7 @@ import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 
 public class TranslationView extends RelativeLayout
-        implements CompoundButton.OnCheckedChangeListener {
+        implements CustomToggle.OnCheckedChangeListener {
     private OnFavoriteChangeListener onFavoriteChangeListener;
     private int position;
 
@@ -39,10 +37,10 @@ public class TranslationView extends RelativeLayout
         TextView original = (TextView) findViewById(R.id.original_text_label);
         TextView translated = (TextView) findViewById(R.id.translated_text_label);
         TextView direction = (TextView) findViewById(R.id.direction_label);
-        ToggleButton starButton = (ToggleButton) findViewById(R.id.star_button);
+        CustomToggle favoriteButton = (CustomToggle) findViewById(R.id.star_button);
 
-        starButton.setChecked(translatedText.isFavorite());
-        starButton.setOnCheckedChangeListener(this);
+        favoriteButton.setChecked(translatedText.isFavorite());
+        favoriteButton.setOnCheckedChangeListener(this);
 
         original.setText(translatedText.getTranslation().getOriginalText());
         translated.setText(translatedText.getTranslatedText());
@@ -54,8 +52,8 @@ public class TranslationView extends RelativeLayout
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton v, boolean isChecked) {
-        if (v.getId() == R.id.star_button && onFavoriteChangeListener != null) {
+    public void onCheckedChanged(CustomToggle toggleView, boolean isChecked) {
+        if (toggleView.getId() == R.id.star_button && onFavoriteChangeListener != null) {
             onFavoriteChangeListener.onFavoriteChange(position, isChecked);
         }
     }
