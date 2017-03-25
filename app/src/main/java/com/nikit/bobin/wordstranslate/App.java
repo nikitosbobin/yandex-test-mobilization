@@ -7,12 +7,10 @@ import com.nikit.bobin.wordstranslate.ioc.DaggerAppComponent;
 import com.nikit.bobin.wordstranslate.ioc.TranslationModule;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
-import com.nikit.bobin.wordstranslate.translating.models.Direction;
-
-import java.util.Date;
 
 import javax.inject.Inject;
 
+// refactored
 public class App extends Application {
     private static AppComponent component;
     @Inject
@@ -23,10 +21,13 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // Configuring DI container
         component = DaggerAppComponent.builder()
                 .translationModule(new TranslationModule(this))
                 .build();
+        // Dependency injection
         component.injectApp(this);
+        // Connecting to databases
         translationsDatabase.connect(this);
         languagesDatabase.connect(this);
     }

@@ -11,10 +11,10 @@ public class SettingsProvider {
     private final String PREDICTION = "prediction";
     private SharedPreferences preferences;
 
-    public SettingsProvider(Context context) {
-        Ensure.notNull(context, "context");
+    public SettingsProvider(SharedPreferences sharedPreferences) {
+        Ensure.notNull(sharedPreferences, "sharedPreferences");
 
-        preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        preferences = sharedPreferences;
     }
 
     public void setEnableCaching(boolean value) {

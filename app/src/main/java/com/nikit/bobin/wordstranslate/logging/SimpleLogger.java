@@ -1,7 +1,7 @@
 package com.nikit.bobin.wordstranslate.logging;
 
 import android.util.Log;
-
+// refactored
 public class SimpleLogger implements ILog {
     private String tag;
 

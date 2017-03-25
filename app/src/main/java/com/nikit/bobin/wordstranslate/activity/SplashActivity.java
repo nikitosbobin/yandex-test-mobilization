@@ -3,11 +3,13 @@ package com.nikit.bobin.wordstranslate.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
+import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
@@ -17,14 +19,15 @@ import com.nikit.bobin.wordstranslate.translating.models.Language;
 import org.jdeferred.DeferredManager;
 import org.jdeferred.DoneCallback;
 
-import java.util.Locale;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+// refactored
 public class SplashActivity extends AppCompatActivity {
+    @Inject
+    ILog log;
     @Inject
     ILanguagesDatabase languagesDatabase;
     @Inject
@@ -34,30 +37,31 @@ public class SplashActivity extends AppCompatActivity {
     @Inject
     DeferredManager deferredManager;
     @Inject
+    Language ui;
+    @Inject
     NetworkConnectionInfoProvider connectionInfoProvider;
+    @Inject
+    Handler uiHandler;
     @BindView(R.id.splash_screen_status_text)
     TextView splashScreenStatus;
-    private Handler uiHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
+        // Dependency and views injection
         App.getComponent().injectSplashScreen(this);
         ButterKnife.bind(this);
 
-        uiHandler = new Handler(getMainLooper());
-        final Language ui = new Language(Locale.getDefault().getLanguage());
         if (languagesDatabase.isLanguagesSaved(ui)) {
-            splashScreenStatus.setText(R.string.starting_app);
+            setStatus(R.string.starting_app);
             openMainActivityWithDelay(200);
         } else {
-            if (connectionInfoProvider.isConnected()) {
-                splashScreenStatus.setText(R.string.lang_loading);
+            if (connectionInfoProvider.isConnectedToInternet()) {
+                setStatus(R.string.lang_loading);
                 loadLanguagesThenOpenMainActivity(ui);
             } else {
-                splashScreenStatus.setText(R.string.no_internet);
+                setStatus(R.string.no_internet);
             }
         }
     }
@@ -66,20 +70,21 @@ public class SplashActivity extends AppCompatActivity {
         translator
                 .getLanguagesAsync()
                 .then(new DoneCallback<Language[]>() {
-                    @Override
                     public void onDone(Language[] result) {
+                        if (result == null) {
+                            log.warn("Loaded languages was null");
+                            setStatus(R.string.something_wrong);
+                        }
                         if (settingsProvider.isEnableCaching()) {
                             openMainActivity();
                         }
                         languagesDatabase.replaceLanguages(result, ui);
-                        //todo: ensure result succeed
                     }
                 });
     }
 
     private void openMainActivity() {
         uiHandler.post(new Runnable() {
-            @Override
             public void run() {
                 Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -90,15 +95,18 @@ public class SplashActivity extends AppCompatActivity {
 
     private void openMainActivityWithDelay(final long delay) {
         deferredManager.when(new Runnable() {
-            @Override
             public void run() {
                 try {
                     Thread.sleep(delay);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    openMainActivity();
+                } catch (Exception e) {
+                    log.error("Opening MainActivity with delay: %d ends with error: %s", delay, e.getMessage());
                 }
-                openMainActivity();
             }
         });
+    }
+
+    private void setStatus(@StringRes int stringResource) {
+        splashScreenStatus.setText(stringResource);
     }
 }

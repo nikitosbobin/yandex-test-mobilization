@@ -1,6 +1,7 @@
 package com.nikit.bobin.wordstranslate.customviews;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Menu;
@@ -16,9 +17,12 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.nikit.bobin.wordstranslate.core.Strings;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -29,6 +33,7 @@ public class LanguageSelectorView extends RelativeLayout implements
         View.OnClickListener, PopupMenu.OnMenuItemClickListener {
     private final int GROUP_ID_FROM_LANGUAGE_MENU = 0;
     private final int GROUP_ID_TO_LANGUAGE_MENU = 1;
+    private final String RECENT_LANGUAGES = "recent_translations_languages";
 
     @BindView(R.id.from_language_view)
     TextView languageFromView;
@@ -38,6 +43,12 @@ public class LanguageSelectorView extends RelativeLayout implements
     ImageView arrow;
     @Inject
     ILanguagesDatabase languagesDatabase;
+    @Inject
+    SharedPreferences preferences;
+    @Inject
+    Language ui;
+
+    private ArrayList<Language> recentLanguages;
 
     private Language languageFrom;
     private Language languageTo;
@@ -64,21 +75,25 @@ public class LanguageSelectorView extends RelativeLayout implements
         init();
     }
 
-    private void updateSupportedLangs() {
+    private void updateLanguagesPopupMenu() {
         if (supportedLanguages == null)
             return;
         Menu menuFrom = languageFromMenu.getMenu();
         Menu menuTo = languageToMenu.getMenu();
         menuFrom.clear();
         menuTo.clear();
-        if (supportedLanguages.length > 0) {
-            setLanguageFrom(supportedLanguages[0], false);
-            setLanguageTo(supportedLanguages[0], false);
+        int offset = recentLanguages.size();
+        for (int i = 0; i < offset; ++i) {
+            Language next = recentLanguages.get(i);
+            menuFrom.add(GROUP_ID_FROM_LANGUAGE_MENU, 0, offset - i, next.getTitle());
+            menuTo.add(GROUP_ID_TO_LANGUAGE_MENU, 0, offset - i, next.getTitle());
         }
         for (int i = 0; i < supportedLanguages.length; ++i) {
+            if (recentLanguages.contains(supportedLanguages[i]))
+                continue;
             String currentLangTitle = supportedLanguages[i].getTitle();
-            menuFrom.add(GROUP_ID_FROM_LANGUAGE_MENU, i, i, currentLangTitle);
-            menuTo.add(GROUP_ID_TO_LANGUAGE_MENU, i, i, currentLangTitle);
+            menuFrom.add(GROUP_ID_FROM_LANGUAGE_MENU, i, offset + i, currentLangTitle);
+            menuTo.add(GROUP_ID_TO_LANGUAGE_MENU, i, offset + i, currentLangTitle);
         }
     }
 
@@ -93,11 +108,11 @@ public class LanguageSelectorView extends RelativeLayout implements
         languageToMenu = new PopupMenu(getContext(), languageToView);
         languageFromMenu.setOnMenuItemClickListener(this);
         languageToMenu.setOnMenuItemClickListener(this);
-        updateSupportedLangs();
         rotateAnimation = YoYo.with(new RotateAnimator()).duration(300);
         fadeInAnimation = YoYo.with(Techniques.FadeIn).duration(300);
         supportedLanguages = languagesDatabase.getLanguages(false);
-        updateSupportedLangs();
+        loadRecentTranslationsLanguages();
+        updateLanguagesPopupMenu();
     }
 
     @Override
@@ -122,17 +137,21 @@ public class LanguageSelectorView extends RelativeLayout implements
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         int groupId = item.getGroupId();
+        Language language = supportedLanguages[item.getItemId()];
         switch (groupId) {
             case GROUP_ID_FROM_LANGUAGE_MENU:
-                setLanguageFrom(supportedLanguages[item.getItemId()], true);
+                setLanguageFrom(language, true);
                 break;
             case GROUP_ID_TO_LANGUAGE_MENU:
-                setLanguageTo(supportedLanguages[item.getItemId()], true);
+                setLanguageTo(language, true);
                 break;
         }
+        saveNewRecentTranslationLanguage(language);
+        updateLanguagesPopupMenu();
         return true;
     }
 
+    // todo: перенести переводы правильно
     private void swap() {
         if (languageFrom == null || languageTo == null)
             return;
@@ -169,10 +188,51 @@ public class LanguageSelectorView extends RelativeLayout implements
 
     private void notifyChange() {
         if (onLanguagesChangeListener != null)
-            onLanguagesChangeListener.onChange(getDirection());
+            onLanguagesChangeListener.onLanguagesChange(getDirection());
+    }
+
+    private void loadRecentTranslationsLanguages() {
+        recentLanguages = new ArrayList<>();
+        String recentString = preferences.getString(RECENT_LANGUAGES, "");
+        if (recentString.length() == 0) {
+            if (supportedLanguages.length > 0) {
+                setLanguageFrom(supportedLanguages[0], false);
+                setLanguageTo(supportedLanguages[0], false);
+            }
+            return;
+        }
+        String[] keys = recentString.split(" ");
+        for (int i = 0; i < keys.length; ++i) {
+            Language language = languagesDatabase.getLanguage(keys[i], ui);
+            if (language != null)
+                recentLanguages.add(language);
+        }
+        if (recentLanguages.size() > 0) {
+            setLanguageFrom(recentLanguages.get(recentLanguages.size()-1), false);
+            setLanguageTo(recentLanguages.get(recentLanguages.size()-1), false);
+        }
+    }
+
+    private void saveNewRecentTranslationLanguage(Language language) {
+        Ensure.notNull(language, "language");
+        Ensure.languageHasTitle(language, "language");
+
+        if (recentLanguages == null)
+            recentLanguages = new ArrayList<>();
+
+        if (recentLanguages.contains(language))
+            return;
+        recentLanguages.add(language);
+        if (recentLanguages.size() == 4)
+            recentLanguages.remove(0);
+
+        SharedPreferences.Editor edit = preferences.edit();
+        String stringToSave = Strings.join(recentLanguages, " ");
+        edit.putString(RECENT_LANGUAGES, stringToSave);
+        edit.commit();
     }
 
     public interface OnLanguagesChangeListener {
-        void onChange(Direction direction);
+        void onLanguagesChange(Direction direction);
     }
 }

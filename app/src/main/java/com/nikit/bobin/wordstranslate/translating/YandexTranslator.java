@@ -106,7 +106,7 @@ public class YandexTranslator implements ITranslator {
                     @Override
                     public Language filterDone(Response result) {
                         Language language = responseExtractor.extractDetectedLanguage(result);
-                        return languagesDatabase.getLanguage(language, ui);
+                        return languagesDatabase.getLanguage(language.getKey(), ui);
                     }
                 });
     }

@@ -3,9 +3,7 @@ package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 import android.animation.Animator;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -13,12 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
+import com.nikit.bobin.wordstranslate.core.Strings;
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
 import com.nikit.bobin.wordstranslate.customviews.TranslationCard;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
@@ -32,67 +30,59 @@ import com.nikit.bobin.wordstranslate.translating.models.Translation;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import org.jdeferred.DoneCallback;
-import org.jdeferred.FailCallback;
 import org.jdeferred.Promise;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 public class TranslationFragment extends Fragment
-        implements TextWatcher, View.OnClickListener, LanguageSelectorView.OnLanguagesChangeListener {
+        implements LanguageSelectorView.OnLanguagesChangeListener {
     @BindView(R.id.translation_input)
     EditText input;
     @BindView(R.id.clear_button)
     ImageView clearButton;
     @BindView(R.id.current_translation)
     TranslationCard translationCard;
+    @BindView(R.id.lang_selector)
+    LanguageSelectorView selectorView;
     @Inject
     ITranslator translator;
     @Inject
     ILog log;
-    @BindView(R.id.lang_selector)
-    LanguageSelectorView selectorView;
     @Inject
     ITranslationsDatabase translationsDatabase;
     @Inject
     SettingsProvider settingsProvider;
+    @Inject
+    Handler uiHandler;
+
     private TranslatedText currentTranslation;
-    private Handler uiHandler;
-    public TranslationFragment() {
-        super();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_translation, container, false);
-
+        // Dependency and views injection
         App.getComponent().injectTranslationFragment(this);
         ButterKnife.bind(this, view);
 
-        input.addTextChangedListener(this);
-        clearButton.setOnClickListener(this);
-
         selectorView.setOnLanguagesChangeListener(this);
-        uiHandler = new Handler(getContext().getMainLooper());
         return view;
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        //ignore
-    }
-
-    @Override
+    @OnTextChanged(R.id.translation_input)
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         if (s.length() == 0) {
             clearButton.setVisibility(View.GONE);
             clearTranslationCard();
             return;
         }
+        log.debug("s: %s start: %d before %d count: %d", s.toString(), start, before, count);
         clearButton.setVisibility(View.VISIBLE);
         Translation targetTranslation = new Translation(s.toString(), selectorView.getDirection());
         if (currentTranslation == null || !targetTranslation.equals(currentTranslation.getTranslation())) {
@@ -159,18 +149,12 @@ public class TranslationFragment extends Fragment
                     }
                 });
     }
-    @Override
-    public void afterTextChanged(Editable s) {
-        //ignore
-    }
 
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.clear_button) {
-            commitTranslation();
-            input.setText("");
-            clearButton.setVisibility(View.GONE);
-        }
+    @OnClick(R.id.clear_button)
+    public void clearInputView() {
+        commitTranslation();
+        input.setText(Strings.empty);
+        clearButton.setVisibility(View.GONE);
     }
 
     private void commitTranslation() {
@@ -185,7 +169,6 @@ public class TranslationFragment extends Fragment
         YoYo.with(Techniques.SlideOutDown)
                 .duration(300)
                 .onEnd(new YoYo.AnimatorCallback() {
-                    @Override
                     public void call(Animator animator) {
                         translationCard.setVisibility(View.GONE);
                     }
@@ -205,21 +188,23 @@ public class TranslationFragment extends Fragment
 
     public void setCurrentTranslation(long translationId) {
         TranslatedText item = translationsDatabase.getById(translationId);
-        if (item != null){
+        if (item != null) {
             currentTranslation = item;
             fillTranslationCard(item);
             input.setText(item.getTranslation().getOriginalText());
         }
     }
 
-    private boolean needPredict() {return settingsProvider.isEnableLangPrediction();}
+    private boolean needPredict() {
+        return settingsProvider.isEnableLangPrediction();
+    }
 
     private boolean needDictionary() {
         return settingsProvider.isEnableDictionary();
     }
 
     @Override
-    public void onChange(Direction direction) {
+    public void onLanguagesChange(Direction direction) {
         Editable text = input.getText();
         if (text.length() == 0) return;
         Translation targetTranslation = new Translation(text.toString(), direction);

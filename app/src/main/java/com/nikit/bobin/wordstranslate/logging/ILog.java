@@ -1,5 +1,5 @@
 package com.nikit.bobin.wordstranslate.logging;
-
+// refactored
 public interface ILog {
     void info(Object object);
     void info(String message);

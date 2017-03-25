@@ -17,7 +17,6 @@ import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.adapters.TranslationHistoryAdapter;
 import com.nikit.bobin.wordstranslate.customviews.CustomToggle;
-import com.nikit.bobin.wordstranslate.functional.CurrentTranslationChangeListener;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.storage.AbstractDatabaseOneTableContext;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
@@ -42,7 +41,8 @@ public class FavoriteTranslationsFragment extends Fragment
     @BindView(R.id.favorite_fragment_title)
     TextView title;
     private TranslationHistoryAdapter adapter;
-    private Handler uiHandler;
+    @Inject
+    Handler uiHandler;
     private CurrentTranslationChangeListener onCurrentTranslationChangeListener;
 
     public FavoriteTranslationsFragment() {
@@ -53,11 +53,10 @@ public class FavoriteTranslationsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorite, container, false);
-
+        // Dependency and views injection
         App.getComponent().injectFavoriteTranslationsFragment(this);
         ButterKnife.bind(this, view);
 
-        uiHandler = new Handler(getContext().getMainLooper());
         adapter = new TranslationHistoryAdapter(getContext(), translationsDatabase);
 
         favoriteButton.setOnCheckedChangeListener(this);
@@ -116,5 +115,9 @@ public class FavoriteTranslationsFragment extends Fragment
             adapter.setFavoriteFilteringState(isChecked);
             favoriteListView.invalidateViews();
         }
+    }
+
+    public interface CurrentTranslationChangeListener {
+        void onChangeTranslation(long translationId);
     }
 }

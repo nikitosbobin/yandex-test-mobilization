@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.nikit.bobin.wordstranslate.R;
+import com.nikit.bobin.wordstranslate.core.Strings;
 import com.nikit.bobin.wordstranslate.translating.models.SynonymGroup;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
@@ -46,25 +47,14 @@ public class LookupListAdapter extends BaseAdapter {
         TextView synonymView = (TextView) view.findViewById(R.id.lookup_text);
         TextView meanView = (TextView) view.findViewById(R.id.lookup_mean);
 
-        synonymView.setText(join(synonymGroup.getSynonyms(), ", "));
+        synonymView.setText(Strings.join(synonymGroup.getSynonyms(), ", "));
         if (synonymGroup.getMean().length == 0) {
             meanView.setVisibility(View.GONE);
         } else {
             meanView.setVisibility(View.VISIBLE);
-            meanView.setText(String.format("(%s)", join(synonymGroup.getMean(), ", ")));
+            meanView.setText(String.format("(%s)", Strings.join(synonymGroup.getMean(), ", ")));
         }
         return view;
-    }
-
-    private static String join(Object[] objects, String separator) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < objects.length; ++i) {
-            stringBuilder.append(objects[i].toString());
-            if (i != objects.length - 1) {
-                stringBuilder.append(separator);
-            }
-        }
-        return stringBuilder.toString();
     }
 
     public void setNewLookup(WordLookup lookup) {

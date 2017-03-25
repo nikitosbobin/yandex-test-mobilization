@@ -32,10 +32,8 @@ public class CustomToggle extends ImageView implements View.OnClickListener {
 
     private void init(Context context, AttributeSet attrs) {
         TypedArray a = context.getTheme().obtainStyledAttributes(
-                attrs,
-                R.styleable.CustomToggle,
-                0,
-                0);
+                attrs, R.styleable.CustomToggle,
+                0, 0);
         try {
             activeImage = a.getDrawable(R.styleable.CustomToggle_activeImage);
             passiveImage = a.getDrawable(R.styleable.CustomToggle_passiveImage);

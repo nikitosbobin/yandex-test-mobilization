@@ -43,6 +43,7 @@ public class TranslationModule {
     ITranslator provideTranslator(
             DeferredManager deferredManager,
             IHttpSender httpSender,
+            Language ui,
             IYandexRestApiUriFactory uriFactory,
             IYandexResponseExtractor responseExtractor,
             YandexTranslatorCache yandexTranslatorCache,
@@ -54,7 +55,7 @@ public class TranslationModule {
         return new YandexTranslator(
                 deferredManager,
                 httpSender,
-                new Language(Locale.getDefault().getLanguage()),
+                ui,
                 uriFactory,
                 responseExtractor,
                 languagesDatabase,
@@ -81,5 +82,10 @@ public class TranslationModule {
     @Singleton
     IYandexResponseExtractor provideResponseExtractor() {
         return new YandexResponseExtractor();
+    }
+
+    @Provides
+    Language provideUiLanguage() {
+        return new Language(Locale.getDefault().getLanguage());
     }
 }

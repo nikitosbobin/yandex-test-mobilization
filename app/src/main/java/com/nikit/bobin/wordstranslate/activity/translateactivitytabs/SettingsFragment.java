@@ -21,8 +21,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 
-public class SettingsFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+// refactored
+public class SettingsFragment extends Fragment {
     @BindView(R.id.determine_lang_switch)
     Switch languagePredictSwitch;
     @BindView(R.id.show_dictionary_switch)
@@ -35,98 +38,100 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     Button clearFavoritesButton;
     @BindView(R.id.about_button)
     Button aboutButton;
+
     @Inject
     ITranslationsDatabase translationsDatabase;
     @Inject
     SettingsProvider settingsProvider;
 
-    public SettingsFragment() {
-        super();
-    }
-
-    private void initControls() {
-        clearHistoryButton.setOnClickListener(this);
-        clearFavoritesButton.setOnClickListener(this);
-        aboutButton.setOnClickListener(this);
-
-        languagePredictSwitch.setOnCheckedChangeListener(this);
-        dictionarySwitch.setOnCheckedChangeListener(this);
-        cachingSwitch.setOnCheckedChangeListener(this);
-
-        languagePredictSwitch.setChecked(settingsProvider.isEnableLangPrediction());
-        dictionarySwitch.setChecked(settingsProvider.isEnableDictionary());
-        cachingSwitch.setChecked(settingsProvider.isEnableCaching());
-    }
+    private MaterialDialog clearHistoryDialog;
+    private MaterialDialog clearFavoriteDialog;
+    private MaterialDialog aboutDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-
+        // Dependency and views injection
         App.getComponent().injectSettingsFragment(this);
         ButterKnife.bind(this, view);
-        initControls();
+        // initializing switches values
+        languagePredictSwitch.setChecked(settingsProvider.isEnableLangPrediction());
+        dictionarySwitch.setChecked(settingsProvider.isEnableDictionary());
+        cachingSwitch.setChecked(settingsProvider.isEnableCaching());
+
         return view;
     }
 
-    private void clearHistory() {
-        new MaterialDialog.Builder(getContext())
+    @OnClick(R.id.clear_history_button)
+    public void clearHistory() {
+        if (clearHistoryDialog == null)
+            clearHistoryDialog = createClearHistoryDialog();
+        clearHistoryDialog.show();
+    }
+
+    @OnClick(R.id.clear_favorite_button)
+    public void clearFavorites() {
+        if (clearFavoriteDialog == null)
+            clearFavoriteDialog = createClearFavoritesDialog();
+        clearFavoriteDialog.show();
+    }
+
+    @OnClick(R.id.about_button)
+    public void openAboutDialog() {
+        if (aboutDialog == null)
+            aboutDialog = createAboutDialog();
+        aboutDialog.show();
+    }
+
+    @OnCheckedChanged(R.id.caching_switch)
+    public void setCachingState(boolean isChecked) {
+        settingsProvider.setEnableCaching(isChecked);
+    }
+
+    @OnCheckedChanged(R.id.determine_lang_switch)
+    public void setPredictionState(boolean isChecked) {
+        settingsProvider.setEnableLangPrediction(isChecked);
+    }
+
+    @OnCheckedChanged(R.id.show_dictionary_switch)
+    public void setDictionaryState(boolean isChecked) {
+        settingsProvider.setEnableDictionary(isChecked);
+    }
+
+    private MaterialDialog createClearHistoryDialog() {
+        return new MaterialDialog.Builder(getContext())
                 .title(R.string.confirm_delete)
                 .content(R.string.history_delete_dialog)
                 .positiveText(R.string.delete)
                 .negativeText(R.string.cancel)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         translationsDatabase.deleteAllTranslations();
                     }
                 })
-                .show();
+                .build();
     }
 
-    private void clearFavorites() {
-        new MaterialDialog.Builder(getContext())
+    private MaterialDialog createClearFavoritesDialog() {
+        return new MaterialDialog.Builder(getContext())
                 .title(R.string.confirm_delete)
                 .content(R.string.favorite_delete_dialog)
                 .positiveText(R.string.delete)
                 .negativeText(R.string.cancel)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         translationsDatabase.deleteAllFavorites();
                     }
                 })
-                .show();
+                .build();
     }
 
-    @Override
-    public void onClick(View view) {
-        int id = view.getId();
-        switch (id) {
-            case R.id.about_button:
-                break;
-            case R.id.clear_favorite_button:
-                clearFavorites();
-                break;
-            case R.id.clear_history_button:
-                clearHistory();
-                break;
-        }
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        int id = buttonView.getId();
-        switch (id) {
-            case R.id.caching_switch:
-                settingsProvider.setEnableCaching(isChecked);
-                break;
-            case R.id.determine_lang_switch:
-                settingsProvider.setEnableLangPrediction(isChecked);
-                break;
-            case R.id.show_dictionary_switch:
-                settingsProvider.setEnableDictionary(isChecked);
-                break;
-        }
+    private MaterialDialog createAboutDialog() {
+        return new MaterialDialog.Builder(getContext())
+                .title(R.string.app_name)
+                .content(R.string.about_description)
+                .negativeText(R.string.cancel)
+                .build();
     }
 }

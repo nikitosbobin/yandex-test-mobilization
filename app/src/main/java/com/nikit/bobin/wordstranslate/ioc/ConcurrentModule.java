@@ -1,5 +1,8 @@
 package com.nikit.bobin.wordstranslate.ioc;
 
+import android.content.Context;
+import android.os.Handler;
+
 import org.jdeferred.DeferredManager;
 import org.jdeferred.impl.DefaultDeferredManager;
 
@@ -14,5 +17,11 @@ public class ConcurrentModule {
     @Singleton
     DeferredManager provideDeferredManager() {
         return new DefaultDeferredManager();
+    }
+
+    @Provides
+    @Singleton
+    Handler provideUiHandler(Context context) {
+        return new Handler(context.getMainLooper());
     }
 }

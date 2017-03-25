@@ -20,4 +20,6 @@
     <string name="starting_app">Starting</string>
     <string name="lang_loading">Loading languages</string>
     <string name="no_internet">Internet connection is absent</string>
+    <string name="something_wrong">Something wrong…</string>
+    <string name="about_description">Uses the Yandex.Translator API\n\nCreated by Bobin Nikita, Yekaterinburg\n\nVK: nikitosbobin\nEmail: nikitosbobin@gmail.com</string>
 </resources>

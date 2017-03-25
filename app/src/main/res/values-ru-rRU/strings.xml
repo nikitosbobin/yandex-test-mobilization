@@ -20,4 +20,6 @@
     <string name="starting_app">Запуск приложения</string>
     <string name="lang_loading">Загрузка языков</string>
     <string name="no_internet">Отсутствует подключение к сети интернет</string>
+    <string name="something_wrong">Что-то пошло не по плану…</string>
+    <string name="about_description">Использует API Яндекс.Переводчика\n\nВыполнил Бобин Никита, Екатеринбург\n\nVK: nikitosbobin\nEmail: nikitosbobin@gmail.com</string>
 </resources>
