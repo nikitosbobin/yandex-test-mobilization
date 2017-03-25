@@ -10,18 +10,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.adapters.TranslationHistoryAdapter;
 import com.nikit.bobin.wordstranslate.customviews.CustomToggle;
 import com.nikit.bobin.wordstranslate.functional.CurrentTranslationChangeListener;
-import com.nikit.bobin.wordstranslate.functional.OnItemsUpdateListener;
 import com.nikit.bobin.wordstranslate.logging.ILog;
+import com.nikit.bobin.wordstranslate.storage.AbstractDatabaseOneTableContext;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
@@ -31,8 +29,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FavoriteTranslationsFragment extends Fragment
-        implements OnItemsUpdateListener, AdapterView.OnItemClickListener,
-        CustomToggle.OnCheckedChangeListener {
+        implements AdapterView.OnItemClickListener,
+        CustomToggle.OnCheckedChangeListener, AbstractDatabaseOneTableContext.OnItemsUpdateListener {
     @BindView(R.id.favorite_list)
     ListView favoriteListView;
     @BindView(R.id.favorite_button)

@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.nikit.bobin.wordstranslate.functional.OnItemsUpdateListener;
-import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 import java.io.IOException;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 public class TranslationsDatabase implements ITranslationsDatabase {
     private final String DB_NAME = "translations.db";
     private final String TRANSLATIONS_TABLE_NAME = "translations";
-    private OnItemsUpdateListener onItemsUpdateListener;
+    private AbstractDatabaseOneTableContext.OnItemsUpdateListener onItemsUpdateListener;
     private SQLiteDatabase database;
 
     private Integer count;
@@ -53,22 +51,6 @@ public class TranslationsDatabase implements ITranslationsDatabase {
         cursor.close();
         allTranslations = list.toArray(new TranslatedText[list.size()]);
         return allTranslations;
-    }
-
-    @Override
-    public Direction[] getTopDirections(int topCount) {
-        Cursor cursor = database.rawQuery(
-                String.format("select direction, count(*) from %s group by direction order by count(*) desc limit %d",
-                        TRANSLATIONS_TABLE_NAME, topCount), null);
-        if (cursor.moveToFirst()) {
-            ArrayList<Direction> list = new ArrayList<>();
-            do {
-                Direction direction = Direction.parse(cursor.getString(0));
-                list.add(direction);
-            } while (cursor.moveToNext());
-            return list.toArray(new Direction[list.size()]);
-        }
-        return new Direction[0];
     }
 
     @Override
@@ -184,7 +166,7 @@ public class TranslationsDatabase implements ITranslationsDatabase {
     }
 
     @Override
-    public void setOnItemsUpdateListener(OnItemsUpdateListener onItemsUpdateListener) {
+    public void setOnItemsUpdateListener(AbstractDatabaseOneTableContext.OnItemsUpdateListener onItemsUpdateListener) {
         this.onItemsUpdateListener = onItemsUpdateListener;
     }
 
