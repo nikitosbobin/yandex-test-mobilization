@@ -5,7 +5,8 @@ import android.content.Context;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 import java.io.Closeable;
-
+// not need tests
+// refactored
 public interface ITranslationsDatabase extends Closeable {
     TranslatedText getById(long id);
     TranslatedText[] getAllTranslations(boolean orderDescending);
@@ -18,5 +19,4 @@ public interface ITranslationsDatabase extends Closeable {
     void deleteAllFavorites();
     void setOnItemsUpdateListener(AbstractDatabaseOneTableContext.OnItemsUpdateListener onItemsUpdateListener);
     void connect(Context context);
-    boolean isConnected();
 }

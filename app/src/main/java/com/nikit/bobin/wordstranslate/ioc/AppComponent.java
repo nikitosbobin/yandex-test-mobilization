@@ -11,7 +11,8 @@ import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
 import javax.inject.Singleton;
 
 import dagger.Component;
-
+// not need tests
+// refactored
 @Singleton
 @Component(modules = {NetModule.class, ConcurrentModule.class,
         LoggingModule.class, TranslationModule.class, StorageModule.class})

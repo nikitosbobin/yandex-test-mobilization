@@ -18,6 +18,7 @@ import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.core.Ensure;
 import com.nikit.bobin.wordstranslate.core.Strings;
+import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
@@ -47,6 +48,8 @@ public class LanguageSelectorView extends RelativeLayout implements
     SharedPreferences preferences;
     @Inject
     Language ui;
+    @Inject
+    ILog log;
 
     private ArrayList<Language> recentLanguages;
 
@@ -85,15 +88,19 @@ public class LanguageSelectorView extends RelativeLayout implements
         int offset = recentLanguages.size();
         for (int i = 0; i < offset; ++i) {
             Language next = recentLanguages.get(i);
-            menuFrom.add(GROUP_ID_FROM_LANGUAGE_MENU, 0, offset - i, next.getTitle());
-            menuTo.add(GROUP_ID_TO_LANGUAGE_MENU, 0, offset - i, next.getTitle());
+            int id = offset - i - 1;
+            menuFrom.add(GROUP_ID_FROM_LANGUAGE_MENU, id, id, next.getTitle());
+            menuTo.add(GROUP_ID_TO_LANGUAGE_MENU, id, id, next.getTitle());
+            log.debug("id: %d, order: %d", id, id);
         }
         for (int i = 0; i < supportedLanguages.length; ++i) {
             if (recentLanguages.contains(supportedLanguages[i]))
                 continue;
+            int id = offset + i;
             String currentLangTitle = supportedLanguages[i].getTitle();
-            menuFrom.add(GROUP_ID_FROM_LANGUAGE_MENU, i, offset + i, currentLangTitle);
-            menuTo.add(GROUP_ID_TO_LANGUAGE_MENU, i, offset + i, currentLangTitle);
+            menuFrom.add(GROUP_ID_FROM_LANGUAGE_MENU, id, id, currentLangTitle);
+            menuTo.add(GROUP_ID_TO_LANGUAGE_MENU, id, id, currentLangTitle);
+            log.debug("id: %d, order: %d", id, id);
         }
     }
 
@@ -230,7 +237,7 @@ public class LanguageSelectorView extends RelativeLayout implements
         SharedPreferences.Editor edit = preferences.edit();
         String stringToSave = Strings.join(recentLanguages, " ");
         edit.putString(RECENT_LANGUAGES, stringToSave);
-        edit.commit();
+        edit.apply();
     }
 
     public interface OnLanguagesChangeListener {

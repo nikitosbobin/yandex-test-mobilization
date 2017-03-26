@@ -1,4 +1,5 @@
 package com.nikit.bobin.wordstranslate.logging;
+// not need tests
 // refactored
 public interface ILog {
     void info(Object object);

@@ -7,7 +7,8 @@ import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-
+// refactored
+// tested
 public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
     private String translationKey;
     private String yandexTranslatorApiPrefix = "https://translate.yandex.net/api/v1.5/tr.json/";
@@ -51,6 +52,7 @@ public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
     @Override
     public String dictionaryLookup(Direction direction, String text) {
         Ensure.notNull(direction, "direction");
+        Ensure.notNullOrEmpty(text, "text");
 
         return String.format(
                 "%slookup?key=%s&lang=%s&text=%s",
@@ -62,6 +64,7 @@ public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
 
     @Override
     public String detectLang(String text, Language... possibleLangs) {
+        Ensure.notNullOrEmpty(text, "text");
         Ensure.notNull(possibleLangs, "possibleLangs");
 
         String hint = "";
@@ -76,7 +79,6 @@ public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
                 hint);
     }
 
-    // todo: test it
     private static String screenSpecialSymbols(String text) {
         try {
             return URLEncoder.encode(text, "utf-8");

@@ -24,7 +24,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-
+// not need tests
+// refactored
 @Module
 public class TranslationModule {
     private final App app;

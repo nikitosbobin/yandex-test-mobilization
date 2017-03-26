@@ -11,6 +11,7 @@ import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import javax.inject.Inject;
 
 // refactored
+// not need tests
 public class App extends Application {
     private static AppComponent component;
     @Inject

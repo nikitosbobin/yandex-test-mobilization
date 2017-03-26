@@ -7,7 +7,7 @@ import com.nikit.bobin.wordstranslate.translating.models.Language;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 import java.util.ArrayList;
-
+// refactored
 public class TranslationsDatabase
         extends AbstractDatabaseOneTableContext<TranslatedText>
         implements ITranslationsDatabase {

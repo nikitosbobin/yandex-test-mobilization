@@ -14,7 +14,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
-
+// not need tests
+// refactored
 @Module
 public class NetModule {
     @Provides

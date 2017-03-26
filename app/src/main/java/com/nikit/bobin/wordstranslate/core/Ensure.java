@@ -8,7 +8,8 @@ import java.net.URL;
 import java.util.Objects;
 
 import okhttp3.Response;
-
+// not need tests
+// refactored
 public class Ensure {
     public static void notNull(Object o, String name) {
         if (o == null)

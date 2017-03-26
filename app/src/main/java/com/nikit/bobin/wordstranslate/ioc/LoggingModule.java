@@ -7,7 +7,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-
+// not need tests
+// refactored
 @Module
 public class LoggingModule {
     @Provides
