@@ -1,9 +1,6 @@
 package com.nikit.bobin.wordstranslate.translating;
 
 import com.nikit.bobin.wordstranslate.core.Ensure;
-import com.nikit.bobin.wordstranslate.translating.exceptions.NotSuccessfulResponseException;
-import com.nikit.bobin.wordstranslate.translating.exceptions.ResponseHasNotTargetDataException;
-import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 import com.nikit.bobin.wordstranslate.translating.models.SynonymGroup;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
@@ -45,9 +42,9 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
 
             return result.toArray(new Language[result.size()]);
         } catch (JSONException e) {
-            throw new ResponseHasNotTargetDataException("Response body could not convert to JSONObject", e);
+            throw new RuntimeException("Response body could not convert to JSONObject", e);
         } catch (IOException e) {
-            throw new ResponseHasNotTargetDataException("Response body has IOException", e);
+            throw new RuntimeException("Response body has IOException", e);
         }
     }
 
@@ -65,9 +62,9 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
                 return TranslatedText.fail(translation);
             return TranslatedText.success(text.getString(0), translation);
         } catch (JSONException e) {
-            throw new ResponseHasNotTargetDataException("Response body could not convert to JSONObject", e);
+            throw new RuntimeException("Response body could not convert to JSONObject", e);
         } catch (IOException e) {
-            throw new ResponseHasNotTargetDataException("Response body has IOException", e);
+            throw new RuntimeException("Response body has IOException", e);
         }
     }
 
@@ -79,9 +76,9 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
             String lang = responseBody.getString("lang");
             return new Language(lang);
         } catch (JSONException e) {
-            throw new ResponseHasNotTargetDataException("Response body could not convert to JSONObject", e);
+            throw new RuntimeException("Response body could not convert to JSONObject", e);
         } catch (IOException e) {
-            throw new ResponseHasNotTargetDataException("Response body has IOException", e);
+            throw new RuntimeException("Response body has IOException", e);
         }
     }
 
@@ -126,15 +123,14 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
                 synArray.toArray(new String[synArray.size()]));
     }
 
-    private static void ensureYandexApiResponseIsSuccess(JSONObject response)
-        throws NotSuccessfulResponseException{
+    private static void ensureYandexApiResponseIsSuccess(JSONObject response) {
         try {
             String code = response.getInt("code") + "";
             if (code.charAt(0) != '2') //code from class 2xx is success
-                throw new NotSuccessfulResponseException(
+                throw new RuntimeException(
                         String.format("Response not success, actual code is: %s", code));
         } catch (JSONException e) {
-            throw new NotSuccessfulResponseException("Response has not Yandex api code", e);
+            throw new RuntimeException("Response has not Yandex api code", e);
         }
     }
 }

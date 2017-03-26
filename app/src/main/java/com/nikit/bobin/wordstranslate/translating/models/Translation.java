@@ -7,7 +7,6 @@ public class Translation {
     private String originalText;
     private int wordCount;
 
-    //test: originalText
     public Translation(String originalText, Direction direction) {
         Ensure.notNullOrEmpty(originalText, "originalText");
         Ensure.notNull(direction, "direction");
@@ -23,6 +22,7 @@ public class Translation {
 
         this.direction = Direction.parse(direction);
         this.originalText = originalText;
+        wordCount = originalText.split(" ").length;
     }
 
     public Direction getDirection() {

@@ -9,13 +9,6 @@ import org.junit.Test;
 import static junit.framework.Assert.assertEquals;
 
 public class Language_Tests {
-    private Language ruLang;
-
-    @Before
-    public void setUp() {
-        ruLang = new Language("ru", "title");
-    }
-
     @Test(expected = NullPointerException.class)
     public void should_fail_if_key_is_null() {
         new Language(null);
@@ -24,13 +17,6 @@ public class Language_Tests {
     @Test(expected = IllegalArgumentException.class)
     public void should_fail_if_key_is_empty() {
         new Language("");
-    }
-
-    @Test
-    public void getKey_should_return_lang_key() {
-        String key = ruLang.getKey();
-
-        assertEquals("ru", key);
     }
 
     @Test

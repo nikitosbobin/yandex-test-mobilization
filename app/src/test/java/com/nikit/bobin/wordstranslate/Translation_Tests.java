@@ -52,4 +52,22 @@ public class Translation_Tests {
 
         assertEquals(translation1HashCode, translation2HashCode);
     }
+
+    @Test
+    public void getWordCount_should_return_words_count_in_text() {
+        Translation translation = new Translation("original text", "en-ru");
+
+        int wordCount = translation.getWordCount();
+
+        assertEquals(2, wordCount);
+    }
+
+    @Test
+    public void getWordCount_should_return_words_count_in_text_another_ctor() {
+        Translation translation = new Translation("original text", Direction.parse("en-ru"));
+
+        int wordCount = translation.getWordCount();
+
+        assertEquals(2, wordCount);
+    }
 }

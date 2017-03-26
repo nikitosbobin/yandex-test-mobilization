@@ -19,4 +19,5 @@ public interface ITranslationsDatabase extends Closeable {
     void deleteAllFavorites();
     void setOnItemsUpdateListener(AbstractDatabaseOneTableContext.OnItemsUpdateListener onItemsUpdateListener);
     void connect(Context context);
+    boolean isConnected();
 }

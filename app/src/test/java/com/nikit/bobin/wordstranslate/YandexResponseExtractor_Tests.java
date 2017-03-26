@@ -1,8 +1,6 @@
 package com.nikit.bobin.wordstranslate;
 
 import com.nikit.bobin.wordstranslate.translating.YandexResponseExtractor;
-import com.nikit.bobin.wordstranslate.translating.exceptions.NotSuccessfulResponseException;
-import com.nikit.bobin.wordstranslate.translating.exceptions.ResponseHasNotTargetDataException;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
@@ -39,12 +37,12 @@ public class YandexResponseExtractor_Tests {
         extractor.extractTranslation(TestData.createEmptyResponse(), null);
     }
 
-    @Test(expected = NotSuccessfulResponseException.class)
+    @Test(expected = RuntimeException.class)
     public void extractSupportedLanguages_should_fail_when_response_is_not_success() throws Exception{
         extractor.extractLanguages(TestData.createFakeResponse(400, "", "http://fake"));
     }
 
-    @Test(expected = NotSuccessfulResponseException.class)
+    @Test(expected = RuntimeException.class)
     public void extractTranslation_should_fail_when_response_is_not_success() throws Exception {
         Translation translation = new Translation("text", "en-ru");
 
@@ -74,7 +72,7 @@ public class YandexResponseExtractor_Tests {
         assertEquals(expectedTranslatedText, translatedText);
     }
 
-    @Test(expected = NotSuccessfulResponseException.class)
+    @Test(expected = RuntimeException.class)
     public void extractTranslation_should_fail_when_yandex_response_code_in_not_successful() throws Exception {
         String translationJson = TestData.createFailJson(500);
         Response fakeResponse = TestData.createFakeResponse(200, translationJson, "http://do-translate/");
@@ -83,7 +81,7 @@ public class YandexResponseExtractor_Tests {
         extractor.extractTranslation(fakeResponse, translation);
     }
 
-    @Test(expected = ResponseHasNotTargetDataException.class)
+    @Test(expected = RuntimeException.class)
     public void extractTranslation_should_fail_when_yandex_response_is_not_json() throws Exception {
         Response fakeResponse = TestData.createFakeResponse(200, "not json", "http://do-translate/");
         Translation translation = new Translation("text", "en-ru");
@@ -91,7 +89,7 @@ public class YandexResponseExtractor_Tests {
         extractor.extractTranslation(fakeResponse, translation);
     }
 
-    @Test(expected = ResponseHasNotTargetDataException.class)
+    @Test(expected = RuntimeException.class)
     public void extractTranslation_should_fail_when_yandex_response_has_not_text() throws Exception {
         String emptyJsonWithCode = TestData.createEmptyJsonWithCode(200);
         Response fakeResponse = TestData.createFakeResponse(200, emptyJsonWithCode, "http://do-translate/");
@@ -114,14 +112,14 @@ public class YandexResponseExtractor_Tests {
         assertEquals("French", languages[2].getTitle());
     }
 
-    @Test(expected = ResponseHasNotTargetDataException.class)
+    @Test(expected = RuntimeException.class)
     public void extractSupportedLanguages_should_fail_when_yandex_response_is_not_json() throws Exception {
         Response fakeResponse = TestData.createFakeResponse(200, "not json", "http://do-translate/");
 
         extractor.extractLanguages(fakeResponse);
     }
 
-    @Test(expected = ResponseHasNotTargetDataException.class)
+    @Test(expected = RuntimeException.class)
     public void extractSupportedLanguages_should_fail_when_yandex_response_json_is_empty() throws Exception {
         Response fakeResponse = TestData.createFakeResponse(200, "{}", "http://do-translate/");
 

@@ -1,22 +1,14 @@
 package com.nikit.bobin.wordstranslate;
 
-import com.nikit.bobin.wordstranslate.translating.exceptions.ParsingFormatException;
+import com.nikit.bobin.wordstranslate.core.Strings;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 
 public class Direction_Tests {
-    private Direction direction;
-
-    @Before
-    public void setUp() {
-        direction = new Direction(new Language("en"), new Language("ru"));
-    }
-
     @Test(expected = NullPointerException.class)
     public void should_fail_if_from_is_null() {
         new Direction(null, new Language("ru"));
@@ -36,9 +28,19 @@ public class Direction_Tests {
         assertEquals(expectedDirection, parsedDirection);
     }
 
-    @Test(expected = ParsingFormatException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void parse_should_fail_when_direction_format_is_not_supported() {
         Direction.parse("aaaaaa");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void parse_should_fail_when_direction_null() {
+        Direction.parse(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void parse_should_fail_when_direction_empty() {
+        Direction.parse(Strings.empty);
     }
 
     @Test

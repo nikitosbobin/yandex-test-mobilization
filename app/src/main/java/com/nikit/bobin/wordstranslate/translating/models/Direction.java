@@ -1,9 +1,8 @@
 package com.nikit.bobin.wordstranslate.translating.models;
 
 import com.nikit.bobin.wordstranslate.core.Ensure;
-import com.nikit.bobin.wordstranslate.translating.exceptions.ParsingFormatException;
-
-//todo: to struct
+// refactored
+// tested
 public class Direction {
     private Language from;
     private Language to;
@@ -19,9 +18,11 @@ public class Direction {
     }
 
     public static Direction parse(String direction) {
+        Ensure.notNullOrEmpty(direction, "direction");
+
         String[] segments = direction.split("\\-");
         if (segments.length != 2)
-            throw new ParsingFormatException(
+            throw new IllegalArgumentException(
                     String.format("Target direction: %s have not correct format", direction));
         return new Direction(new Language(segments[0]), new Language(segments[1]));
     }
@@ -47,7 +48,6 @@ public class Direction {
         if (!from.equals(direction.from)) return false;
         if (!to.equals(direction.to)) return false;
         return stringified.equals(direction.stringified);
-
     }
 
     @Override

@@ -1,13 +1,12 @@
 package com.nikit.bobin.wordstranslate.core;
 
-import com.nikit.bobin.wordstranslate.translating.exceptions.NotSuccessfulResponseException;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Objects;
 
 import okhttp3.Response;
+
 // not need tests
 // refactored
 public class Ensure {
@@ -31,10 +30,9 @@ public class Ensure {
         }
     }
 
-    public static void okHttpResponseIsSuccess(Response response, String name)
-            throws NotSuccessfulResponseException {
+    public static void okHttpResponseIsSuccess(Response response, String name) {
         if (!response.isSuccessful())
-            throw new NotSuccessfulResponseException(String.format("OkHttp response: %s is not success", name));
+            throw new RuntimeException(String.format("OkHttp response: %s is not success", name));
     }
 
     public static void languageHasTitle(Language language, String name) {
