@@ -70,4 +70,12 @@ public class Translation_Tests {
 
         assertEquals(2, wordCount);
     }
+
+    @Test
+    public void should_correctly_init_fields() {
+        Translation translation = new Translation("original text", "en-ru");
+
+        assertEquals("original text", translation.getOriginalText());
+        assertEquals(Direction.parse("en-ru"), translation.getDirection());
+    }
 }

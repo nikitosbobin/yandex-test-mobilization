@@ -19,8 +19,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -103,10 +103,12 @@ public class HttpSender_Tests {
         httpSender.sendRequestAsync("http://server", HttpMethod.GET, null);
 
         verify(httpClient).newCall(argThat(new ArgumentMatcher<Request>() {
-            public boolean matches(Request argument) {
-                return argument.method().equals("GET")
-                        && argument.url().toString().equals("http://server/")
-                        && argument.body() == null;
+            @Override
+            public boolean matches(Object argument) {
+                Request request = (Request) argument;
+                return request.method().equals("GET")
+                        && request.url().toString().equals("http://server/")
+                        && request.body() == null;
             }
         }));
     }
@@ -117,11 +119,12 @@ public class HttpSender_Tests {
         httpSender.sendRequestAsync("http://server", HttpMethod.POST, null);
 
         verify(httpClient).newCall(argThat(new ArgumentMatcher<Request>() {
-            public boolean matches(Request argument) {
+            public boolean matches(Object argument) {
                 try {
-                    return argument.method().equals("POST")
-                            && argument.url().toString().equals("http://server/")
-                            && argument.body().contentLength() == 0L;
+                    Request request = (Request) argument;
+                    return request.method().equals("POST")
+                            && request.url().toString().equals("http://server/")
+                            && request.body().contentLength() == 0L;
                 } catch (IOException e) {
                     return false;
                 }
@@ -134,10 +137,11 @@ public class HttpSender_Tests {
         httpSender.sendRequestAsync("http://server", HttpMethod.POST, requestBody);
 
         verify(httpClient).newCall(argThat(new ArgumentMatcher<Request>() {
-            public boolean matches(Request argument) {
-                return argument.method().equals("POST")
-                        && argument.url().toString().equals("http://server/")
-                        && argument.body().equals(requestBody);
+            public boolean matches(Object argument) {
+                Request request = (Request) argument;
+                return request.method().equals("POST")
+                        && request.url().toString().equals("http://server/")
+                        && request.body().equals(requestBody);
             }
         }));
     }

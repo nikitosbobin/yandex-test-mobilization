@@ -44,6 +44,14 @@ public class Direction_Tests {
     }
 
     @Test
+    public void should_correctly_init_fields() {
+        Direction direction = Direction.parse("fr-en");
+
+        assertEquals(new Language("fr"), direction.getFrom());
+        assertEquals(new Language("en"), direction.getTo());
+    }
+
+    @Test
     public void equals_should_correctly_detect_equality() {
         Direction direction1 = Direction.parse("fr-en");
         Direction direction2 = Direction.parse("fr-en");
