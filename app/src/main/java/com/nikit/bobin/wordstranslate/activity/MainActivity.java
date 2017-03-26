@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
@@ -16,6 +17,9 @@ import com.nikit.bobin.wordstranslate.adapters.TranslateActivityPagerAdapter;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
+import com.nikit.bobin.wordstranslate.translating.models.Language;
+
+import org.jdeferred.DoneCallback;
 
 import javax.inject.Inject;
 

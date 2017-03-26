@@ -57,24 +57,24 @@ public class YandexRestApiUriFactory_Tests {
 
     @Test
     public void translate_should_return_correct_uri() {
-        String expectedUrl = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=appKey&lang=en-ru";
+        String expectedUrl = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=appKey&lang=en-ru&text=text";
 
-        String actualUrl = factory.translate(Direction.parse("en-ru"));
+        String actualUrl = factory.translate(Direction.parse("en-ru"), "text");
 
         assertEquals(expectedUrl, actualUrl);
     }
 
     @Test
     public void dictionaryLookup_should_return_correct_uri() {
-        String expectedUrl = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=dictKey&lang=en-ru";
+        String expectedUrl = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=dictKey&lang=en-ru&text=text";
 
-        String actualUrl = factory.dictionaryLookup(Direction.parse("en-ru"));
+        String actualUrl = factory.dictionaryLookup(Direction.parse("en-ru"), "text");
 
         assertEquals(expectedUrl, actualUrl);
     }
 
     @Test(expected = NullPointerException.class)
     public void translate_should_fail_when_direction_is_null() {
-        factory.translate(null);
+        factory.translate(null, "text");
     }
 }

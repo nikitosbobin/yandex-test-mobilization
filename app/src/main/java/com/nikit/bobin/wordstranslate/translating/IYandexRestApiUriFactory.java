@@ -6,7 +6,7 @@ import com.nikit.bobin.wordstranslate.translating.models.Language;
 public interface IYandexRestApiUriFactory {
     String getLangs();
     String getLangs(Language ui);
-    String translate(Direction direction);
-    String dictionaryLookup(Direction direction);
-    String detectLang(Language... possibleLangs);
+    String translate(Direction direction, String text);
+    String dictionaryLookup(Direction direction, String text);
+    String detectLang(String text, Language... possibleLangs);
 }

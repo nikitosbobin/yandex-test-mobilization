@@ -64,10 +64,11 @@ public class YandexTranslator implements ITranslator {
         if (cache != null && cache.hasTranslation(translation))
             return createPromiseFromResult(cache.getTranslation(translation));
 
-        String translateUrl = uriFactory.translate(translation.getDirection());
-
+        String translateUrl = uriFactory.translate(
+                translation.getDirection(),
+                translation.getOriginalText());
         Promise<TranslatedText, Throwable, Void> promise = httpSender
-                .sendRequestAsync(translateUrl, HttpMethod.POST, "text=" + translation.getOriginalText())
+                .sendRequestAsync(translateUrl, HttpMethod.GET, null)
                 //todo: add screening
                 .then(extractTranslation(translation));
 
@@ -85,7 +86,7 @@ public class YandexTranslator implements ITranslator {
         String getLangsUrl = uriFactory.getLangs(ui);
 
         Promise<Language[], Throwable, Void> promise = httpSender
-                .sendRequestAsync(getLangsUrl, HttpMethod.POST)
+                .sendRequestAsync(getLangsUrl, HttpMethod.GET, null)
                 .then(extractLanguages());
 
         if (cache != null)
@@ -98,12 +99,11 @@ public class YandexTranslator implements ITranslator {
     public Promise<Language, Throwable, Void> detectLanguageAsync(String text) {
         Ensure.notNullOrEmpty(text, "text");
 
-        String detectLangUri = uriFactory.detectLang(new Language("ru"), new Language("en"));
+        String detectLangUri = uriFactory.detectLang(text, new Language("ru"), new Language("en"));
 
         return httpSender
-                .sendRequestAsync(detectLangUri+"&text=" + text, HttpMethod.GET)
+                .sendRequestAsync(detectLangUri, HttpMethod.GET, null)
                 .then(new DoneFilter<Response, Language>() {
-                    @Override
                     public Language filterDone(Response result) {
                         Language language = responseExtractor.extractDetectedLanguage(result);
                         return languagesDatabase.getLanguage(language.getKey(), ui);
@@ -119,10 +119,10 @@ public class YandexTranslator implements ITranslator {
         if (segments.length > 1) {
             return createPromiseFromResult(null);
         }
-        String getLookupUri = uriFactory.dictionaryLookup(translation.getDirection());
+        String getLookupUri = uriFactory.dictionaryLookup(translation.getDirection(), translation.getOriginalText());
 
         return httpSender
-                .sendRequestAsync(getLookupUri, HttpMethod.POST, "text=" + translation.getOriginalText())
+                .sendRequestAsync(getLookupUri, HttpMethod.GET, null)
                 .then(extractLookup(translation));
     }
 

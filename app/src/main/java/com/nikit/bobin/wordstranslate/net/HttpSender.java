@@ -9,8 +9,6 @@ import com.nikit.bobin.wordstranslate.logging.ILog;
 import org.jdeferred.DeferredManager;
 import org.jdeferred.Promise;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.concurrent.Callable;
 
 import okhttp3.Call;
@@ -19,7 +17,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
+// refactored
+// tested
 public class HttpSender implements IHttpSender {
     private DeferredManager deferredManager;
     private OkHttpClient client;
@@ -40,76 +39,40 @@ public class HttpSender implements IHttpSender {
     public Promise<Response, Throwable, Void> sendRequestAsync(
             @NonNull String url,
             @NonNull HttpMethod method,
-            @Nullable byte[] body,
-            @Nullable String mediaType) {
-        Ensure.notNullOrEmpty(url, "url");
+            @Nullable RequestBody body) {
+        Ensure.notNull(url, "url");
         Ensure.urlIsPresent(url, "url");
-        if (body == null)
-            return createPromise(url, method, new byte[0], defaultMediaType);
-        return createPromise(url, method, body, mediaType);
-    }
+        Ensure.notNull(method, "method");
 
-    //todo: refactor
-    @Override
-    public Promise<Response, Throwable, Void> sendRequestAsync(
-            @NonNull String url,
-            @NonNull HttpMethod method) {
-        return sendRequestAsync(url, method, null);
-    }
-
-    @Override
-    public Promise<Response, Throwable, Void> sendRequestAsync(
-            @NonNull String url,
-            @NonNull HttpMethod method,
-            @Nullable String body) {
-        byte[] bodyBytes;
-        if (body == null) bodyBytes = new byte[0];
-        else bodyBytes = body.getBytes(Charset.forName("utf-8"));
-        return sendRequestAsync(url, method, bodyBytes, defaultMediaType);
-    }
-
-    @Override
-    public Response sendRequest(@NonNull String url, @NonNull HttpMethod method, @Nullable String body)
-            throws IOException {
-        Ensure.notNullOrEmpty(url, "url");
-        Ensure.urlIsPresent(url, "url");
-
-        if (body == null)
-            return createCall(url, method, null, null).execute();
-        return createCall(
-                url,
-                method,
-                body.getBytes(Charset.forName("utf-8")),
-                defaultMediaType).execute();
+        return createPromise(url, method, body);
     }
 
     private Promise<Response, Throwable, Void> createPromise(
             final String url,
             final HttpMethod method,
-            final byte[] body,
-            final String mediaType) {
+            final RequestBody body) {
+        final Call call = createCall(url, method, body);
         return deferredManager.when(new Callable<Response>() {
             public Response call() throws Exception {
-                Call call = createCall(url, method, body, mediaType);
-                Response response = call.execute();
-                return response;
+                return call.execute();
             }
         });
     }
 
-    private Call createCall(String url, HttpMethod method, byte[] body, String mediaType) {
-        log.info("Perform HTTP %s request to: %s", method.name(), url);
-        RequestBody requestBody = null;
-        if (body != null && mediaType != null) {
-            requestBody = RequestBody.create(MediaType.parse(mediaType), body);
-        }
-
+    private Call createCall(String url, HttpMethod method, RequestBody body) {
+        String httpMethod = method.name();
+        log.info("Perform HTTP %s request to: %s", httpMethod, url);
         Request.Builder builder = new Request.Builder().url(url);
-        if (okhttp3.internal.http.HttpMethod.requiresRequestBody(method.name())) {
-            builder = builder.method(method.name(), requestBody);
+        if (okhttp3.internal.http.HttpMethod.requiresRequestBody(httpMethod)) {
+            if (body == null) {
+                log.warn("Method %s requires not null body. Body will be empty byte array", httpMethod);
+                body = RequestBody.create(MediaType.parse(defaultMediaType), new byte[0]);
+            }
+            builder = builder.method(httpMethod, body);
+        } else {
+            if (body != null)
+                log.warn("Method %s did not requires body. Body will not be sent", httpMethod);
         }
         return client.newCall(builder.build());
     }
-
-
 }

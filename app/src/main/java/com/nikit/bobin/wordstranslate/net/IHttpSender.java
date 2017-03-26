@@ -5,24 +5,11 @@ import android.support.annotation.Nullable;
 
 import org.jdeferred.Promise;
 
-import java.io.IOException;
-
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public interface IHttpSender {
     Promise<Response, Throwable, Void> sendRequestAsync(@NonNull String url,
-                                                        @NonNull HttpMethod method);
-
-    Promise<Response, Throwable, Void> sendRequestAsync(@NonNull String url,
                                                         @NonNull HttpMethod method,
-                                                        @Nullable byte[] body,
-                                                        @Nullable String mediaType);
-
-    Promise<Response, Throwable, Void> sendRequestAsync(@NonNull String url,
-                                                        @NonNull HttpMethod method,
-                                                        @Nullable String body);
-
-    Response sendRequest(@NonNull String url,
-                         @NonNull HttpMethod method,
-                         @Nullable String body) throws IOException;
+                                                        @Nullable RequestBody body);
 }

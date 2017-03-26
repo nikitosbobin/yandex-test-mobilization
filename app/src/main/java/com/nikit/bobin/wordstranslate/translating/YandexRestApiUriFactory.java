@@ -1,8 +1,12 @@
 package com.nikit.bobin.wordstranslate.translating;
 
 import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.nikit.bobin.wordstranslate.core.Strings;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
     private String translationKey;
@@ -32,36 +36,52 @@ public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
     }
 
     @Override
-    public String translate(Direction direction) {
+    public String translate(Direction direction, String text) {
         Ensure.notNull(direction, "direction");
+        Ensure.notNullOrEmpty(text, "text");
 
-        return String.format("%stranslate?key=%s&lang=%s", yandexTranslatorApiPrefix, translationKey, direction.toString());
+        return String.format(
+                "%stranslate?key=%s&lang=%s&text=%s",
+                yandexTranslatorApiPrefix,
+                translationKey,
+                direction.toString(),
+                screenSpecialSymbols(text));
     }
 
     @Override
-    public String dictionaryLookup(Direction direction) {
+    public String dictionaryLookup(Direction direction, String text) {
         Ensure.notNull(direction, "direction");
 
-        return String.format("%slookup?key=%s&lang=%s", yandexDictionaryApiPrefix, dictionaryKey, direction.toString());
+        return String.format(
+                "%slookup?key=%s&lang=%s&text=%s",
+                yandexDictionaryApiPrefix,
+                dictionaryKey,
+                direction.toString(),
+                screenSpecialSymbols(text));
     }
 
     @Override
-    public String detectLang(Language... possibleLangs) {
+    public String detectLang(String text, Language... possibleLangs) {
         Ensure.notNull(possibleLangs, "possibleLangs");
+
         String hint = "";
+        if (possibleLangs.length > 0)
+            hint = "&hint=" + Strings.join(possibleLangs, ",");
 
-        if (possibleLangs.length > 0) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("&hint=");
-            for (int i = 0; i < possibleLangs.length; ++i)
-            {
-                builder.append(possibleLangs[i].toString());
-                if (i != possibleLangs.length - 1)
-                    builder.append(',');
-            }
-            hint = builder.toString();
+        return String.format(
+                "%sdetect?key=%s&text=%s%s",
+                yandexTranslatorApiPrefix,
+                translationKey,
+                screenSpecialSymbols(text),
+                hint);
+    }
+
+    // todo: test it
+    private static String screenSpecialSymbols(String text) {
+        try {
+            return URLEncoder.encode(text, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            return text;
         }
-
-        return String.format("%sdetect?key=%s%s", yandexTranslatorApiPrefix, translationKey, hint);
     }
 }

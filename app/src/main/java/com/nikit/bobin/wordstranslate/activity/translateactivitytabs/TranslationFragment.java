@@ -2,7 +2,6 @@ package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
 import android.animation.Animator;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -30,7 +29,6 @@ import com.nikit.bobin.wordstranslate.translating.models.Translation;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import org.jdeferred.DoneCallback;
-import org.jdeferred.Promise;
 
 import javax.inject.Inject;
 
@@ -92,7 +90,7 @@ public class TranslationFragment extends Fragment
     }
 
     private void performTranslation(final Translation targetTranslation) {
-        Promise<TranslatedText, Throwable, Void> translationPromise = translator
+        translator
                 .translateAsync(targetTranslation)
                 .then(new DoneCallback<TranslatedText>() {
                     public void onDone(final TranslatedText result) {
@@ -100,22 +98,25 @@ public class TranslationFragment extends Fragment
                         currentTranslation = result;
                         fillTranslationCard(result);
                     }
-                });
-        if (!needDictionary() || targetTranslation.getWordCount() != 1) {
-            translationCard.setLookup(WordLookup.empty());
-            return;
-        }
-        translationPromise
+                })
                 .then(new DoneCallback<TranslatedText>() {
                     public void onDone(TranslatedText result) {
-                        translator
-                                .getWordLookupAsync(result.getTranslation())
-                                .then(new DoneCallback<WordLookup>() {
-                                    public void onDone(final WordLookup result) {
-                                        if (result != null)
-                                            translationCard.setLookup(result);
-                                    }
-                                });
+                        if (!needDictionary() || targetTranslation.getWordCount() != 1) {
+                            translationCard.setLookup(WordLookup.empty());
+                            return;
+                        }
+                        tryLoadLookup(result);
+                    }
+                });
+    }
+
+    private void tryLoadLookup(TranslatedText result) {
+        translator
+                .getWordLookupAsync(result.getTranslation())
+                .then(new DoneCallback<WordLookup>() {
+                    public void onDone(final WordLookup result) {
+                        if (result != null)
+                            translationCard.setLookup(result);
                     }
                 });
     }
