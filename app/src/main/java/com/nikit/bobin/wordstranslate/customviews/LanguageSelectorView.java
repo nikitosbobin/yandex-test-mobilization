@@ -99,6 +99,7 @@ public class LanguageSelectorView extends RelativeLayout implements
 
     private void init() {
         inflate(getContext(), R.layout.language_selector_layout, this);
+        if (isInEditMode()) return;
         App.getComponent().injectSelectorView(this);
         ButterKnife.bind(this);
         languageFromView.setOnClickListener(this);

@@ -48,7 +48,8 @@ public class HttpSender implements IHttpSender {
             return createPromise(url, method, new byte[0], defaultMediaType);
         return createPromise(url, method, body, mediaType);
     }
-//todo: refactor
+
+    //todo: refactor
     @Override
     public Promise<Response, Throwable, Void> sendRequestAsync(
             @NonNull String url,
@@ -88,11 +89,10 @@ public class HttpSender implements IHttpSender {
             final byte[] body,
             final String mediaType) {
         return deferredManager.when(new Callable<Response>() {
-            @Override
             public Response call() throws Exception {
-            Call call = createCall(url, method, body, mediaType);
-            Response response = call.execute();
-            return response;
+                Call call = createCall(url, method, body, mediaType);
+                Response response = call.execute();
+                return response;
             }
         });
     }

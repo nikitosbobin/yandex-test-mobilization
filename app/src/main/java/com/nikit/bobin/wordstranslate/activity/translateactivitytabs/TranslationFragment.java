@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.core.Strings;
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
 import com.nikit.bobin.wordstranslate.customviews.TranslationCard;
+import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
@@ -58,8 +58,7 @@ public class TranslationFragment extends Fragment
     @Inject
     SettingsProvider settingsProvider;
     @Inject
-    Handler uiHandler;
-
+    NetworkConnectionInfoProvider networkConnectionInfoProvider;
     private TranslatedText currentTranslation;
 
     @Override
@@ -77,6 +76,7 @@ public class TranslationFragment extends Fragment
 
     @OnTextChanged(R.id.translation_input)
     public void onTextChanged(CharSequence s, int start, int before, int count) {
+        networkConnectionInfoProvider.notifyIfNoConnection(input);
         if (s.length() == 0) {
             clearButton.setVisibility(View.GONE);
             clearTranslationCard();
@@ -98,11 +98,7 @@ public class TranslationFragment extends Fragment
                     public void onDone(final TranslatedText result) {
                         if (!result.isSuccess()) return;
                         currentTranslation = result;
-                        uiHandler.post(new Runnable() {
-                            public void run() {
-                                fillTranslationCard(result);
-                            }
-                        });
+                        fillTranslationCard(result);
                     }
                 });
         if (!needDictionary() || targetTranslation.getWordCount() != 1) {
@@ -117,19 +113,11 @@ public class TranslationFragment extends Fragment
                                 .then(new DoneCallback<WordLookup>() {
                                     public void onDone(final WordLookup result) {
                                         if (result != null)
-                                            setLookup(result);
+                                            translationCard.setLookup(result);
                                     }
                                 });
                     }
                 });
-    }
-
-    private void setLookup(final WordLookup result) {
-        uiHandler.post(new Runnable() {
-            public void run() {
-                translationCard.setLookup(result);
-            }
-        });
     }
 
     private void tryDetectLang(Translation targetTranslation) {
@@ -138,14 +126,8 @@ public class TranslationFragment extends Fragment
         translator
                 .detectLanguageAsync(targetTranslation.getOriginalText())
                 .then(new DoneCallback<Language>() {
-                    @Override
                     public void onDone(final Language result) {
-                        uiHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                selectorView.setLanguageFrom(result, true);
-                            }
-                        });
+                        selectorView.setLanguageFrom(result, true);
                     }
                 });
     }

@@ -2,6 +2,7 @@ package com.nikit.bobin.wordstranslate.activity;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -13,6 +14,7 @@ import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTra
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.SettingsFragment;
 import com.nikit.bobin.wordstranslate.adapters.TranslateActivityPagerAdapter;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment;
+import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
 
 import javax.inject.Inject;
@@ -39,7 +41,8 @@ public class MainActivity extends AppCompatActivity
     Drawable favoriteTabIcon;
     @BindDrawable(R.drawable.settings)
     Drawable settingsTabIcon;
-
+    @Inject
+    NetworkConnectionInfoProvider networkConnectionInfoProvider;
     @Inject
     ITranslator translator;
 
@@ -70,6 +73,7 @@ public class MainActivity extends AppCompatActivity
         tabHost.addTab(tabHost.newTab().setIcon(translationTabIcon).setTabListener(this));
         tabHost.addTab(tabHost.newTab().setIcon(favoriteTabIcon).setTabListener(this));
         tabHost.addTab(tabHost.newTab().setIcon(settingsTabIcon).setTabListener(this));
+        networkConnectionInfoProvider.notifyIfNoConnection(viewPager);
     }
 
     @Override
