@@ -22,4 +22,5 @@
     <string name="no_internet">Отсутствует подключение к сети интернет</string>
     <string name="something_wrong">Что-то пошло не по плану…</string>
     <string name="about_description">Использует API Яндекс.Переводчика\n\nВыполнил Бобин Никита, Екатеринбург\n\nVK: nikitosbobin\nEmail: nikitosbobin@gmail.com</string>
+    <string name="translation_copied">Перевод скопирован в буфер обмена</string>
 </resources>
