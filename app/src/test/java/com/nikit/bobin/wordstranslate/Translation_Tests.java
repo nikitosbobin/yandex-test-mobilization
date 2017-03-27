@@ -6,6 +6,7 @@ import com.nikit.bobin.wordstranslate.translating.models.Translation;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 public class Translation_Tests {
     @Test(expected = NullPointerException.class)
@@ -37,9 +38,7 @@ public class Translation_Tests {
         Translation translation1 = new Translation("text", Direction.parse("ru-en"));
         Translation translation2 = new Translation("text", Direction.parse("ru-en"));
 
-        boolean equality = translation1.equals(translation2);
-
-        assertEquals(true, equality);
+        assertTrue(translation1.equals(translation2));
     }
 
     @Test

@@ -1,7 +1,8 @@
 package com.nikit.bobin.wordstranslate.translating.models;
 
 import com.nikit.bobin.wordstranslate.core.Ensure;
-
+// refactored
+// tested
 public class Translation {
     private Direction direction;
     private String originalText;

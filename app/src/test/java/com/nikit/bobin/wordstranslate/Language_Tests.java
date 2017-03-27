@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 public class Language_Tests {
     @Test(expected = NullPointerException.class)
@@ -25,9 +26,7 @@ public class Language_Tests {
         Language ruLang1 = new Language("ru");
         Language ruLang2 = new Language("ru");
 
-        boolean equality = ruLang1.equals(ruLang2);
-
-        assertEquals(true, equality);
+        assertTrue(ruLang1.equals(ruLang2));
     }
 
     @Test

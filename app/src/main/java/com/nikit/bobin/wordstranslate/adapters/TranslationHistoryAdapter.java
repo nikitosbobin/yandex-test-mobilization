@@ -64,8 +64,7 @@ public class TranslationHistoryAdapter extends BaseAdapter
 
     @Override
     public void onFavoriteChange(int position, boolean value) {
-        TranslatedText currentTranslation = getItem(position);
-        currentTranslation.setIsFavorite(value);
+        TranslatedText currentTranslation = getItem(position).changeFavoriteState(value);
         translationsDatabase.addOrUpdate(currentTranslation);
     }
 }

@@ -1,5 +1,8 @@
 package com.nikit.bobin.wordstranslate.translating.models;
 
+import com.nikit.bobin.wordstranslate.core.Ensure;
+// refactored
+// tested
 public class TranslatedText {
     private boolean success;
     private String translatedText;
@@ -12,6 +15,9 @@ public class TranslatedText {
     }
 
     public static TranslatedText success(String translatedText, Translation translation) {
+        Ensure.notNullOrEmpty(translatedText, "translatedText");
+        Ensure.notNull(translation, "translation");
+
         TranslatedText result = new TranslatedText();
         result.success = true;
         result.translatedText = translatedText;
@@ -20,6 +26,8 @@ public class TranslatedText {
     }
 
     public static TranslatedText fail(Translation translation) {
+        Ensure.notNull(translation, "translation");
+
         TranslatedText result = new TranslatedText();
         result.success = false;
         result.translation = translation;
@@ -28,6 +36,10 @@ public class TranslatedText {
 
     public static TranslatedText fromDatabase(int id, String translatedText, String originalText,
                                               String direction, boolean isFavorite) {
+        Ensure.notNullOrEmpty(translatedText, "translatedText");
+        Ensure.notNullOrEmpty(originalText, "originalText");
+        Ensure.notNullOrEmpty(direction, "direction");
+
         TranslatedText result = new TranslatedText();
         result.success = true;
         result.id = id;
@@ -55,10 +67,9 @@ public class TranslatedText {
         if (o == null || getClass() != o.getClass()) return false;
         TranslatedText that = (TranslatedText) o;
         if (success != that.success) return false;
-        if (translatedText != null ? !translatedText.equals(that.translatedText) : that.translatedText != null)
-            return false;
-        return translation.equals(that.translation);
-
+        return translatedText != null
+                ? translatedText.equals(that.translatedText)
+                : that.translatedText == null && translation.equals(that.translation);
     }
 
     @Override
@@ -73,11 +84,16 @@ public class TranslatedText {
         return id;
     }
 
-    public boolean isFavorite() {
-        return isFavorite;
+    public TranslatedText changeFavoriteState(boolean value) {
+        return fromDatabase(
+                getId(),
+                translatedText,
+                getTranslation().getOriginalText(),
+                getTranslation().getDirection().toString(),
+                value);
     }
 
-    public void setIsFavorite(boolean value) {
-        isFavorite = value;
+    public boolean isFavorite() {
+        return isFavorite;
     }
 }

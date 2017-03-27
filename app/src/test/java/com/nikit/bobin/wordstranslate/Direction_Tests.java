@@ -7,6 +7,7 @@ import com.nikit.bobin.wordstranslate.translating.models.Language;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 public class Direction_Tests {
     @Test(expected = NullPointerException.class)
@@ -56,9 +57,7 @@ public class Direction_Tests {
         Direction direction1 = Direction.parse("fr-en");
         Direction direction2 = Direction.parse("fr-en");
 
-        boolean equality = direction1.equals(direction2);
-
-        assertEquals(true, equality);
+        assertTrue(direction1.equals(direction2));
     }
 
     @Test
