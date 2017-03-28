@@ -3,6 +3,7 @@ package com.nikit.bobin.wordstranslate.customviews;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -15,13 +16,17 @@ import com.nikit.bobin.wordstranslate.core.Ensure;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class TranslationCard extends RelativeLayout {
-    private ListView lookupList;
-    private TextView originalTextView;
-    private TextView translatedTextView;
+    @BindView(R.id.lookup_list)
+    ListView lookupList;
+    @BindView(R.id.original_text_label)
+    TextView originalTextView;
+    @BindView(R.id.translated_text_label)
+    TextView translatedTextView;
     private ClipboardManager clipboard;
     private TranslatedText translatedText;
 
@@ -72,12 +77,15 @@ public class TranslationCard extends RelativeLayout {
 
     private void init() {
         inflate(getContext(), R.layout.translation_card, this);
-        originalTextView = (TextView) findViewById(R.id.original_text_label);
-        translatedTextView = (TextView) findViewById(R.id.translated_text_label);
-        lookupList = (ListView) findViewById(R.id.lookup_list);
+        if (isInEditMode()) return;
+
+        ButterKnife.bind(this);
+
+        originalTextView.setMovementMethod(new ScrollingMovementMethod());
+        translatedTextView.setMovementMethod(new ScrollingMovementMethod());
+
         adapter = new LookupListAdapter(getContext());
         lookupList.setAdapter(adapter);
         clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-        ButterKnife.bind(this);
     }
 }

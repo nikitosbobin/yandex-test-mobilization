@@ -2,6 +2,7 @@ package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
 import android.animation.Animator;
 import android.os.Bundle;
+import android.os.NetworkOnMainThreadException;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.nikit.bobin.wordstranslate.translating.models.Translation;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import org.jdeferred.DoneCallback;
+import org.jdeferred.Promise;
 
 import javax.inject.Inject;
 
@@ -58,6 +60,9 @@ public class TranslationFragment extends Fragment
     @Inject
     NetworkConnectionInfoProvider networkConnectionInfoProvider;
     private TranslatedText currentTranslation;
+    private Promise<TranslatedText, Throwable, Void> currentTranslationPromise;
+    private Promise<Language, Throwable, Void> currentPredictionPromise;
+    private Promise<WordLookup, Throwable, Void> currentLookupPromise;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -90,7 +95,8 @@ public class TranslationFragment extends Fragment
     }
 
     private void performTranslation(final Translation targetTranslation) {
-        translator
+        if (currentTranslationPromise != null && !currentTranslationPromise.isResolved()) return;
+        currentTranslationPromise = translator
                 .translateAsync(targetTranslation)
                 .then(new DoneCallback<TranslatedText>() {
                     public void onDone(final TranslatedText result) {
@@ -111,20 +117,23 @@ public class TranslationFragment extends Fragment
     }
 
     private void tryLoadLookup(TranslatedText result) {
-        translator
+        if (currentLookupPromise != null && !currentLookupPromise.isResolved())
+            return;
+        currentLookupPromise = translator
                 .getWordLookupAsync(result.getTranslation())
                 .then(new DoneCallback<WordLookup>() {
                     public void onDone(final WordLookup result) {
-                        if (result != null)
+                        if (result != null && !result.isEmpty())
                             translationCard.setLookup(result);
                     }
                 });
     }
 
     private void tryDetectLang(Translation targetTranslation) {
-        if (!needPredict() || targetTranslation.getWordCount() != 1)
+        if ((currentPredictionPromise != null && !currentPredictionPromise.isResolved())
+                || !needPredict() || targetTranslation.getWordCount() != 1)
             return;
-        translator
+        currentPredictionPromise = translator
                 .detectLanguageAsync(targetTranslation.getOriginalText())
                 .then(new DoneCallback<Language>() {
                     public void onDone(final Language result) {

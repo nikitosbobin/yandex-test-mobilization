@@ -31,21 +31,6 @@
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
-    <EditText
-        android:id="@+id/translation_input"
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
-        android:background="@drawable/card_edit_text"
-        android:ems="10"
-        android:gravity="bottom"
-        android:hint="@string/tap_to_start_translate"
-        android:inputType="textPersonName"
-        android:textColorHint="@color/colorHint"
-        tools:inputType="textMultiLine"
-        android:layout_below="@+id/translations_toolbar"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
-
     <com.nikit.bobin.wordstranslate.customviews.TranslationCard
         android:id="@+id/current_translation"
         android:layout_height="match_parent"
@@ -53,15 +38,32 @@
         android:visibility="gone"
         android:layout_below="@+id/translation_input" />
 
+    <EditText
+        android:id="@+id/translation_input"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:background="@drawable/card_edit_text"
+        android:ems="10"
+        android:gravity="bottom"
+        android:inputType="textCapSentences|textMultiLine"
+        android:scrollHorizontally="false"
+        android:hint="@string/tap_to_start_translate"
+        android:textColorHint="@color/colorHint"
+        android:layout_below="@+id/translations_toolbar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
     <ImageView
         android:id="@+id/clear_button"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:visibility="gone"
         android:layout_marginEnd="14dp"
+        android:visibility="gone"
         android:layout_marginTop="14dp"
         app:srcCompat="@drawable/clear"
         android:layout_below="@+id/translations_toolbar"
         android:layout_alignParentEnd="true" />
+
+
 
 </RelativeLayout>

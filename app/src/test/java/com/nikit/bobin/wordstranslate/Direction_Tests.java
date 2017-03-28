@@ -50,6 +50,7 @@ public class Direction_Tests {
 
         assertEquals(new Language("fr"), direction.getFrom());
         assertEquals(new Language("en"), direction.getTo());
+        assertEquals("fr-en", direction.toString());
     }
 
     @Test

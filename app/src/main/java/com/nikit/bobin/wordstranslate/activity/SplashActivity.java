@@ -106,7 +106,12 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
-    private void setStatus(@StringRes int stringResource) {
-        splashScreenStatus.setText(stringResource);
+    private void setStatus(@StringRes final int stringResource) {
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                splashScreenStatus.setText(stringResource);
+            }
+        });
     }
 }

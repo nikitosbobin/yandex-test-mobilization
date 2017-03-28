@@ -69,7 +69,6 @@ public class YandexTranslator implements ITranslator {
                 translation.getOriginalText());
         Promise<TranslatedText, Throwable, Void> promise = httpSender
                 .sendRequestAsync(translateUrl, HttpMethod.GET, null)
-                //todo: add screening
                 .then(extractTranslation(translation));
 
         if (cache != null)

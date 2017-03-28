@@ -42,9 +42,9 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
 
             return result.toArray(new Language[result.size()]);
         } catch (JSONException e) {
-            throw new RuntimeException("Response body could not convert to JSONObject", e);
-        } catch (IOException e) {
-            throw new RuntimeException("Response body has IOException", e);
+            return new Language[0];
+        } catch (IOException | RuntimeException e) {
+            return new Language[0];
         }
     }
 
@@ -62,9 +62,9 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
                 return TranslatedText.fail(translation);
             return TranslatedText.success(text.getString(0), translation);
         } catch (JSONException e) {
-            throw new RuntimeException("Response body could not convert to JSONObject", e);
-        } catch (IOException e) {
-            throw new RuntimeException("Response body has IOException", e);
+            return TranslatedText.fail(translation);
+        } catch (IOException | RuntimeException e) {
+            return TranslatedText.fail(translation);
         }
     }
 
@@ -76,9 +76,9 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
             String lang = responseBody.getString("lang");
             return new Language(lang);
         } catch (JSONException e) {
-            throw new RuntimeException("Response body could not convert to JSONObject", e);
-        } catch (IOException e) {
-            throw new RuntimeException("Response body has IOException", e);
+            return null;
+        } catch (IOException | RuntimeException e) {
+            return null;
         }
     }
 
@@ -125,10 +125,10 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
 
     private static void ensureYandexApiResponseIsSuccess(JSONObject response) {
         try {
-            String code = response.getInt("code") + "";
-            if (code.charAt(0) != '2') //code from class 2xx is success
+            int code = response.getInt("code");
+            if (code >= 400) //code from class 2xx is success
                 throw new RuntimeException(
-                        String.format("Response not success, actual code is: %s", code));
+                        String.format("Response not success, actual code is: %d", code));
         } catch (JSONException e) {
             throw new RuntimeException("Response has not Yandex api code", e);
         }
