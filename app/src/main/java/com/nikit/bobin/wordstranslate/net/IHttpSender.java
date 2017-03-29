@@ -5,12 +5,15 @@ import android.support.annotation.Nullable;
 
 import org.jdeferred.Promise;
 
+import java.io.IOException;
+
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
 // not need tests
 // refactored
 public interface IHttpSender {
-    Promise<Response, Throwable, Void> sendRequestAsync(@NonNull String url,
-                                                        @NonNull HttpMethod method,
-                                                        @Nullable RequestBody body);
+    Response sendRequest(@NonNull String url,
+                         @NonNull HttpMethod method,
+                         @Nullable RequestBody body) throws IOException;
 }

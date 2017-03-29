@@ -64,17 +64,23 @@ public class YandexTranslator implements ITranslator {
         if (cache != null && cache.hasTranslation(translation))
             return createPromiseFromResult(cache.getTranslation(translation));
 
-        String translateUrl = uriFactory.translate(
+        final String translateUrl = uriFactory.translate(
                 translation.getDirection(),
                 translation.getOriginalText());
-        Promise<TranslatedText, Throwable, Void> promise = httpSender
-                .sendRequestAsync(translateUrl, HttpMethod.GET, null)
-                .then(extractTranslation(translation));
 
-        if (cache != null)
-            promise = promise.then(cache.addTranslationFilter());
+        return deferredManager.when(new Callable<TranslatedText>() {
+            public TranslatedText call() throws Exception {
+                Response response = httpSender.sendRequest(translateUrl, HttpMethod.GET, null);
 
-        return promise;
+                TranslatedText translatedText = responseExtractor.extractTranslation(response, translation);
+                response.close();
+
+                if (cache != null)
+                    cache.addTranslation(translatedText);
+
+                return translatedText;
+            }
+        });
     }
 
     @Override
@@ -82,32 +88,37 @@ public class YandexTranslator implements ITranslator {
         if (cache != null && cache.langsCached(ui))
             return createPromiseFromResult(cache.getLanguages(ui));
 
-        String getLangsUrl = uriFactory.getLangs(ui);
+        final String getLangsUrl = uriFactory.getLangs(ui);
 
-        Promise<Language[], Throwable, Void> promise = httpSender
-                .sendRequestAsync(getLangsUrl, HttpMethod.GET, null)
-                .then(extractLanguages());
+        return deferredManager.when(new Callable<Language[]>() {
+            public Language[] call() throws Exception {
+                Response response = httpSender.sendRequest(getLangsUrl, HttpMethod.GET, null);
+                Language[] languages = responseExtractor.extractLanguages(response);
+                response.close();
 
-        if (cache != null)
-            promise = promise.then(cache.addLanguagesFilter(ui));
-
-        return promise;
+                if (cache != null)
+                    cache.addLanguages(languages, ui);
+                return languages;
+            }
+        });
     }
 
     @Override
     public Promise<Language, Throwable, Void> detectLanguageAsync(String text) {
         Ensure.notNullOrEmpty(text, "text");
 
-        String detectLangUri = uriFactory.detectLang(text, new Language("ru"), new Language("en"));
+        final String detectLangUri = uriFactory.detectLang(text, new Language("ru"), new Language("en"));
 
-        return httpSender
-                .sendRequestAsync(detectLangUri, HttpMethod.GET, null)
-                .then(new DoneFilter<Response, Language>() {
-                    public Language filterDone(Response result) {
-                        Language language = responseExtractor.extractDetectedLanguage(result);
-                        return languagesDatabase.getLanguage(language.getKey(), ui);
-                    }
-                });
+        return deferredManager.when(new Callable<Language>() {
+            public Language call() throws Exception {
+                Response response = httpSender.sendRequest(detectLangUri, HttpMethod.GET, null);
+
+                Language language = responseExtractor.extractDetectedLanguage(response);
+                response.close();
+
+                return languagesDatabase.getLanguage(language.getKey(), ui);
+            }
+        });
     }
 
     @Override
@@ -118,48 +129,25 @@ public class YandexTranslator implements ITranslator {
         if (segments.length > 1) {
             return createPromiseFromResult(null);
         }
-        String getLookupUri = uriFactory.dictionaryLookup(translation.getDirection(), translation.getOriginalText());
+        final String getLookupUri = uriFactory.dictionaryLookup(translation.getDirection(), translation.getOriginalText());
 
-        return httpSender
-                .sendRequestAsync(getLookupUri, HttpMethod.GET, null)
-                .then(extractLookup(translation));
-    }
+        return deferredManager.when(new Callable<WordLookup>() {
+            public WordLookup call() throws Exception {
+                Response response = httpSender.sendRequest(getLookupUri, HttpMethod.GET, null);
 
+                WordLookup wordLookup = responseExtractor.extractWordLookup(response, translation);
+                response.close();
 
-    //todo: for this create promise factory
-    private <TResult> Promise<TResult, Throwable, Void> createPromiseFromResult(final TResult result) {
-        return deferredManager.when(new Callable<TResult>() {
-            @Override
-            public TResult call() throws Exception {
-                return result;
+                return wordLookup;
             }
         });
     }
 
-    private DoneFilter<Response, WordLookup> extractLookup(final Translation targetTranslation) {
-        return new DoneFilter<Response, WordLookup>() {
-            public WordLookup filterDone(Response result) {
-                WordLookup wordLookup = responseExtractor.extractWordLookup(result, targetTranslation);
-                return wordLookup;
+    private <TResult> Promise<TResult, Throwable, Void> createPromiseFromResult(final TResult result) {
+        return deferredManager.when(new Callable<TResult>() {
+            public TResult call() throws Exception {
+                return result;
             }
-        };
-    }
-
-    private DoneFilter<Response, TranslatedText> extractTranslation(final Translation targetTranslation) {
-        return new DoneFilter<Response, TranslatedText>() {
-            @Override
-            public TranslatedText filterDone(Response result) {
-                return responseExtractor.extractTranslation(result, targetTranslation);
-            }
-        };
-    }
-
-    private DoneFilter<Response, Language[]> extractLanguages() {
-        return new DoneFilter<Response, Language[]>() {
-            @Override
-            public Language[] filterDone(Response result) {
-                return responseExtractor.extractLanguages(result);
-            }
-        };
+        });
     }
 }

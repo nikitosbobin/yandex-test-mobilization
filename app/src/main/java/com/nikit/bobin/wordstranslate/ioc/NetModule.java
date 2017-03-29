@@ -26,8 +26,8 @@ public class NetModule {
 
     @Provides
     @Singleton
-    IHttpSender provideHttpSender(DeferredManager deferredManager, OkHttpClient httpClient, ILog log) {
-        return new HttpSender(httpClient, deferredManager, log);
+    IHttpSender provideHttpSender(OkHttpClient httpClient, ILog log) {
+        return new HttpSender(httpClient, log);
     }
 
     @Provides
