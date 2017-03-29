@@ -3,6 +3,7 @@ package com.nikit.bobin.wordstranslate.ioc;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.nikit.bobin.wordstranslate.AnimationsFactory;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.storage.LanguagesDatabase;
@@ -39,5 +40,11 @@ public class StorageModule {
     @Singleton
     SettingsProvider provideSettingsProvider(SharedPreferences preferences) {
         return new SettingsProvider(preferences);
+    }
+
+    @Provides
+    @Singleton
+    AnimationsFactory provideAnimationsFactory() {
+        return new AnimationsFactory();
     }
 }

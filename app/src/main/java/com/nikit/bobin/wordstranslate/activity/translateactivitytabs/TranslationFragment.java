@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.nikit.bobin.wordstranslate.AnimationsFactory;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.core.Strings;
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
@@ -58,10 +58,14 @@ public class TranslationFragment extends Fragment
     SettingsProvider settingsProvider;
     @Inject
     NetworkConnectionInfoProvider networkConnectionInfoProvider;
+    @Inject
+    AnimationsFactory animationsFactory;
     private TranslatedText currentTranslation;
     private Promise<TranslatedText, Throwable, Void> currentTranslationPromise;
     private Promise<Language, Throwable, Void> currentPredictionPromise;
     private Promise<WordLookup, Throwable, Void> currentLookupPromise;
+    private YoYo.AnimationComposer translationCardOutAnimation;
+    private YoYo.AnimationComposer translationCardInAnimation;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -71,6 +75,16 @@ public class TranslationFragment extends Fragment
         // Dependency and views injection
         IocSetup.getComponent().injectTranslationFragment(this);
         ButterKnife.bind(this, view);
+
+        translationCardOutAnimation = animationsFactory
+                .createSlideOutDownAnimation(300)
+                .onEnd(new YoYo.AnimatorCallback() {
+                    public void call(Animator animator) {
+                        translationCard.setVisibility(View.GONE);
+                    }
+                });
+        translationCardInAnimation = animationsFactory
+                .createSlideInUpAnimation(300);
 
         selectorView.setOnLanguagesChangeListener(this);
         return view;
@@ -157,23 +171,14 @@ public class TranslationFragment extends Fragment
     }
 
     private void clearTranslationCard() {
-        YoYo.with(Techniques.SlideOutDown)
-                .duration(300)
-                .onEnd(new YoYo.AnimatorCallback() {
-                    public void call(Animator animator) {
-                        translationCard.setVisibility(View.GONE);
-                    }
-                })
-                .playOn(translationCard);
+        translationCardOutAnimation.playOn(translationCard);
     }
 
     public void fillTranslationCard(TranslatedText translatedText) {
         translationCard.fillTranslation(translatedText);
         if (translationCard.getVisibility() != View.VISIBLE) {
             translationCard.setVisibility(View.VISIBLE);
-            YoYo.with(Techniques.SlideInUp)
-                    .duration(300)
-                    .playOn(translationCard);
+            translationCardInAnimation.playOn(translationCard);
         }
     }
 

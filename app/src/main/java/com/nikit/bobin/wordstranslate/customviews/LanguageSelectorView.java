@@ -11,8 +11,8 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.nikit.bobin.wordstranslate.AnimationsFactory;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.core.Ensure;
 import com.nikit.bobin.wordstranslate.core.Strings;
@@ -52,7 +52,8 @@ public class LanguageSelectorView extends RelativeLayout implements
     Language ui;
     @Inject
     ILog log;
-
+    @Inject
+    AnimationsFactory animationsFactory;
     private ArrayList<Language> recentLanguages;
 
     private Language languageFrom;
@@ -87,8 +88,8 @@ public class LanguageSelectorView extends RelativeLayout implements
         IocSetup.getComponent().injectSelectorView(this);
         ButterKnife.bind(this);
 
-        rotateAnimation = YoYo.with(new RotateAnimator()).duration(300);
-        fadeInAnimation = YoYo.with(Techniques.FadeIn).duration(300);
+        rotateAnimation = animationsFactory.createRotateAnimation(300);
+        fadeInAnimation = animationsFactory.createFadeInAnimation(300);
 
         createPopupMenus();
         loadRecentTranslationsLanguages();
