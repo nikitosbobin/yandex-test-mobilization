@@ -41,9 +41,7 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
             }
 
             return result.toArray(new Language[result.size()]);
-        } catch (JSONException e) {
-            return new Language[0];
-        } catch (IOException | RuntimeException e) {
+        } catch (Exception e) {
             return new Language[0];
         }
     }
@@ -61,29 +59,30 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
             if (text.length() == 0)
                 return TranslatedText.fail(translation);
             return TranslatedText.success(text.getString(0), translation);
-        } catch (JSONException e) {
-            return TranslatedText.fail(translation);
-        } catch (IOException | RuntimeException e) {
+        } catch (Exception e) {
             return TranslatedText.fail(translation);
         }
     }
 
     @Override
     public Language extractDetectedLanguage(Response response) {
+        Ensure.notNull(response, "response");
+
         try {
             JSONObject responseBody = new JSONObject(response.body().string());
             ensureYandexApiResponseIsSuccess(responseBody);
             String lang = responseBody.getString("lang");
             return new Language(lang);
-        } catch (JSONException e) {
-            return null;
-        } catch (IOException | RuntimeException e) {
+        } catch (Exception e) {
             return null;
         }
     }
 
     @Override
     public WordLookup extractWordLookup(Response response, Translation translation) {
+        Ensure.notNull(response, "response");
+        Ensure.notNull(translation, "translation");
+
         try {
             JSONObject responseBody = new JSONObject(response.body().string());
             JSONArray defs = responseBody.getJSONArray("def");

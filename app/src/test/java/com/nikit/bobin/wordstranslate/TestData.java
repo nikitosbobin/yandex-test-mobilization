@@ -1,7 +1,11 @@
 package com.nikit.bobin.wordstranslate;
 
+import com.nikit.bobin.wordstranslate.core.Strings;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
+import com.nikit.bobin.wordstranslate.translating.models.SynonymGroup;
+import com.nikit.bobin.wordstranslate.translating.models.Translation;
+import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import java.util.Locale;
 
@@ -54,7 +58,7 @@ public class TestData {
         Language languageEn = new Language("en", "English");
         Language languageFr = new Language("fr", "French");
 
-        return new Language[] {languageRu, languageEn, languageFr};
+        return new Language[]{languageRu, languageEn, languageFr};
     }
 
     public static String createDirectionsJson() {
@@ -62,7 +66,7 @@ public class TestData {
     }
 
     public static Direction[] getExtractedDirections() {
-        return new Direction[] {
+        return new Direction[]{
                 Direction.parse("ru-en"),
                 Direction.parse("ru-fr"),
                 Direction.parse("en-fr"),
@@ -70,5 +74,106 @@ public class TestData {
                 Direction.parse("fr-en"),
                 Direction.parse("fr-ru")
         };
+    }
+
+    public static String getCorrectDetectionJson() {
+        return "{\"code\":200,\"lang\":\"en\"}";
+    }
+
+    public static String getCorrectLookupJson() {
+        return "{\n" +
+                "    \"head\": {},\n" +
+                "    \"def\": [\n" +
+                "        {\n" +
+                "            \"text\": \"привет\",\n" +
+                "            \"pos\": \"noun\",\n" +
+                "            \"anm\": \"неодуш\",\n" +
+                "            \"tr\": [\n" +
+                "                {\n" +
+                "                    \"text\": \"hi\",\n" +
+                "                    \"pos\": \"noun\",\n" +
+                "                    \"syn\": [\n" +
+                "                        {\n" +
+                "                            \"text\": \"hello\",\n" +
+                "                            \"pos\": \"noun\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"text\": \"hallo\",\n" +
+                "                            \"pos\": \"noun\"\n" +
+                "                        },\n" +
+                "                        {\n" +
+                "                            \"text\": \"salutation\",\n" +
+                "                            \"pos\": \"noun\"\n" +
+                "                        }\n" +
+                "                    ],\n" +
+                "                    \"mean\": [\n" +
+                "                        {\n" +
+                "                            \"text\": \"приветствие\"\n" +
+                "                        }\n" +
+                "                    ]\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"text\": \"hey\",\n" +
+                "                    \"pos\": \"noun\",\n" +
+                "                    \"mean\": [\n" +
+                "                        {\n" +
+                "                            \"text\": \"ну\"\n" +
+                "                        }\n" +
+                "                    ]\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"text\": \"regards\",\n" +
+                "                    \"pos\": \"noun\"\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"text\": \"hail\",\n" +
+                "                    \"pos\": \"noun\",\n" +
+                "                    \"mean\": [\n" +
+                "                        {\n" +
+                "                            \"text\": \"оклик\"\n" +
+                "                        }\n" +
+                "                    ]\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"text\": \"howdy\",\n" +
+                "                    \"pos\": \"noun\"\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"text\": \"remembrance\",\n" +
+                "                    \"pos\": \"noun\"\n" +
+                "                }\n" +
+                "            ]\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+    }
+
+    public static WordLookup getExtractedWordLookup() {
+        SynonymGroup[] synonymGroups = new SynonymGroup[6];
+        synonymGroups[0] = new SynonymGroup(
+                new String[]{"приветствие"},
+                new String[]{"hi", "hello", "hallo", "salutation"}
+        );
+        synonymGroups[1] = new SynonymGroup(
+                new String[]{"ну"},
+                new String[]{"hey"}
+        );
+        synonymGroups[2] = new SynonymGroup(
+                new String[0],
+                new String[]{"regards"}
+        );
+        synonymGroups[3] = new SynonymGroup(
+                new String[]{"оклик"},
+                new String[]{"hail"}
+        );
+        synonymGroups[4] = new SynonymGroup(
+                new String[0],
+                new String[]{"howdy"}
+        );
+        synonymGroups[5] = new SynonymGroup(
+                new String[0],
+                new String[]{"remembrance"}
+        );
+        return new WordLookup(new Translation("привет", "ru-en"), synonymGroups);
     }
 }
