@@ -2,24 +2,19 @@ package com.nikit.bobin.wordstranslate.activity;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
-import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTranslationsFragment;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.SettingsFragment;
-import com.nikit.bobin.wordstranslate.adapters.TranslateActivityPagerAdapter;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment;
+import com.nikit.bobin.wordstranslate.adapters.TranslateActivityPagerAdapter;
+import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
-import com.nikit.bobin.wordstranslate.translating.models.Language;
-
-import org.jdeferred.DoneCallback;
 
 import javax.inject.Inject;
 
@@ -58,7 +53,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         // Dependency and views injection
         ButterKnife.bind(this);
-        App.getComponent().injectsMainActivity(this);
+        IocSetup.getComponent().injectsMainActivity(this);
         // fragments initializing
         Fragment[] fragments = new Fragment[]{
                 new TranslationFragment(),

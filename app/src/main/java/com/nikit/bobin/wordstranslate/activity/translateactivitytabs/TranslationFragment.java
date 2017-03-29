@@ -2,7 +2,6 @@ package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
 import android.animation.Animator;
 import android.os.Bundle;
-import android.os.NetworkOnMainThreadException;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -13,14 +12,14 @@ import android.widget.ImageView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.core.Strings;
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
 import com.nikit.bobin.wordstranslate.customviews.TranslationCard;
+import com.nikit.bobin.wordstranslate.ioc.IocSetup;
+import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
-import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
@@ -70,7 +69,7 @@ public class TranslationFragment extends Fragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_translation, container, false);
         // Dependency and views injection
-        App.getComponent().injectTranslationFragment(this);
+        IocSetup.getComponent().injectTranslationFragment(this);
         ButterKnife.bind(this, view);
 
         selectorView.setOnLanguagesChangeListener(this);

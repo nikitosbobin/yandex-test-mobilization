@@ -7,11 +7,12 @@ import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
+import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
+import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
@@ -31,6 +32,8 @@ public class SplashActivity extends AppCompatActivity {
     @Inject
     ILanguagesDatabase languagesDatabase;
     @Inject
+    ITranslationsDatabase translationsDatabase;
+    @Inject
     ITranslator translator;
     @Inject
     SettingsProvider settingsProvider;
@@ -49,12 +52,18 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        // Configuring DI container
+        IocSetup.setup(this);
+
         // Dependency and views injection
-        App.getComponent().injectSplashScreen(this);
+        IocSetup.getComponent().injectSplashScreen(this);
         ButterKnife.bind(this);
 
+        // Connecting to databases
+        translationsDatabase.connect(this);
+        languagesDatabase.connect(this);
+
         if (languagesDatabase.isLanguagesSaved(ui)) {
-            setStatus(R.string.starting_app);
             openMainActivityWithDelay(200);
         } else {
             if (connectionInfoProvider.isConnectedToInternet()) {

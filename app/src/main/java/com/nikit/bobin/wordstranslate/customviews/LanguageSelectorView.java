@@ -13,10 +13,10 @@ import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.core.Ensure;
 import com.nikit.bobin.wordstranslate.core.Strings;
+import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
@@ -84,7 +84,7 @@ public class LanguageSelectorView extends RelativeLayout implements
         inflate(getContext(), R.layout.language_selector_layout, this);
         if (isInEditMode()) return;
 
-        App.getComponent().injectSelectorView(this);
+        IocSetup.getComponent().injectSelectorView(this);
         ButterKnife.bind(this);
 
         rotateAnimation = YoYo.with(new RotateAnimator()).duration(300);
@@ -156,11 +156,13 @@ public class LanguageSelectorView extends RelativeLayout implements
 
     @OnClick(R.id.from_language_view)
     public void showFromLanguagePopupMenu() {
+        languageToMenu.dismiss();
         languageFromMenu.show();
     }
 
     @OnClick(R.id.to_language_view)
     public void showToLanguagePopupMenu() {
+        languageFromMenu.dismiss();
         languageToMenu.show();
     }
 
@@ -189,18 +191,22 @@ public class LanguageSelectorView extends RelativeLayout implements
         int itemId = item.getItemId();
         switch (groupId) {
             case GROUP_ID_RECENT_FROM_LANGUAGE_MENU:
+                languageFromMenu.dismiss();
                 language = recentLanguages.get(itemId);
                 setLanguageFrom(language, true);
                 break;
             case GROUP_ID_RECENT_TO_LANGUAGE_MENU:
+                languageToMenu.dismiss();
                 language = recentLanguages.get(itemId);
                 setLanguageTo(language, true);
                 break;
             case GROUP_ID_FROM_LANGUAGE_MENU:
+                languageFromMenu.dismiss();
                 language = supportedLanguages[itemId];
                 setLanguageFrom(language, true);
                 break;
             case GROUP_ID_TO_LANGUAGE_MENU:
+                languageToMenu.dismiss();
                 language = supportedLanguages[itemId];
                 setLanguageTo(language, true);
                 break;

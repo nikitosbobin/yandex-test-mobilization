@@ -2,7 +2,6 @@ package com.nikit.bobin.wordstranslate.ioc;
 
 import android.content.Context;
 
-import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.net.IHttpSender;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
@@ -28,16 +27,16 @@ import dagger.Provides;
 // refactored
 @Module
 public class TranslationModule {
-    private final App app;
+    private final Context context;
 
-    public TranslationModule(App app) {
-        this.app = app;
+    public TranslationModule(Context context) {
+        this.context = context;
     }
 
     @Provides
     @Singleton
     public Context provideContext() {
-        return app;
+        return context;
     }
 
     @Provides

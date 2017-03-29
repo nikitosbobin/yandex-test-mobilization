@@ -1,6 +1,5 @@
 package com.nikit.bobin.wordstranslate.ioc;
 
-import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.activity.MainActivity;
 import com.nikit.bobin.wordstranslate.activity.SplashActivity;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTranslationsFragment;
@@ -22,6 +21,5 @@ public interface AppComponent {
     void injectTranslationFragment(TranslationFragment fragment);
     void injectFavoriteTranslationsFragment(FavoriteTranslationsFragment fragment);
     void injectSettingsFragment(SettingsFragment fragment);
-    void injectApp(App app);
     void injectSelectorView(LanguageSelectorView languageSelectorView);
 }

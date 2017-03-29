@@ -7,13 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
+import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
 
@@ -53,7 +52,7 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         // Dependency and views injection
-        App.getComponent().injectSettingsFragment(this);
+        IocSetup.getComponent().injectSettingsFragment(this);
         ButterKnife.bind(this, view);
         // initializing switches values
         languagePredictSwitch.setChecked(settingsProvider.isEnableLangPrediction());

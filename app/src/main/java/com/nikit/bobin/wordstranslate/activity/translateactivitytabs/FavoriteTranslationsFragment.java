@@ -13,10 +13,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.nikit.bobin.wordstranslate.App;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.adapters.TranslationHistoryAdapter;
 import com.nikit.bobin.wordstranslate.customviews.CustomToggle;
+import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.storage.AbstractDatabaseOneTableContext;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
@@ -54,7 +54,7 @@ public class FavoriteTranslationsFragment extends Fragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorite, container, false);
         // Dependency and views injection
-        App.getComponent().injectFavoriteTranslationsFragment(this);
+        IocSetup.getComponent().injectFavoriteTranslationsFragment(this);
         ButterKnife.bind(this, view);
 
         adapter = new TranslationHistoryAdapter(getContext(), translationsDatabase);
