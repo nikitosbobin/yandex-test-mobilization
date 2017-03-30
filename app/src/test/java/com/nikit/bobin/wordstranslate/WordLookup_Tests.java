@@ -6,6 +6,7 @@ import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import org.junit.Test;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertSame;
@@ -57,5 +58,43 @@ public class WordLookup_Tests {
         WordLookup wordLookup = new WordLookup(translation, synonymGroups);
 
         assertFalse(wordLookup.isEmpty());
+    }
+
+    @Test
+    public void equals_should_correctly_detect_equality() {
+        Translation translation1 = new Translation("text", "en-fr");
+        Translation translation2 = new Translation("text", "en-fr");
+        SynonymGroup[] synonymGroups1 = new SynonymGroup[] {
+                new SynonymGroup(new String[] {"abc", "def"}, new String[] {"ghi", "jkl"}),
+                new SynonymGroup(new String[] {"nop", "qrs"}, new String[] {"tuv", "wxy"})
+        };
+        SynonymGroup[] synonymGroups2 = new SynonymGroup[] {
+                new SynonymGroup(new String[] {"abc", "def"}, new String[] {"ghi", "jkl"}),
+                new SynonymGroup(new String[] {"nop", "qrs"}, new String[] {"tuv", "wxy"})
+        };
+
+        WordLookup wordLookup1 = new WordLookup(translation1, synonymGroups1);
+        WordLookup wordLookup2 = new WordLookup(translation2, synonymGroups2);
+
+        assertTrue(wordLookup1.equals(wordLookup2));
+    }
+
+    @Test
+    public void hashCode_should_calculate_correctly_hash_code() {
+        Translation translation1 = new Translation("text", "en-fr");
+        Translation translation2 = new Translation("text", "en-fr");
+        SynonymGroup[] synonymGroups1 = new SynonymGroup[] {
+                new SynonymGroup(new String[] {"abc", "def"}, new String[] {"ghi", "jkl"}),
+                new SynonymGroup(new String[] {"nop", "qrs"}, new String[] {"tuv", "wxy"})
+        };
+        SynonymGroup[] synonymGroups2 = new SynonymGroup[] {
+                new SynonymGroup(new String[] {"abc", "def"}, new String[] {"ghi", "jkl"}),
+                new SynonymGroup(new String[] {"nop", "qrs"}, new String[] {"tuv", "wxy"})
+        };
+
+        WordLookup wordLookup1 = new WordLookup(translation1, synonymGroups1);
+        WordLookup wordLookup2 = new WordLookup(translation2, synonymGroups2);
+
+        assertEquals(wordLookup1.hashCode(), wordLookup2.hashCode());
     }
 }
