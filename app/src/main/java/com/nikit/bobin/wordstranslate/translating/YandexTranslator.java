@@ -1,10 +1,8 @@
 package com.nikit.bobin.wordstranslate.translating;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.nikit.bobin.wordstranslate.core.Ensure;
-import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.HttpMethod;
 import com.nikit.bobin.wordstranslate.net.IHttpSender;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
@@ -14,8 +12,6 @@ import com.nikit.bobin.wordstranslate.translating.models.Translation;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import org.jdeferred.DeferredManager;
-import org.jdeferred.DoneFilter;
-import org.jdeferred.FailCallback;
 import org.jdeferred.Promise;
 
 import java.util.concurrent.Callable;
@@ -125,9 +121,8 @@ public class YandexTranslator implements ITranslator {
     public Promise<WordLookup, Throwable, Void> getWordLookupAsync(final Translation translation) {
         Ensure.notNull(translation, "translation");
 
-        String[] segments = translation.getOriginalText().split(" ");
-        if (segments.length > 1) {
-            return createPromiseFromResult(null);
+        if (translation.getWordCount() > 1) {
+            return createPromiseFromResult(WordLookup.empty());
         }
         final String getLookupUri = uriFactory.dictionaryLookup(translation.getDirection(), translation.getOriginalText());
 

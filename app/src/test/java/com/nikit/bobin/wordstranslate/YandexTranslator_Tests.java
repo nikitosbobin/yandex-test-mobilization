@@ -10,6 +10,7 @@ import com.nikit.bobin.wordstranslate.translating.YandexTranslatorCache;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
+import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import org.jdeferred.DeferredManager;
 import org.jdeferred.DoneCallback;
@@ -23,6 +24,8 @@ import java.io.IOException;
 import okhttp3.Response;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertSame;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -227,9 +230,49 @@ public class YandexTranslator_Tests {
         translator.detectLanguageAsync(null);
     }
 
+    @Test
+    public void detectLanguageAsync_should_send_request() throws Exception {
+        translator = createTranslator(false);
+        Response response = TestData.createFakeResponse(200, "response", "http://path");
+        when(httpSender.sendRequest("http://path", HttpMethod.GET, null)).thenReturn(response);
+        when(uriFactory.detectLang("text", new Language("ru"), new Language("en"))).thenReturn("http://path");
+
+        translator.detectLanguageAsync("text").waitSafely();
+
+        verify(responseExtractor).extractDetectedLanguage(response);
+    }
+
     @Test(expected = NullPointerException.class)
     public void getWordLookupAsync_should_fail_when_translation_null() {
         translator.getWordLookupAsync(null);
+    }
+
+    @Test
+    public void getWordLookupAsync_should_return_empty_lookup_when_translation_has_more_than_one_word() {
+        Translation translation = new Translation("word word", "en-ru");
+        translator = createTranslator(false);
+
+        Promise<WordLookup, Throwable, Void> promise = translator.getWordLookupAsync(translation);
+        WordLookup actualLookup = extractPromiseResult(promise);
+
+        assertTrue(actualLookup.isEmpty());
+    }
+
+    @Test
+    public void getWordLookupAsync_should_return_correct_lookup() throws IOException {
+        WordLookup wordLookup = mock(WordLookup.class);
+        Translation translation = new Translation("word", "en-ru");
+        translator = createTranslator(false);
+        when(uriFactory.dictionaryLookup(translation.getDirection(), translation.getOriginalText()))
+                .thenReturn("http://path");
+        Response response = TestData.createFakeResponse(200, "response", "http://path");
+        when(httpSender.sendRequest("http://path", HttpMethod.GET, null)).thenReturn(response);
+        when(responseExtractor.extractWordLookup(response, translation)).thenReturn(wordLookup);
+
+        Promise<WordLookup, Throwable, Void> promise = translator.getWordLookupAsync(translation);
+        WordLookup actualLookup = extractPromiseResult(promise);
+
+        assertSame(wordLookup, actualLookup);
     }
 
     private <T> T extractPromiseResult(Promise<T, Throwable, Void> promise) {
