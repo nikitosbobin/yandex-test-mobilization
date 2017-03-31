@@ -65,6 +65,7 @@ public class LanguageSelectorView extends RelativeLayout implements
     private YoYo.AnimationComposer rotateAnimation;
     private YoYo.AnimationComposer fadeInAnimation;
     private OnLanguagesChangeListener onLanguagesChangeListener;
+    private OnLanguagesSwapListener onLanguagesSwapListener;
 
     public LanguageSelectorView(Context context) {
         super(context);
@@ -182,7 +183,8 @@ public class LanguageSelectorView extends RelativeLayout implements
         Language tmpTo = languageTo;
         setLanguageTo(languageFrom, false);
         setLanguageFrom(tmpTo, false);
-        notifyChange();
+        if (onLanguagesSwapListener != null)
+            onLanguagesSwapListener.onLanguagesSwap(getDirection());
     }
 
     @Override
@@ -250,7 +252,7 @@ public class LanguageSelectorView extends RelativeLayout implements
         edit.apply();
     }
 
-    private void setLanguageTo(Language to, boolean needNotify) {
+    public void setLanguageTo(Language to, boolean needNotify) {
         languageTo = to;
         languageToView.setText(languageTo.getTitle());
         if (needNotify)
@@ -265,6 +267,10 @@ public class LanguageSelectorView extends RelativeLayout implements
         this.onLanguagesChangeListener = onLanguagesChangeListener;
     }
 
+    public void setOnLanguagesSwapListener(OnLanguagesSwapListener onLanguagesSwapListener) {
+        this.onLanguagesSwapListener = onLanguagesSwapListener;
+    }
+
     private void notifyChange() {
         if (onLanguagesChangeListener != null)
             onLanguagesChangeListener.onLanguagesChange(getDirection());
@@ -272,5 +278,9 @@ public class LanguageSelectorView extends RelativeLayout implements
 
     public interface OnLanguagesChangeListener {
         void onLanguagesChange(Direction direction);
+    }
+
+    public interface OnLanguagesSwapListener {
+        void onLanguagesSwap(Direction newSwappedDirection);
     }
 }

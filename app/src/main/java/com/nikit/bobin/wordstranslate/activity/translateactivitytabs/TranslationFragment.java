@@ -19,6 +19,7 @@ import com.nikit.bobin.wordstranslate.customviews.TranslationCard;
 import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
+import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
@@ -29,6 +30,7 @@ import com.nikit.bobin.wordstranslate.translating.models.Translation;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import org.jdeferred.DoneCallback;
+import org.jdeferred.FailCallback;
 import org.jdeferred.Promise;
 
 import javax.inject.Inject;
@@ -39,7 +41,8 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
 public class TranslationFragment extends Fragment
-        implements LanguageSelectorView.OnLanguagesChangeListener {
+        implements LanguageSelectorView.OnLanguagesChangeListener,
+        LanguageSelectorView.OnLanguagesSwapListener {
     @BindView(R.id.translation_input)
     EditText input;
     @BindView(R.id.clear_button)
@@ -55,11 +58,15 @@ public class TranslationFragment extends Fragment
     @Inject
     ITranslationsDatabase translationsDatabase;
     @Inject
+    ILanguagesDatabase languagesDatabase;
+    @Inject
     SettingsProvider settingsProvider;
     @Inject
     NetworkConnectionInfoProvider networkConnectionInfoProvider;
     @Inject
     AnimationsFactory animationsFactory;
+    @Inject
+    Language ui;
     private TranslatedText currentTranslation;
     private Promise<TranslatedText, Throwable, Void> currentTranslationPromise;
     private Promise<Language, Throwable, Void> currentPredictionPromise;
@@ -87,20 +94,22 @@ public class TranslationFragment extends Fragment
                 .createSlideInUpAnimation(300);
 
         selectorView.setOnLanguagesChangeListener(this);
+        selectorView.setOnLanguagesSwapListener(this);
         return view;
     }
 
     @OnTextChanged(R.id.translation_input)
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         networkConnectionInfoProvider.notifyIfNoConnection(input);
-        if (s.length() == 0) {
+        if (s == null || s.length() == 0) {
             clearButton.setVisibility(View.GONE);
             clearTranslationCard();
             return;
         }
-        log.debug("s: %s start: %d before %d count: %d", s.toString(), start, before, count);
+        String text = s.toString().trim();
+        log.debug("s: %s start: %d before %d count: %d", text, start, before, count);
         clearButton.setVisibility(View.VISIBLE);
-        Translation targetTranslation = new Translation(s.toString(), selectorView.getDirection());
+        Translation targetTranslation = new Translation(text, selectorView.getDirection());
         if (currentTranslation == null || !targetTranslation.equals(currentTranslation.getTranslation())) {
             tryDetectLang(targetTranslation);
             performTranslation(targetTranslation);
@@ -108,7 +117,10 @@ public class TranslationFragment extends Fragment
     }
 
     private void performTranslation(final Translation targetTranslation) {
-        if (currentTranslationPromise != null && !currentTranslationPromise.isResolved()) return;
+        if (currentTranslationPromise != null
+                && !currentTranslationPromise.isResolved()
+                && !currentTranslationPromise.isRejected())
+            return;
         currentTranslationPromise = translator
                 .translateAsync(targetTranslation)
                 .then(new DoneCallback<TranslatedText>() {
@@ -130,7 +142,9 @@ public class TranslationFragment extends Fragment
     }
 
     private void tryLoadLookup(TranslatedText result) {
-        if (currentLookupPromise != null && !currentLookupPromise.isResolved())
+        if (currentLookupPromise != null
+                && !currentLookupPromise.isResolved()
+                && !currentLookupPromise.isRejected())
             return;
         currentLookupPromise = translator
                 .getWordLookupAsync(result.getTranslation())
@@ -143,14 +157,17 @@ public class TranslationFragment extends Fragment
     }
 
     private void tryDetectLang(Translation targetTranslation) {
-        if ((currentPredictionPromise != null && !currentPredictionPromise.isResolved())
+        if ((currentPredictionPromise != null
+                && !currentPredictionPromise.isResolved()
+                && !currentPredictionPromise.isRejected())
                 || !needPredict() || targetTranslation.getWordCount() != 1)
             return;
         currentPredictionPromise = translator
                 .detectLanguageAsync(targetTranslation.getOriginalText())
                 .then(new DoneCallback<Language>() {
                     public void onDone(final Language result) {
-                        selectorView.setLanguageFrom(result, true);
+                        if (result != null)
+                            selectorView.setLanguageFrom(result, true);
                     }
                 });
     }
@@ -188,6 +205,10 @@ public class TranslationFragment extends Fragment
             currentTranslation = item;
             fillTranslationCard(item);
             input.setText(item.getTranslation().getOriginalText());
+            Language to = item.getTranslation().getDirection().getTo();
+            to = languagesDatabase.getLanguage(to.getKey(), ui);
+            if (to != null)
+                selectorView.setLanguageTo(to, false);
         }
     }
 
@@ -202,8 +223,16 @@ public class TranslationFragment extends Fragment
     @Override
     public void onLanguagesChange(Direction direction) {
         Editable text = input.getText();
-        if (text.length() == 0) return;
+        if (direction == null || text == null || text.length() == 0) return;
         Translation targetTranslation = new Translation(text.toString(), direction);
         performTranslation(targetTranslation);
+    }
+
+    @Override
+    public void onLanguagesSwap(Direction newSwappedDirection) {
+        if (currentTranslation != null) {
+            input.setText(currentTranslation.getTranslatedText());
+            onLanguagesChange(newSwappedDirection);
+        }
     }
 }

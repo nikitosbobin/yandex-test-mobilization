@@ -41,22 +41,25 @@ public class YandexTranslatorCache {
     }
 
     public TranslatedText getTranslation(Translation translation) {
-        if (hasTranslation(translation))
+        if (translation != null && hasTranslation(translation))
             return getTranslations().get(translation);
         return null;
     }
 
     public boolean hasTranslation(Translation translation) {
+        if (translation == null) return false;
         return getTranslations().containsKey(translation);
     }
 
     public void addTranslation(TranslatedText result) {
-        if (result.isSuccess() && !hasTranslation(result.getTranslation())) {
+        if (result != null && result.isSuccess() && !hasTranslation(result.getTranslation())) {
             getTranslations().put(result.getTranslation(), result);
         }
     }
 
     public void addLanguages(Language[] result, Language ui) {
+        if (result == null || ui == null)
+            return;
         if (!langsCached(ui)) {
             this.languages = result;
             languagesUi = ui;
@@ -85,7 +88,7 @@ public class YandexTranslatorCache {
     }
 
     public Language[] getLanguages(Language ui) {
-        if (langsCached(ui)) {
+        if (ui != null && langsCached(ui)) {
             if (languages == null) {
                 languages = languagesDatabase.getLanguages(false);
                 languagesUi = ui;

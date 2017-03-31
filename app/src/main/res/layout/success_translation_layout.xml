@@ -26,17 +26,23 @@
                 android:id="@+id/original_text_label"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
-                android:layout_marginTop="20dp" />
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:maxLines="1"
+                android:layout_toStartOf="@+id/direction_label" />
 
             <TextView
                 android:text="@string/test"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/light_grey"
+                android:maxLines="1"
+                android:layout_marginEnd="10dp"
                 android:id="@+id/translated_text_label"
                 android:layout_below="@+id/original_text_label"
                 android:layout_alignStart="@+id/original_text_label"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:layout_toStartOf="@+id/star_button" />
 
             <TextView
                 android:text="@string/test"

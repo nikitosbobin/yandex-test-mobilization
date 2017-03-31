@@ -65,16 +65,20 @@ public class YandexTranslator implements ITranslator {
                 translation.getOriginalText());
 
         return deferredManager.when(new Callable<TranslatedText>() {
-            public TranslatedText call() throws Exception {
-                Response response = httpSender.sendRequest(translateUrl, HttpMethod.GET, null);
+            public TranslatedText call() {
+                try {
+                    Response response = httpSender.sendRequest(translateUrl, HttpMethod.GET, null);
 
-                TranslatedText translatedText = responseExtractor.extractTranslation(response, translation);
-                response.close();
+                    TranslatedText translatedText = responseExtractor.extractTranslation(response, translation);
+                    response.close();
 
-                if (cache != null)
-                    cache.addTranslation(translatedText);
+                    if (cache != null)
+                        cache.addTranslation(translatedText);
 
-                return translatedText;
+                    return translatedText;
+                } catch (Exception e) {
+                    return TranslatedText.fail(translation);
+                }
             }
         });
     }
@@ -106,13 +110,18 @@ public class YandexTranslator implements ITranslator {
         final String detectLangUri = uriFactory.detectLang(text, new Language("ru"), new Language("en"));
 
         return deferredManager.when(new Callable<Language>() {
-            public Language call() throws Exception {
-                Response response = httpSender.sendRequest(detectLangUri, HttpMethod.GET, null);
+            public Language call() {
+                try {
+                    Response response = httpSender.sendRequest(detectLangUri, HttpMethod.GET, null);
 
-                Language language = responseExtractor.extractDetectedLanguage(response);
-                response.close();
-
-                return languagesDatabase.getLanguage(language.getKey(), ui);
+                    Language language = responseExtractor.extractDetectedLanguage(response);
+                    response.close();
+                    if (language == null)
+                        return null;
+                    return languagesDatabase.getLanguage(language.getKey(), ui);
+                } catch(Exception e) {
+                    return null;
+                }
             }
         });
     }
@@ -127,13 +136,17 @@ public class YandexTranslator implements ITranslator {
         final String getLookupUri = uriFactory.dictionaryLookup(translation.getDirection(), translation.getOriginalText());
 
         return deferredManager.when(new Callable<WordLookup>() {
-            public WordLookup call() throws Exception {
-                Response response = httpSender.sendRequest(getLookupUri, HttpMethod.GET, null);
+            public WordLookup call() {
+                try {
+                    Response response = httpSender.sendRequest(getLookupUri, HttpMethod.GET, null);
 
-                WordLookup wordLookup = responseExtractor.extractWordLookup(response, translation);
-                response.close();
+                    WordLookup wordLookup = responseExtractor.extractWordLookup(response, translation);
+                    response.close();
 
-                return wordLookup;
+                    return wordLookup;
+                } catch (Exception e) {
+                    return WordLookup.empty();
+                }
             }
         });
     }

@@ -76,26 +76,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/about_button"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/clear_favorite_button"
         android:layout_alignEnd="@+id/clear_favorite_button"
-        android:layout_marginBottom="25dp" />
+        android:layout_marginTop="15dp" />
 
     <Button
         android:text="@string/clear_favorites"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/clear_favorite_button"
-        android:layout_above="@+id/about_button"
+        android:layout_alignTop="@+id/clear_history_button"
         android:layout_alignEnd="@+id/clear_history_button"
-        android:layout_marginBottom="25dp" />
+        android:layout_marginTop="65dp" />
 
     <Button
         android:text="@string/clear_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/clear_history_button"
-        android:layout_above="@+id/clear_favorite_button"
+        android:layout_below="@+id/caching_switch"
         android:layout_alignEnd="@+id/caching_switch"
-        android:layout_marginBottom="25dp" />
+        android:layout_marginTop="70dp" />
 
 </RelativeLayout>

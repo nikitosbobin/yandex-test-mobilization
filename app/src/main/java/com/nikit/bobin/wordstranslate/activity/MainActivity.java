@@ -1,11 +1,16 @@
 package com.nikit.bobin.wordstranslate.activity;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTranslationsFragment;
@@ -13,6 +18,7 @@ import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.SettingsFra
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment;
 import com.nikit.bobin.wordstranslate.adapters.TranslateActivityPagerAdapter;
 import com.nikit.bobin.wordstranslate.ioc.IocSetup;
+import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
 
@@ -44,7 +50,9 @@ public class MainActivity extends AppCompatActivity
     NetworkConnectionInfoProvider networkConnectionInfoProvider;
     @Inject
     ITranslator translator;
-
+    @Inject
+    ILog log;
+    private InputMethodManager inputMethodManager;
     private TranslationFragment translationFragment;
 
     @Override
@@ -73,6 +81,7 @@ public class MainActivity extends AppCompatActivity
         tabHost.addTab(tabHost.newTab().setIcon(favoriteTabIcon).setTabListener(this));
         tabHost.addTab(tabHost.newTab().setIcon(settingsTabIcon).setTabListener(this));
         networkConnectionInfoProvider.notifyIfNoConnection(viewPager);
+        inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @Override
@@ -103,6 +112,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onPageSelected(int position) {
+        View currentFocus = getCurrentFocus();
+        if (currentFocus != null) {
+            IBinder windowToken = currentFocus.getWindowToken();
+            if (windowToken != null)
+                inputMethodManager.hideSoftInputFromWindow(windowToken, 0);
+        }
         tabHost.setSelectedNavigationItem(position);
     }
 
