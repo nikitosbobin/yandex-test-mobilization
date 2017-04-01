@@ -99,17 +99,15 @@ public class TranslationFragment extends Fragment
     }
 
     @OnTextChanged(R.id.translation_input)
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    public void onTextChanged(CharSequence s) {
         networkConnectionInfoProvider.notifyIfNoConnection(input);
         if (s == null || s.length() == 0) {
             clearButton.setVisibility(View.GONE);
             clearTranslationCard();
             return;
         }
-        String text = s.toString().trim();
-        log.debug("s: %s start: %d before %d count: %d", text, start, before, count);
         clearButton.setVisibility(View.VISIBLE);
-        Translation targetTranslation = new Translation(text, selectorView.getDirection());
+        Translation targetTranslation = new Translation(s.toString().trim(), selectorView.getDirection());
         if (currentTranslation == null || !targetTranslation.equals(currentTranslation.getTranslation())) {
             tryDetectLang(targetTranslation);
             performTranslation(targetTranslation);
@@ -128,15 +126,10 @@ public class TranslationFragment extends Fragment
                         if (!result.isSuccess()) return;
                         currentTranslation = result;
                         fillTranslationCard(result);
-                    }
-                })
-                .then(new DoneCallback<TranslatedText>() {
-                    public void onDone(TranslatedText result) {
-                        if (!needDictionary() || targetTranslation.getWordCount() != 1) {
+                        if (!needDictionary() || targetTranslation.getWordCount() != 1)
                             translationCard.setLookup(WordLookup.empty(result.getTranslation()));
-                            return;
-                        }
-                        tryLoadLookup(result);
+                        else
+                            tryLoadLookup(result);
                     }
                 });
     }
@@ -150,7 +143,7 @@ public class TranslationFragment extends Fragment
                 .getWordLookupAsync(result.getTranslation())
                 .then(new DoneCallback<WordLookup>() {
                     public void onDone(final WordLookup result) {
-                        if (result != null && !result.isEmpty())
+                        if (result != null)
                             translationCard.setLookup(result);
                     }
                 });

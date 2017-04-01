@@ -74,28 +74,31 @@
     <Button
         android:text="@string/about"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:id="@+id/about_button"
+        android:theme="@style/Button"
+        android:layout_marginTop="50dp"
         android:layout_below="@+id/clear_favorite_button"
-        android:layout_alignEnd="@+id/clear_favorite_button"
-        android:layout_marginTop="15dp" />
+        android:layout_alignEnd="@+id/caching_switch" />
 
     <Button
         android:text="@string/clear_favorites"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:id="@+id/clear_favorite_button"
-        android:layout_alignTop="@+id/clear_history_button"
-        android:layout_alignEnd="@+id/clear_history_button"
-        android:layout_marginTop="65dp" />
+        android:theme="@style/Button"
+        android:layout_marginTop="12dp"
+        android:layout_below="@+id/clear_history_button"
+        android:layout_alignStart="@+id/clear_history_button" />
 
     <Button
         android:text="@string/clear_history"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:id="@+id/clear_history_button"
+        android:theme="@style/Button"
+        android:layout_marginTop="64dp"
         android:layout_below="@+id/caching_switch"
-        android:layout_alignEnd="@+id/caching_switch"
-        android:layout_marginTop="70dp" />
+        android:layout_alignStart="@+id/caching_switch" />
 
 </RelativeLayout>
