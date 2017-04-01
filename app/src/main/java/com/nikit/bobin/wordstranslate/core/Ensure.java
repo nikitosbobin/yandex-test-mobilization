@@ -52,4 +52,12 @@ public class Ensure {
         if (!name.equals("main"))
             throw new IllegalThreadStateException("This method should called from main thread");
     }
+
+    public static void greaterThan(int argument, int targetValue, String name) {
+        if (argument <= targetValue)
+            throw new IllegalArgumentException(String.format(
+                    "Argument: [%s] should be greater than: %d",
+                    name,
+                    targetValue));
+    }
 }

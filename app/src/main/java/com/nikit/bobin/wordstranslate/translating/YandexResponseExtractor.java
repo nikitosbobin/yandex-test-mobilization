@@ -87,7 +87,7 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
             JSONObject responseBody = new JSONObject(response.body().string());
             JSONArray defs = responseBody.getJSONArray("def");
             if (defs.length() == 0)
-                return WordLookup.empty();
+                return WordLookup.empty(translation);
             JSONObject def = defs.getJSONObject(0);
             JSONArray tr = def.getJSONArray("tr");
             SynonymGroup[] synonymGroups = new SynonymGroup[tr.length()];
@@ -95,7 +95,7 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
                 synonymGroups[i] = extractSynonymGroup(tr.getJSONObject(i));
             return new WordLookup(translation, synonymGroups);
         } catch (Exception e) {
-            return WordLookup.empty();
+            return WordLookup.empty(translation);
         }
     }
 

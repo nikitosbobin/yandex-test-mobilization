@@ -6,101 +6,146 @@ import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
-
-import org.jdeferred.DoneFilter;
+import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import java.util.HashMap;
 
 public class YandexTranslatorCache {
-    private HashMap<Translation, TranslatedText> translations;
-    private Language[] languages;
-    private Language languagesUi;
+    private HashMap<Translation, TranslatedText> translationsCache;
+    private HashMap<Translation, WordLookup> lookupsCache;
+    private HashMap<String, Language> detectionsCache;
+    private HashMap<Language, Language[]> languagesCache;
+
     private ILanguagesDatabase languagesDatabase;
     private ITranslationsDatabase translationsDatabase;
 
+    private int cacheMaxSize;
+
     public YandexTranslatorCache(
             ITranslationsDatabase translationsDatabase,
-            ILanguagesDatabase languagesDatabase) {
+            ILanguagesDatabase languagesDatabase,
+            int cacheMaxSize) {
         Ensure.notNull(translationsDatabase, "translationsDatabase");
         Ensure.notNull(languagesDatabase, "languagesDatabase");
+        Ensure.greaterThan(cacheMaxSize, 0, "cacheMaxSize");
 
         this.languagesDatabase = languagesDatabase;
         this.translationsDatabase = translationsDatabase;
+        this.cacheMaxSize = cacheMaxSize;
     }
 
-    private HashMap<Translation, TranslatedText> getTranslations() {
-        if (translations == null) {
-            translations = new HashMap<>();
+    private HashMap<Translation, TranslatedText> getTranslationsCache() {
+        if (translationsCache == null) {
+            translationsCache = new HashMap<>();
             if (translationsDatabase.isConnected()) {
                 TranslatedText[] allTranslations = translationsDatabase.getAllTranslations(false);
                 for (TranslatedText t : allTranslations)
-                    translations.put(t.getTranslation(), t);
+                    translationsCache.put(t.getTranslation(), t);
             }
         }
-        return translations;
+        if (translationsCache.size() >= cacheMaxSize)
+            translationsCache = new HashMap<>();
+        return translationsCache;
+    }
+
+    private HashMap<Translation, WordLookup> getLookupsCache() {
+        if (lookupsCache == null || lookupsCache.size() >= cacheMaxSize)
+            lookupsCache = new HashMap<>();
+        return lookupsCache;
+    }
+
+    private HashMap<String, Language> getDetectionsCache() {
+        if (detectionsCache == null || detectionsCache.size() >= cacheMaxSize)
+            detectionsCache = new HashMap<>();
+        return detectionsCache;
+    }
+
+    private HashMap<Language, Language[]> getLanguagesCache() {
+        if (languagesCache == null || languagesCache.size() >= cacheMaxSize)
+            languagesCache = new HashMap<>();
+        return languagesCache;
     }
 
     public TranslatedText getTranslation(Translation translation) {
         if (translation != null && hasTranslation(translation))
-            return getTranslations().get(translation);
+            return getTranslationsCache().get(translation);
         return null;
     }
 
     public boolean hasTranslation(Translation translation) {
-        if (translation == null) return false;
-        return getTranslations().containsKey(translation);
+        if (translation == null)
+            return false;
+        return getTranslationsCache().containsKey(translation);
     }
 
     public void addTranslation(TranslatedText result) {
         if (result != null && result.isSuccess() && !hasTranslation(result.getTranslation())) {
-            getTranslations().put(result.getTranslation(), result);
+            getTranslationsCache().put(result.getTranslation(), result);
         }
     }
 
-    public void addLanguages(Language[] result, Language ui) {
-        if (result == null || ui == null)
-            return;
-        if (!langsCached(ui)) {
-            this.languages = result;
-            languagesUi = ui;
-            languagesDatabase.replaceLanguages(result, ui);
-        }
+    public boolean hasLookup(Translation translation) {
+        if (translation == null)
+            return false;
+        HashMap<Translation, WordLookup> lookupsCache = getLookupsCache();
+        boolean b = lookupsCache.containsKey(translation);
+        return b;
     }
 
-    public DoneFilter<TranslatedText, TranslatedText> addTranslationFilter() {
-        return new DoneFilter<TranslatedText, TranslatedText>() {
-            @Override
-            public TranslatedText filterDone(TranslatedText result) {
-                addTranslation(result);
-                return result;
-            }
-        };
+    public WordLookup getWordLookup(Translation translation) {
+        if (translation == null || !hasLookup(translation))
+            return null;
+        return getLookupsCache().get(translation);
     }
 
-    public DoneFilter<Language[], Language[]> addLanguagesFilter(final Language ui) {
-        return new DoneFilter<Language[], Language[]>() {
-            @Override
-            public Language[] filterDone(Language[] result) {
-                addLanguages(result, ui);
-                return result;
-            }
-        };
+    public boolean addLookup(WordLookup wordLookup) {
+        if (wordLookup == null || hasLookup(wordLookup.getTranslation()))
+            return false;
+        getLookupsCache().put(wordLookup.getTranslation(), wordLookup);
+        return true;
+    }
+
+    public boolean hasDetection(String text) {
+        if (text == null)
+            return false;
+        return getDetectionsCache().containsKey(text);
+    }
+
+    public Language getDetection(String text) {
+        if (text == null || !hasDetection(text))
+            return null;
+        return getDetectionsCache().get(text);
+    }
+
+    public boolean addDetection(String text, Language detectedLanguage) {
+        if (text == null || detectedLanguage == null || hasDetection(text))
+            return false;
+        getDetectionsCache().put(text, detectedLanguage);
+        return true;
+    }
+
+    public boolean hasLanguages(Language ui) {
+        if (ui == null)
+            return false;
+        if (getLanguagesCache().containsKey(ui))
+            return true;
+        return languagesDatabase.isLanguagesSaved(ui);
     }
 
     public Language[] getLanguages(Language ui) {
-        if (ui != null && langsCached(ui)) {
-            if (languages == null) {
-                languages = languagesDatabase.getLanguages(false);
-                languagesUi = ui;
-            }
-            return languages;
-        }
-        return new Language[0];
+        if (ui == null || !hasLanguages(ui))
+            return null;
+        if (getLanguagesCache().containsKey(ui))
+            return getLanguagesCache().get(ui);
+        Language[] languages = languagesDatabase.getLanguages(true);
+        getLanguagesCache().put(ui, languages);
+        return languages;
     }
 
-    public boolean langsCached(Language ui) {
-        if (languagesUi != null && languagesUi.equals(ui))
-            return true;
-        return languagesDatabase.isLanguagesSaved(ui);
+    public boolean addLanguages(Language ui, Language[] languages) {
+        if (ui == null || languages == null || hasLanguages(ui))
+            return false;
+        getLanguagesCache().put(ui, languages);
+        return true;
     }
 }

@@ -133,7 +133,7 @@ public class TranslationFragment extends Fragment
                 .then(new DoneCallback<TranslatedText>() {
                     public void onDone(TranslatedText result) {
                         if (!needDictionary() || targetTranslation.getWordCount() != 1) {
-                            translationCard.setLookup(WordLookup.empty());
+                            translationCard.setLookup(WordLookup.empty(result.getTranslation()));
                             return;
                         }
                         tryLoadLookup(result);

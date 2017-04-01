@@ -85,7 +85,7 @@ public class YandexTranslator implements ITranslator {
 
     @Override
     public Promise<Language[], Throwable, Void> getLanguagesAsync() {
-        if (cache != null && cache.langsCached(ui))
+        if (cache != null && cache.hasLanguages(ui))
             return createPromiseFromResult(cache.getLanguages(ui));
 
         final String getLangsUrl = uriFactory.getLangs(ui);
@@ -97,15 +97,18 @@ public class YandexTranslator implements ITranslator {
                 response.close();
 
                 if (cache != null)
-                    cache.addLanguages(languages, ui);
+                    cache.addLanguages(ui, languages);
                 return languages;
             }
         });
     }
 
     @Override
-    public Promise<Language, Throwable, Void> detectLanguageAsync(String text) {
+    public Promise<Language, Throwable, Void> detectLanguageAsync(final String text) {
         Ensure.notNullOrEmpty(text, "text");
+
+        if (cache != null && cache.hasDetection(text))
+            return createPromiseFromResult(cache.getDetection(text));
 
         final String detectLangUri = uriFactory.detectLang(text, new Language("ru"), new Language("en"));
 
@@ -118,7 +121,11 @@ public class YandexTranslator implements ITranslator {
                     response.close();
                     if (language == null)
                         return null;
-                    return languagesDatabase.getLanguage(language.getKey(), ui);
+
+                    language = languagesDatabase.getLanguage(language.getKey(), ui);
+                    if (cache != null)
+                        cache.addDetection(text, language);
+                    return language;
                 } catch(Exception e) {
                     return null;
                 }
@@ -130,9 +137,12 @@ public class YandexTranslator implements ITranslator {
     public Promise<WordLookup, Throwable, Void> getWordLookupAsync(final Translation translation) {
         Ensure.notNull(translation, "translation");
 
-        if (translation.getWordCount() > 1) {
-            return createPromiseFromResult(WordLookup.empty());
-        }
+        if (translation.getWordCount() > 1)
+            return createPromiseFromResult(WordLookup.empty(translation));
+
+        if (cache != null && cache.hasLookup(translation))
+            return createPromiseFromResult(cache.getWordLookup(translation));
+
         final String getLookupUri = uriFactory.dictionaryLookup(translation.getDirection(), translation.getOriginalText());
 
         return deferredManager.when(new Callable<WordLookup>() {
@@ -143,9 +153,12 @@ public class YandexTranslator implements ITranslator {
                     WordLookup wordLookup = responseExtractor.extractWordLookup(response, translation);
                     response.close();
 
+                    if (cache != null)
+                        cache.addLookup(wordLookup);
+
                     return wordLookup;
                 } catch (Exception e) {
-                    return WordLookup.empty();
+                    return WordLookup.empty(translation);
                 }
             }
         });

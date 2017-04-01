@@ -67,7 +67,7 @@ public class TranslationModule {
     YandexTranslatorCache provideYandexTranslatorCache(
             ILanguagesDatabase languagesDatabase,
             ITranslationsDatabase translationsDatabase) {
-        return new YandexTranslatorCache(translationsDatabase, languagesDatabase);
+        return new YandexTranslatorCache(translationsDatabase, languagesDatabase, 10000);
     }
 
     @Provides

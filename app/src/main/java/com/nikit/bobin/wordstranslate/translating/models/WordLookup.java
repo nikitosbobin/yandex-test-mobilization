@@ -18,12 +18,14 @@ public class WordLookup {
 
     private WordLookup(){}
 
-    public static WordLookup empty() {
-        return new WordLookup();
+    public static WordLookup empty(Translation translation) {
+        WordLookup wordLookup = new WordLookup();
+        wordLookup.translation = translation;
+        return wordLookup;
     }
 
     public boolean isEmpty() {
-        return translation == null && synonyms == null;
+        return synonyms == null;
     }
 
     public Translation getTranslation() {

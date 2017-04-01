@@ -39,17 +39,17 @@ public class YandexTranslatorCache_Tests {
                         TranslatedText.fromDatabase(1, "bye", "пока", "ru-en", false)
                 });
 
-        cache = new YandexTranslatorCache(translationsDatabase, languagesDatabase);
+        cache = new YandexTranslatorCache(translationsDatabase, languagesDatabase, 10);
     }
 
     @Test(expected = NullPointerException.class)
     public void should_fail_when_translationsDatabase_null() {
-        new YandexTranslatorCache(null, languagesDatabase);
+        new YandexTranslatorCache(null, languagesDatabase, 10);
     }
 
     @Test(expected = NullPointerException.class)
     public void should_fail_when_languagesDatabase_null() {
-        new YandexTranslatorCache(translationsDatabase, null);
+        new YandexTranslatorCache(translationsDatabase, null, 10);
     }
 
     @Test
@@ -129,7 +129,7 @@ public class YandexTranslatorCache_Tests {
                 new Language("en", "English")
         };
         Language ui = new Language("en");
-        cache.addLanguages(languages, ui);
+        cache.addLanguages(ui, languages);
 
         Language[] actualLanguages = cache.getLanguages(ui);
 
@@ -162,34 +162,5 @@ public class YandexTranslatorCache_Tests {
         TranslatedText actualTranslation = cache.getTranslation(new Translation("fdsds", "en-fr"));
 
         assertEquals(actualTranslation, translation);
-    }
-
-    @Test
-    public void addLanguagesFilter_should_call_target_method() {
-        Language ui = new Language("en");
-        Language[] languages = new Language[] {
-                new Language("ru", "Russian"),
-                new Language("en", "English")
-        };
-
-        DoneFilter<Language[], Language[]> doneFilter = cache.addLanguagesFilter(ui);
-        Language[] filteredLanguages = doneFilter.filterDone(languages);
-
-        verify(languagesDatabase).replaceLanguages(languages, ui);
-        assertSame(languages, filteredLanguages);
-    }
-
-    @Test
-    public void addTranslationFilter_should_call_target_method() {
-        TranslatedText translation =
-                TranslatedText.success("qwerty", new Translation("fdsds", "en-fr"));
-
-        DoneFilter<TranslatedText, TranslatedText> doneFilter = cache.addTranslationFilter();
-        TranslatedText filteredTranslatedText = doneFilter.filterDone(translation);
-
-        assertSame(translation, filteredTranslatedText);
-        TranslatedText cachedTranslation =
-                cache.getTranslation(new Translation("fdsds", "en-fr"));
-        assertSame(translation, cachedTranslation);
     }
 }

@@ -38,7 +38,7 @@ public class WordLookup_Tests {
 
     @Test
     public void empty_should_create_empty_lookup() {
-        WordLookup wordLookup = WordLookup.empty();
+        WordLookup wordLookup = WordLookup.empty(null);
 
         assertNull(wordLookup.getTranslation());
         assertNull(wordLookup.getSynonyms());
@@ -46,7 +46,7 @@ public class WordLookup_Tests {
 
     @Test
     public void isEmpty_should_correctly_detect_empty_lookup() {
-        WordLookup wordLookup = WordLookup.empty();
+        WordLookup wordLookup = WordLookup.empty(null);
 
         assertTrue(wordLookup.isEmpty());
     }
