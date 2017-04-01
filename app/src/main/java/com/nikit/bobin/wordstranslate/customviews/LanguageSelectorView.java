@@ -259,6 +259,15 @@ public class LanguageSelectorView extends RelativeLayout implements
             notifyChange();
     }
 
+    public void setDirection(Direction direction, boolean needNotify) {
+        languageFrom = direction.getFrom();
+        languageTo = direction.getTo();
+        languageFromView.setText(languageFrom.getTitle());
+        languageToView.setText(languageTo.getTitle());
+        if (needNotify)
+            notifyChange();
+    }
+
     public Direction getDirection() {
         return new Direction(languageFrom, languageTo);
     }

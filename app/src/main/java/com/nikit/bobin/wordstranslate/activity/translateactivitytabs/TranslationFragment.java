@@ -93,6 +93,18 @@ public class TranslationFragment extends Fragment
         translationCardInAnimation = animationsFactory
                 .createSlideInUpAnimation(300);
 
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getBoolean("direction-saved", false)) {
+                Language from = new Language(
+                        savedInstanceState.getString("language-from-key"),
+                        savedInstanceState.getString("language-from-title"));
+                Language to = new Language(
+                        savedInstanceState.getString("language-to-key"),
+                        savedInstanceState.getString("language-to-title"));
+                selectorView.setDirection(new Direction(from, to), true);
+            }
+        }
+
         selectorView.setOnLanguagesChangeListener(this);
         selectorView.setOnLanguagesSwapListener(this);
         return view;
@@ -227,5 +239,15 @@ public class TranslationFragment extends Fragment
             input.setText(currentTranslation.getTranslatedText());
             onLanguagesChange(newSwappedDirection);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Direction direction = selectorView.getDirection();
+        outState.putString("language-from-key", direction.getFrom().getKey());
+        outState.putString("language-from-title", direction.getFrom().getTitle());
+        outState.putString("language-to-key", direction.getTo().getKey());
+        outState.putString("language-to-title", direction.getTo().getTitle());
+        outState.putBoolean("direction-saved", true);
     }
 }
