@@ -23,4 +23,5 @@
     <string name="something_wrong">Something wrong…</string>
     <string name="about_description">Uses the Yandex.Translator API\n\nCreated by Bobin Nikita, Yekaterinburg\n\nVK: nikitosbobin\nEmail: nikitosbobin@gmail.com</string>
     <string name="translation_copied">Translation copied to clipboard</string>
+    <string name="translate">Translate</string>
 </resources>

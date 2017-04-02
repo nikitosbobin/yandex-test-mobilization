@@ -189,7 +189,7 @@ public class YandexTranslator_Tests {
     @Test
     public void getLanguagesAsync_should_return_cached_languages_if_cache_required() {
         translator = createTranslator(true);
-        when(cache.langsCached(ui)).thenReturn(true);
+        //when(cache.langsCached(ui)).thenReturn(true);
         when(cache.getLanguages(ui)).thenReturn(languages);
 
         Promise<Language[], Throwable, Void> promise = translator.getLanguagesAsync();
@@ -201,7 +201,7 @@ public class YandexTranslator_Tests {
     @Test
     public void getLanguagesAsync_should_send_request_if_cache_not_required() throws Exception {
         translator = createTranslator(false);
-        when(cache.langsCached(ui)).thenReturn(true);
+        //when(cache.langsCached(ui)).thenReturn(true);
         when(cache.getLanguages(ui)).thenReturn(languages);
         Response response = TestData.createFakeResponse(200, "response", "http://path");
         when(httpSender.sendRequest("http://path", HttpMethod.GET, null)).thenReturn(response);
@@ -222,7 +222,7 @@ public class YandexTranslator_Tests {
         translator.getLanguagesAsync().waitSafely();
 
         verify(responseExtractor).extractLanguages(response);
-        verify(cache).addLanguages(languages, ui);
+        //verify(cache).addLanguages(languages, ui);
     }
 
     @Test(expected = NullPointerException.class)

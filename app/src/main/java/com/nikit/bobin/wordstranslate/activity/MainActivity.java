@@ -4,12 +4,15 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 
 import com.nikit.bobin.wordstranslate.R;
@@ -27,17 +30,13 @@ import javax.inject.Inject;
 import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import it.neokree.materialtabs.MaterialTab;
-import it.neokree.materialtabs.MaterialTabHost;
-import it.neokree.materialtabs.MaterialTabListener;
 
 // refactored
 public class MainActivity extends AppCompatActivity
-        implements MaterialTabListener,
-        FavoriteTranslationsFragment.CurrentTranslationChangeListener,
-        ViewPager.OnPageChangeListener {
-    @BindView(R.id.materialTabHost)
-    MaterialTabHost tabHost;
+        implements FavoriteTranslationsFragment.CurrentTranslationChangeListener,
+        ViewPager.OnPageChangeListener, BottomNavigationView.OnNavigationItemSelectedListener {
+    @BindView(R.id.activity_main_tabs)
+    BottomNavigationView bottomNavigationView;
     @BindView(R.id.viewPager)
     ViewPager viewPager;
     @BindDrawable(R.drawable.translate)
@@ -77,32 +76,15 @@ public class MainActivity extends AppCompatActivity
         viewPager.setOnPageChangeListener(this);
         viewPager.setAdapter(pagerAdapter);
 
-        tabHost.addTab(tabHost.newTab().setIcon(translationTabIcon).setTabListener(this));
-        tabHost.addTab(tabHost.newTab().setIcon(favoriteTabIcon).setTabListener(this));
-        tabHost.addTab(tabHost.newTab().setIcon(settingsTabIcon).setTabListener(this));
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
         networkConnectionInfoProvider.notifyIfNoConnection(viewPager);
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-    }
-
-    @Override
-    public void onTabSelected(MaterialTab tab) {
-        viewPager.setCurrentItem(tab.getPosition());
     }
 
     @Override
     public void onChangeTranslation(long translationId) {
         viewPager.setCurrentItem(0);
         translationFragment.setCurrentTranslation(translationId);
-    }
-
-    @Override
-    public void onTabReselected(MaterialTab tab) {
-        //ignore
-    }
-
-    @Override
-    public void onTabUnselected(MaterialTab tab) {
-        //ignore
     }
 
     @Override
@@ -118,11 +100,33 @@ public class MainActivity extends AppCompatActivity
             if (windowToken != null)
                 inputMethodManager.hideSoftInputFromWindow(windowToken, 0);
         }
-        tabHost.setSelectedNavigationItem(position);
+        Menu menu = bottomNavigationView.getMenu();
+        menu.getItem(position).setChecked(true);
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
         //ignore
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        int position;
+        switch (id) {
+            case R.id.translation:
+                position = 0;
+                break;
+            case R.id.history:
+                position = 1;
+                break;
+            case R.id.settings:
+                position = 2;
+                break;
+            default:
+                return false;
+        }
+        viewPager.setCurrentItem(position);
+        return true;
     }
 }

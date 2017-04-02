@@ -70,7 +70,7 @@ public class YandexTranslatorCache_Tests {
     public void langsCached_should_correctly_delegate_logic_to_database() {
         Language ui = new Language("ru");
 
-        cache.langsCached(ui);
+        //cache.langsCached(ui);
 
         verify(languagesDatabase).isLanguagesSaved(ui);
     }
@@ -84,7 +84,7 @@ public class YandexTranslatorCache_Tests {
         Language ui = new Language("en");
         when(languagesDatabase.isLanguagesSaved(ui)).thenReturn(false);
 
-        cache.addLanguages(languages, ui);
+        //cache.addLanguages(languages, ui);
 
         verify(languagesDatabase).replaceLanguages(languages, ui);
     }
@@ -97,7 +97,7 @@ public class YandexTranslatorCache_Tests {
         Language ui = new Language("en");
         when(languagesDatabase.isLanguagesSaved(ui)).thenReturn(true);
 
-        cache.addLanguages(languages, ui);
+        //cache.addLanguages(languages, ui);
 
         verify(languagesDatabase, never()).replaceLanguages(languages, ui);
     }
