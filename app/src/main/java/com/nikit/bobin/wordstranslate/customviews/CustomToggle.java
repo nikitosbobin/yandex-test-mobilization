@@ -10,7 +10,8 @@ import android.widget.ImageView;
 import com.nikit.bobin.wordstranslate.R;
 
 
-public class CustomToggle extends ImageView implements View.OnClickListener {
+public class CustomToggle extends android.support.v7.widget.AppCompatImageView
+        implements View.OnClickListener {
     private Drawable activeImage;
     private Drawable passiveImage;
     private boolean isChecked;

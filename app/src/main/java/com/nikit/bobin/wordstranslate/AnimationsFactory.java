@@ -24,6 +24,14 @@ public class AnimationsFactory {
         return YoYo.with(Techniques.SlideInUp).duration(duration);
     }
 
+    public YoYo.AnimationComposer createSlideInRightAnimation(long duration) {
+        return YoYo.with(Techniques.SlideInRight).duration(duration);
+    }
+
+    public YoYo.AnimationComposer createSlideOutRightAnimation(long duration) {
+        return YoYo.with(Techniques.SlideOutRight).duration(duration);
+    }
+
     private class RotateAnimator extends BaseViewAnimator {
         protected void prepare(View target) {
             getAnimatorAgent().playTogether(
