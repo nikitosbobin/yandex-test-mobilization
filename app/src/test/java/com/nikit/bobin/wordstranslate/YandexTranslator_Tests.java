@@ -24,6 +24,7 @@ import java.io.IOException;
 import okhttp3.Response;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -142,14 +143,29 @@ public class YandexTranslator_Tests {
     public void translateAsync_should_return_cached_translation_if_cache_required() {
         translator = createTranslator(true);
         Translation translation = mock(Translation.class);
-        final TranslatedText expectedTranslation = mock(TranslatedText.class);
+        TranslatedText expectedTranslation = mock(TranslatedText.class);
         when(cache.hasTranslation(translation)).thenReturn(true);
         when(cache.getTranslation(translation)).thenReturn(expectedTranslation);
 
-        final Promise<TranslatedText, Throwable, Void> promise =
-                translator.translateAsync(translation);
+        Promise<TranslatedText, Throwable, Void> promise = translator.translateAsync(translation);
 
         verify(cache).getTranslation(translation);
+        assertEquals(expectedTranslation, extractPromiseResult(promise));
+    }
+
+    @Test
+    public void translateAsync_should_return_failed_translation_when_any_error_occurs()
+            throws IOException {
+        translator = createTranslator(false);
+        Translation translation = mock(Translation.class);
+        TranslatedText expectedTranslation = TranslatedText.fail(translation);
+        when(uriFactory.translate(translation.getDirection(), translation.getOriginalText()))
+                .thenReturn("http://path");
+        when(httpSender.sendRequest("http://path", HttpMethod.GET, null))
+                .thenThrow(new RuntimeException());
+
+        Promise<TranslatedText, Throwable, Void> promise = translator.translateAsync(translation);
+
         assertEquals(expectedTranslation, extractPromiseResult(promise));
     }
 
@@ -189,7 +205,7 @@ public class YandexTranslator_Tests {
     @Test
     public void getLanguagesAsync_should_return_cached_languages_if_cache_required() {
         translator = createTranslator(true);
-        //when(cache.langsCached(ui)).thenReturn(true);
+        when(cache.hasLanguages(ui)).thenReturn(true);
         when(cache.getLanguages(ui)).thenReturn(languages);
 
         Promise<Language[], Throwable, Void> promise = translator.getLanguagesAsync();
@@ -201,7 +217,7 @@ public class YandexTranslator_Tests {
     @Test
     public void getLanguagesAsync_should_send_request_if_cache_not_required() throws Exception {
         translator = createTranslator(false);
-        //when(cache.langsCached(ui)).thenReturn(true);
+        when(cache.hasLanguages(ui)).thenReturn(true);
         when(cache.getLanguages(ui)).thenReturn(languages);
         Response response = TestData.createFakeResponse(200, "response", "http://path");
         when(httpSender.sendRequest("http://path", HttpMethod.GET, null)).thenReturn(response);
@@ -222,7 +238,7 @@ public class YandexTranslator_Tests {
         translator.getLanguagesAsync().waitSafely();
 
         verify(responseExtractor).extractLanguages(response);
-        //verify(cache).addLanguages(languages, ui);
+        verify(cache).addLanguages(ui, languages);
     }
 
     @Test(expected = NullPointerException.class)
@@ -231,15 +247,42 @@ public class YandexTranslator_Tests {
     }
 
     @Test
-    public void detectLanguageAsync_should_send_request() throws Exception {
-        translator = createTranslator(false);
+    public void detectLanguageAsync_should_return_cached_detection_if_cache_required() {
+        translator = createTranslator(true);
+        Language expectedDetection = mock(Language.class);
+        when(cache.hasDetection("text")).thenReturn(true);
+        when(cache.getDetection("text")).thenReturn(expectedDetection);
+
+        Promise<Language, Throwable, Void> promise = translator.detectLanguageAsync("text");
+
+        verify(cache).getDetection("text");
+        assertEquals(expectedDetection, extractPromiseResult(promise));
+    }
+
+    @Test
+    public void detectLanguageAsync_should_send_request_and_cache_if_required() throws Exception {
+        translator = createTranslator(true);
         Response response = TestData.createFakeResponse(200, "response", "http://path");
         when(httpSender.sendRequest("http://path", HttpMethod.GET, null)).thenReturn(response);
         when(uriFactory.detectLang("text", new Language("ru"), new Language("en"))).thenReturn("http://path");
+        when(responseExtractor.extractDetectedLanguage(response)).thenReturn(new Language("fr"));
+        when(languagesDatabase.getLanguage("fr", ui)).thenReturn(new Language("fr"));
 
         translator.detectLanguageAsync("text").waitSafely();
 
         verify(responseExtractor).extractDetectedLanguage(response);
+        verify(cache).addDetection("text", new Language("fr"));
+    }
+
+    @Test
+    public void detectLanguageAsync_should_return_null_when_any_error_occurs() throws Exception {
+        translator = createTranslator(false);
+        when(uriFactory.detectLang("text", new Language("ru"), new Language("en"))).thenReturn("http://path");
+        when(httpSender.sendRequest("http://path", HttpMethod.GET, null)).thenThrow(new RuntimeException());
+
+        Language detection = extractPromiseResult(translator.detectLanguageAsync("text"));
+
+        assertNull(detection);
     }
 
     @Test(expected = NullPointerException.class)
@@ -259,10 +302,24 @@ public class YandexTranslator_Tests {
     }
 
     @Test
-    public void getWordLookupAsync_should_return_correct_lookup() throws IOException {
+    public void getWordLookupAsync_should_return_cached_lookup_if_cache_required() {
+        Translation translation = new Translation("word", "en-ru");
+        translator = createTranslator(true);
+        WordLookup lookup = mock(WordLookup.class);
+        when(cache.hasLookup(translation)).thenReturn(true);
+        when(cache.getWordLookup(translation)).thenReturn(lookup);
+
+        Promise<WordLookup, Throwable, Void> promise = translator.getWordLookupAsync(translation);
+        WordLookup actualLookup = extractPromiseResult(promise);
+
+        assertSame(lookup, actualLookup);
+    }
+
+    @Test
+    public void getWordLookupAsync_should_return_correct_lookup_and_cache_if_required() throws IOException {
         WordLookup wordLookup = mock(WordLookup.class);
         Translation translation = new Translation("word", "en-ru");
-        translator = createTranslator(false);
+        translator = createTranslator(true);
         when(uriFactory.dictionaryLookup(translation.getDirection(), translation.getOriginalText()))
                 .thenReturn("http://path");
         Response response = TestData.createFakeResponse(200, "response", "http://path");
@@ -273,6 +330,20 @@ public class YandexTranslator_Tests {
         WordLookup actualLookup = extractPromiseResult(promise);
 
         assertSame(wordLookup, actualLookup);
+        verify(cache).addLookup(wordLookup);
+    }
+
+    @Test
+    public void getWordLookupAsync_should_return_empty_lookup_when_any_error_occurs() throws IOException {
+        Translation translation = new Translation("word", "en-ru");
+        translator = createTranslator(false);
+        when(uriFactory.dictionaryLookup(translation.getDirection(), translation.getOriginalText()))
+                .thenReturn("http://path");
+        when(httpSender.sendRequest("http://path", HttpMethod.GET, null)).thenThrow(new RuntimeException());
+
+        WordLookup actualLookup = extractPromiseResult(translator.getWordLookupAsync(translation));
+
+        assertEquals(WordLookup.empty(translation), actualLookup);
     }
 
     private <T> T extractPromiseResult(Promise<T, Throwable, Void> promise) {

@@ -87,9 +87,7 @@ public class YandexTranslatorCache {
     public boolean hasLookup(Translation translation) {
         if (translation == null)
             return false;
-        HashMap<Translation, WordLookup> lookupsCache = getLookupsCache();
-        boolean b = lookupsCache.containsKey(translation);
-        return b;
+        return getLookupsCache().containsKey(translation);
     }
 
     public WordLookup getWordLookup(Translation translation) {
