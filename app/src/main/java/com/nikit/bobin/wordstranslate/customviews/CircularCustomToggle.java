@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.nikit.bobin.wordstranslate.AnimationsFactory;
 import com.nikit.bobin.wordstranslate.R;
@@ -24,7 +23,8 @@ public class CircularCustomToggle extends CircleButton implements View.OnClickLi
     private Drawable activeImage;
     private Drawable passiveImage;
     private CircularCustomToggle.OnCheckedChangeListener onCheckedChangeListener;
-    private boolean animating;
+    private boolean animatingShow;
+    private boolean animatingHide;
     private YoYo.AnimationComposer hideAnimation;
     private YoYo.AnimationComposer showAnimation;
 
@@ -62,29 +62,32 @@ public class CircularCustomToggle extends CircleButton implements View.OnClickLi
 
     private void initAnimations() {
         hideAnimation = animationsFactory
-                .createSlideOutRightAnimation(500)
+                .createSlideOutRightAnimation(300)
                 .onStart(new YoYo.AnimatorCallback() {
                     public void call(Animator animator) {
-                        animating = true;
+                        animatingHide = true;
+                        animatingShow = false;
                     }
                 })
                 .onEnd(new YoYo.AnimatorCallback() {
                     public void call(Animator animator) {
                         setVisibility(GONE);
-                        animating = false;
+                        animatingHide = false;
                     }
                 });
+
         showAnimation = animationsFactory
-                .createSlideInRightAnimation(500)
+                .createSlideInRightAnimation(300)
                 .onStart(new YoYo.AnimatorCallback() {
                     public void call(Animator animator) {
                         setVisibility(VISIBLE);
-                        animating = true;
+                        animatingShow = true;
+                        animatingHide = false;
                     }
                 })
                 .onEnd(new YoYo.AnimatorCallback() {
                     public void call(Animator animator) {
-                        animating = false;
+                        animatingShow = false;
                     }
                 });
     }
@@ -107,13 +110,13 @@ public class CircularCustomToggle extends CircleButton implements View.OnClickLi
     }
 
     public void hide() {
-        if (getVisibility() == GONE || animating)
+        if (getVisibility() == GONE || animatingHide)
             return;
         hideAnimation.playOn(this);
     }
 
     public void show() {
-        if (getVisibility() == VISIBLE || animating)
+        if (getVisibility() == VISIBLE || animatingShow)
             return;
         showAnimation.playOn(this);
     }

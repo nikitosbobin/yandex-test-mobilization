@@ -11,6 +11,7 @@ import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -38,7 +39,8 @@ import butterknife.ButterKnife;
 public class FavoriteTranslationsFragment extends Fragment
         implements AdapterView.OnItemClickListener,
         CircularCustomToggle.OnCheckedChangeListener,
-        AbstractDatabaseOneTableContext.OnItemsUpdateListener, AbsListView.OnScrollListener {
+        AbstractDatabaseOneTableContext.OnItemsUpdateListener,
+        AbsListView.OnScrollListener {
     @BindView(R.id.favorite_list)
     ListView favoriteListView;
     @BindView(R.id.favorite_button)
@@ -123,34 +125,22 @@ public class FavoriteTranslationsFragment extends Fragment
         if (toggleView.getId() == R.id.favorite_button) {
             title.setText(isChecked ? R.string.favorite : R.string.history);
             adapter.setFavoriteFilteringState(isChecked);
+            adapter.notifyDataSetChanged();
             favoriteListView.invalidateViews();
         }
     }
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-        switch (scrollState) {
-            case 1:
-                if (!view.canScrollList(-1)) {
-                    circleButton.show();
-                    break;
-                }
-            case 2:
-                circleButton.hide();
-                break;
-            case 0:
-                if (!view.canScrollList(1)) {
-                    circleButton.hide();
-                } else {
-                    circleButton.show();
-                }
-                break;
-        }
     }
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem,
                          int visibleItemCount, int totalItemCount) {
+        if (firstVisibleItem + visibleItemCount == totalItemCount && view.canScrollList(-1))
+            circleButton.hide();
+        else
+            circleButton.show();
     }
 
     public interface CurrentTranslationChangeListener {
