@@ -1,17 +1,13 @@
 package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -22,7 +18,6 @@ import android.widget.TextView;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.adapters.TranslationHistoryAdapter;
 import com.nikit.bobin.wordstranslate.customviews.CircularCustomToggle;
-import com.nikit.bobin.wordstranslate.customviews.CustomToggle;
 import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.storage.AbstractDatabaseOneTableContext;
@@ -31,7 +26,6 @@ import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 import javax.inject.Inject;
 
-import at.markushi.ui.CircleButton;
 import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,7 +65,7 @@ public class FavoriteTranslationsFragment extends Fragment
         adapter = new TranslationHistoryAdapter(getContext(), translationsDatabase);
 
         circleButton.setOnCheckedChangeListener(this);
-        translationsDatabase.setOnItemsUpdateListener(this);
+        translationsDatabase.addOnItemsUpdateListener(this);
 
         favoriteListView.setAdapter(adapter);
         favoriteListView.setOnItemClickListener(this);

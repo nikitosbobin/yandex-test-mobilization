@@ -16,7 +16,7 @@ public abstract class AbstractDatabaseOneTableContext<TItem> implements Closeabl
     protected final String tableName;
     private String columnsDescription;
     private SQLiteDatabase database;
-    private OnItemsUpdateListener onItemsUpdateListener;
+    private ArrayList<OnItemsUpdateListener> onItemsUpdateListeners;
     private String primaryKeyName;
 
     public AbstractDatabaseOneTableContext(
@@ -33,6 +33,7 @@ public abstract class AbstractDatabaseOneTableContext<TItem> implements Closeabl
         this.tableName = tableName;
         this.columnsDescription = columnsDescription;
         this.primaryKeyName = primaryKeyName;
+        onItemsUpdateListeners = new ArrayList<>();
     }
 
     abstract TItem deserialize(Cursor cursor);
@@ -143,12 +144,15 @@ public abstract class AbstractDatabaseOneTableContext<TItem> implements Closeabl
     }
 
     private void notifyDataChanged(boolean notify) {
-        if (notify && onItemsUpdateListener != null)
-            onItemsUpdateListener.onDatabaseChange();
+        if (notify && onItemsUpdateListeners.size() != 0) {
+            for (OnItemsUpdateListener listener : onItemsUpdateListeners)
+                listener.onDatabaseChange();
+        }
     }
 
-    public void setOnItemsUpdateListener(OnItemsUpdateListener onItemsUpdateListener) {
-        this.onItemsUpdateListener = onItemsUpdateListener;
+    public void addOnItemsUpdateListener(OnItemsUpdateListener onItemsUpdateListener) {
+        if (!onItemsUpdateListeners.contains(onItemsUpdateListener))
+            onItemsUpdateListeners.add(onItemsUpdateListener);
     }
 
     public interface OnItemsUpdateListener {

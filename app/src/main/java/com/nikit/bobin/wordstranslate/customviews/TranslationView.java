@@ -14,33 +14,41 @@ public class TranslationView extends RelativeLayout
         implements CustomToggle.OnCheckedChangeListener {
     private OnFavoriteChangeListener onFavoriteChangeListener;
     private int position;
+    private TextView original;
+    private TextView translated;
+    private TextView direction;
+    private CustomToggle favoriteButton;
 
     public TranslationView(Context context) {
         super(context);
+        init();
     }
 
     public TranslationView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public TranslationView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
+        inflate(getContext(), R.layout.success_translation_layout, this);
+        original = (TextView) findViewById(R.id.original_text_label);
+        translated = (TextView) findViewById(R.id.translated_text_label);
+        direction = (TextView) findViewById(R.id.direction_label);
+        favoriteButton = (CustomToggle) findViewById(R.id.star_button);
+        favoriteButton.setOnCheckedChangeListener(this);
     }
 
     public void setTranslatedText(int position, TranslatedText translatedText) {
         Ensure.notNull(translatedText, "translatedText");
 
-        inflate(getContext(), R.layout.success_translation_layout, this);
-
         this.position = position;
 
-        TextView original = (TextView) findViewById(R.id.original_text_label);
-        TextView translated = (TextView) findViewById(R.id.translated_text_label);
-        TextView direction = (TextView) findViewById(R.id.direction_label);
-        CustomToggle favoriteButton = (CustomToggle) findViewById(R.id.star_button);
-
         favoriteButton.setChecked(translatedText.isFavorite());
-        favoriteButton.setOnCheckedChangeListener(this);
 
         original.setText(translatedText.getTranslation().getOriginalText());
         translated.setText(translatedText.getTranslatedText());
@@ -53,7 +61,7 @@ public class TranslationView extends RelativeLayout
 
     @Override
     public void onCheckedChanged(CustomToggle toggleView, boolean isChecked) {
-        if (toggleView.getId() == R.id.star_button && onFavoriteChangeListener != null) {
+        if (onFavoriteChangeListener != null && toggleView.getId() == R.id.star_button) {
             onFavoriteChangeListener.onFavoriteChange(position, isChecked);
         }
     }
