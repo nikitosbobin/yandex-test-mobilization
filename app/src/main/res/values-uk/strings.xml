@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">WordsTranslate</string>
+  <string name="history">Історія</string>
+  <string name="favorite">Коханий</string>
+  <string name="tap_to_start_translate">Натисніть, щоб почати Переклад</string>
+  <string name="delete">Видалити</string>
+  <string name="settings">Параметри</string>
+  <string name="caching">Кеш-пам\'ять перекладів зменшити трафік</string>
+  <string name="about">Про</string>
+  <string name="clear_favorites">Ясно уподобання</string>
+  <string name="clear_history">Очистити журнал</string>
+  <string name="show_dictionary">Показати словник</string>
+  <string name="predict_lang">Спробуйте визначити мову</string>
+  <string name="confirm_delete">Підтвердження видалення</string>
+  <string name="cancel">"Скасувати"</string>
+  <string name="favorite_delete_dialog">Ви дійсно хочете, щоб очистити ваші улюблені переклади?</string>
+  <string name="history_delete_dialog">Ви впевнені, що хочете очистити історію всієї перекладу?</string>
+  <string name="test">Тест</string>
+  <string name="starting_app">Починаючи</string>
+  <string name="lang_loading">Завантаження мов</string>
+  <string name="no_internet">Підключення до Інтернету відсутній</string>
+  <string name="something_wrong">Щось не так…</string>
+  <string name="about_description">Використовує шляхом Бобін Микита, Yekaterinburg\n\nVK, Yandex.Translator API\n\nCreated: nikitosbobin\nEmail: nikitosbobin@gmail.com</string>
+  <string name="translation_copied">Переклад скопійовано до буфера обміну</string>
+  <string name="translate">Переклад</string>
+</resources>

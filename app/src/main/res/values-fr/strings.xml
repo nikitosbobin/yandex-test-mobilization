@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">WordsTranslate</string>
+  <string name="history">Histoire</string>
+  <string name="favorite">Favori</string>
+  <string name="tap_to_start_translate">Robinet de commencer à traduire</string>
+  <string name="delete">Supprimer</string>
+  <string name="settings">Paramètres</string>
+  <string name="caching">Traduction de cache pour réduire le trafic</string>
+  <string name="about">Sur</string>
+  <string name="clear_favorites">Favoris de claires</string>
+  <string name="clear_history">Effacer l’historique</string>
+  <string name="show_dictionary">Voir la dictionnaire</string>
+  <string name="predict_lang">Essayez de déterminer la langue</string>
+  <string name="confirm_delete">Confirmer la suppression</string>
+  <string name="cancel">Annuler</string>
+  <string name="favorite_delete_dialog">Voulez-vous vraiment effacer vos traductions préférées ?</string>
+  <string name="history_delete_dialog">Êtes-vous sûr de que vouloir effacer l’histoire de la traduction entière ?</string>
+  <string name="test">Test</string>
+  <string name="starting_app">À partir</string>
+  <string name="lang_loading">Chargement des langues</string>
+  <string name="no_internet">Connexion Internet est absente</string>
+  <string name="something_wrong">Quelque chose de mal…</string>
+  <string name="about_description">Utilise la API\n\nCreated de Yandex.Translator de Bobin Nikita, Yekaterinburg\n\nVK : nikitosbobin\nEmail : nikitosbobin@gmail.com</string>
+  <string name="translation_copied">Traduction copiée dans le presse-papiers</string>
+  <string name="translate">Traduire</string>
+</resources>
