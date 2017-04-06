@@ -2,10 +2,7 @@ package com.nikit.bobin.wordstranslate.translating.models;
 
 import com.nikit.bobin.wordstranslate.core.Ensure;
 
-import java.util.HashSet;
-// refactored
-// tested
-public class Language implements Comparable<Language>{
+public class Language implements Comparable<Language> {
     private String key;
     private String title;
 

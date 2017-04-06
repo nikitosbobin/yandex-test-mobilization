@@ -11,17 +11,26 @@ import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
 import javax.inject.Singleton;
 
 import dagger.Component;
-// not need tests
-// refactored
+
 @Singleton
-@Component(modules = {NetModule.class, ConcurrentModule.class,
-        LoggingModule.class, TranslationModule.class, StorageModule.class})
+@Component(modules = {
+        NetModule.class,
+        ConcurrentModule.class,
+        LoggingModule.class,
+        TranslationModule.class,
+        StorageModule.class})
 public interface AppComponent {
-    void injectSplashScreen(SplashActivity splashActivity);
-    void injectsMainActivity(MainActivity mainActivity);
-    void injectTranslationFragment(TranslationFragment fragment);
-    void injectFavoriteTranslationsFragment(FavoriteTranslationsFragment fragment);
-    void injectSettingsFragment(SettingsFragment fragment);
-    void injectSelectorView(LanguageSelectorView languageSelectorView);
-    void injectCircularCustomToggle(CircularCustomToggle circularCustomToggle);
+    void inject(SplashActivity splashActivity);
+
+    void inject(MainActivity mainActivity);
+
+    void inject(TranslationFragment fragment);
+
+    void inject(FavoriteTranslationsFragment fragment);
+
+    void inject(SettingsFragment fragment);
+
+    void inject(LanguageSelectorView languageSelectorView);
+
+    void inject(CircularCustomToggle circularCustomToggle);
 }

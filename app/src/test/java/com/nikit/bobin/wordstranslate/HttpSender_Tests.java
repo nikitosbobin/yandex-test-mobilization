@@ -31,6 +31,7 @@ public class HttpSender_Tests {
     private OkHttpClient httpClient;
     private RequestBody requestBody;
     private Call call;
+
     @Before
     public void setUp() {
         log = mock(ILog.class);

@@ -126,7 +126,7 @@ public class YandexTranslator implements ITranslator {
                     if (cache != null)
                         cache.addDetection(text, language);
                     return language;
-                } catch(Exception e) {
+                } catch (Exception e) {
                     return null;
                 }
             }

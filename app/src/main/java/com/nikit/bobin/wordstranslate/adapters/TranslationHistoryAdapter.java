@@ -1,16 +1,10 @@
 package com.nikit.bobin.wordstranslate.adapters;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.customviews.TranslationView;
 import com.nikit.bobin.wordstranslate.storage.AbstractDatabaseOneTableContext;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
@@ -60,8 +54,7 @@ public class TranslationHistoryAdapter extends BaseAdapter
         if (convertView == null) {
             translationView = new TranslationView(context);
             translationView.setOnFavoriteChangeListener(this);
-        }
-        else {
+        } else {
             translationView = (TranslationView) convertView;
         }
         TranslatedText item = getItem(position);

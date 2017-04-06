@@ -56,7 +56,7 @@ public class SplashActivity extends AppCompatActivity {
         IocSetup.setup(this);
 
         // Dependency and views injection
-        IocSetup.getComponent().injectSplashScreen(this);
+        IocSetup.getComponent().inject(this);
         ButterKnife.bind(this);
 
         // Connecting to databases

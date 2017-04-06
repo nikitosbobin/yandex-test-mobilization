@@ -1,6 +1,5 @@
 package com.nikit.bobin.wordstranslate;
 
-import com.nikit.bobin.wordstranslate.core.Strings;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 import com.nikit.bobin.wordstranslate.translating.models.SynonymGroup;

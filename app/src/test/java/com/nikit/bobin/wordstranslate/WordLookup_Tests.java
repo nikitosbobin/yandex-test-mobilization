@@ -64,13 +64,13 @@ public class WordLookup_Tests {
     public void equals_should_correctly_detect_equality() {
         Translation translation1 = new Translation("text", "en-fr");
         Translation translation2 = new Translation("text", "en-fr");
-        SynonymGroup[] synonymGroups1 = new SynonymGroup[] {
-                new SynonymGroup(new String[] {"abc", "def"}, new String[] {"ghi", "jkl"}),
-                new SynonymGroup(new String[] {"nop", "qrs"}, new String[] {"tuv", "wxy"})
+        SynonymGroup[] synonymGroups1 = new SynonymGroup[]{
+                new SynonymGroup(new String[]{"abc", "def"}, new String[]{"ghi", "jkl"}),
+                new SynonymGroup(new String[]{"nop", "qrs"}, new String[]{"tuv", "wxy"})
         };
-        SynonymGroup[] synonymGroups2 = new SynonymGroup[] {
-                new SynonymGroup(new String[] {"abc", "def"}, new String[] {"ghi", "jkl"}),
-                new SynonymGroup(new String[] {"nop", "qrs"}, new String[] {"tuv", "wxy"})
+        SynonymGroup[] synonymGroups2 = new SynonymGroup[]{
+                new SynonymGroup(new String[]{"abc", "def"}, new String[]{"ghi", "jkl"}),
+                new SynonymGroup(new String[]{"nop", "qrs"}, new String[]{"tuv", "wxy"})
         };
 
         WordLookup wordLookup1 = new WordLookup(translation1, synonymGroups1);
@@ -83,13 +83,13 @@ public class WordLookup_Tests {
     public void hashCode_should_calculate_correctly_hash_code() {
         Translation translation1 = new Translation("text", "en-fr");
         Translation translation2 = new Translation("text", "en-fr");
-        SynonymGroup[] synonymGroups1 = new SynonymGroup[] {
-                new SynonymGroup(new String[] {"abc", "def"}, new String[] {"ghi", "jkl"}),
-                new SynonymGroup(new String[] {"nop", "qrs"}, new String[] {"tuv", "wxy"})
+        SynonymGroup[] synonymGroups1 = new SynonymGroup[]{
+                new SynonymGroup(new String[]{"abc", "def"}, new String[]{"ghi", "jkl"}),
+                new SynonymGroup(new String[]{"nop", "qrs"}, new String[]{"tuv", "wxy"})
         };
-        SynonymGroup[] synonymGroups2 = new SynonymGroup[] {
-                new SynonymGroup(new String[] {"abc", "def"}, new String[] {"ghi", "jkl"}),
-                new SynonymGroup(new String[] {"nop", "qrs"}, new String[] {"tuv", "wxy"})
+        SynonymGroup[] synonymGroups2 = new SynonymGroup[]{
+                new SynonymGroup(new String[]{"abc", "def"}, new String[]{"ghi", "jkl"}),
+                new SynonymGroup(new String[]{"nop", "qrs"}, new String[]{"tuv", "wxy"})
         };
 
         WordLookup wordLookup1 = new WordLookup(translation1, synonymGroups1);

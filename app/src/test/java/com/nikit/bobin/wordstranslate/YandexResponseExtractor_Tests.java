@@ -44,7 +44,7 @@ public class YandexResponseExtractor_Tests {
     }
 
     @Test(expected = RuntimeException.class)
-    public void extractSupportedLanguages_should_fail_when_response_is_not_success() throws Exception{
+    public void extractSupportedLanguages_should_fail_when_response_is_not_success() throws Exception {
         extractor.extractLanguages(TestData.createFakeResponse(400, "", "http://fake"));
     }
 
@@ -150,7 +150,7 @@ public class YandexResponseExtractor_Tests {
     }
 
     @Test
-    public void extractDetectedLanguage_should_return_null_when_yandex_response_code_not_successful(){
+    public void extractDetectedLanguage_should_return_null_when_yandex_response_code_not_successful() {
         Response fakeResponse = TestData.createFakeResponse(200, "{\"code\":400}", "http://detect/");
 
         Language language = extractor.extractDetectedLanguage(fakeResponse);
@@ -159,7 +159,7 @@ public class YandexResponseExtractor_Tests {
     }
 
     @Test
-    public void extractDetectedLanguage_should_return_null_when_yandex_response_json_is_empty(){
+    public void extractDetectedLanguage_should_return_null_when_yandex_response_json_is_empty() {
         Response fakeResponse = TestData.createFakeResponse(200, "{}", "http://detect/");
 
         Language language = extractor.extractDetectedLanguage(fakeResponse);
@@ -168,7 +168,7 @@ public class YandexResponseExtractor_Tests {
     }
 
     @Test
-    public void extractDetectedLanguage_should_return_detected_lang(){
+    public void extractDetectedLanguage_should_return_detected_lang() {
         String detectionJson = TestData.getCorrectDetectionJson();
         Response fakeResponse = TestData.createFakeResponse(200, detectionJson, "http://detect/");
         Language expectedLanguage = new Language("en");

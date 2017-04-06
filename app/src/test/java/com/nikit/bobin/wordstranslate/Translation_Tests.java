@@ -28,6 +28,7 @@ public class Translation_Tests {
     public void should_fail_if_direction_str_is_null() {
         new Translation("text", (String) null);
     }
+
     @Test(expected = IllegalArgumentException.class)
     public void should_fail_if_direction_str_is_empty() {
         new Translation("text", "");

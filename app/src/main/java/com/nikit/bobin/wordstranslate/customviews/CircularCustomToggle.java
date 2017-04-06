@@ -43,7 +43,7 @@ public class CircularCustomToggle extends CircleButton implements View.OnClickLi
     }
 
     private void init(Context context, AttributeSet attrs) {
-        IocSetup.getComponent().injectCircularCustomToggle(this);
+        IocSetup.getComponent().inject(this);
 
         initAnimations();
 

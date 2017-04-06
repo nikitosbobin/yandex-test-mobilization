@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         // Dependency and views injection
         ButterKnife.bind(this);
-        IocSetup.getComponent().injectsMainActivity(this);
+        IocSetup.getComponent().inject(this);
         // fragments initializing
         Fragment[] fragments = new Fragment[]{
                 new TranslationFragment(),
@@ -77,8 +78,13 @@ public class MainActivity extends AppCompatActivity
         viewPager.setAdapter(pagerAdapter);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        networkConnectionInfoProvider.notifyIfNoConnection(viewPager);
+        notifyIfNoConnection();
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+    }
+
+    private void notifyIfNoConnection() {
+        if (!networkConnectionInfoProvider.isConnectedToInternet())
+            Snackbar.make(viewPager, R.string.no_internet, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

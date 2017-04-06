@@ -5,14 +5,12 @@ import android.os.Handler;
 
 import org.jdeferred.DeferredManager;
 import org.jdeferred.android.AndroidDeferredManager;
-import org.jdeferred.impl.DefaultDeferredManager;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-// not need tests
-// refactored
+
 @Module
 public class ConcurrentModule {
     @Provides

@@ -52,7 +52,7 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         // Dependency and views injection
-        IocSetup.getComponent().injectSettingsFragment(this);
+        IocSetup.getComponent().inject(this);
         ButterKnife.bind(this, view);
         // initializing switches values
         languagePredictSwitch.setChecked(settingsProvider.isEnableLangPrediction());

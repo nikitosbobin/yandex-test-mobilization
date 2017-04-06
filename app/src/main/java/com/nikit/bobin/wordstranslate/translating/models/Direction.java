@@ -1,12 +1,11 @@
 package com.nikit.bobin.wordstranslate.translating.models;
 
 import com.nikit.bobin.wordstranslate.core.Ensure;
-// refactored
-// tested
+
 public class Direction {
     private Language from;
     private Language to;
-    private String stringified;
+    private String toString;
 
     public Direction(Language from, Language to) {
         Ensure.notNull(from, "from");
@@ -14,7 +13,7 @@ public class Direction {
 
         this.from = from;
         this.to = to;
-        stringified = String.format("%s-%s", from.getKey(), to.getKey());
+        toString = String.format("%s-%s", from.getKey(), to.getKey());
     }
 
     public static Direction parse(String direction) {
@@ -29,7 +28,7 @@ public class Direction {
 
     @Override
     public String toString() {
-        return stringified;
+        return toString;
     }
 
     public Language getFrom() {
@@ -47,14 +46,14 @@ public class Direction {
         Direction direction = (Direction) o;
         if (!from.equals(direction.from)) return false;
         if (!to.equals(direction.to)) return false;
-        return stringified.equals(direction.stringified);
+        return toString.equals(direction.toString);
     }
 
     @Override
     public int hashCode() {
         int result = from.hashCode();
         result = 31 * result + to.hashCode();
-        result = 31 * result + stringified.hashCode();
+        result = 31 * result + toString.hashCode();
         return result;
     }
 }

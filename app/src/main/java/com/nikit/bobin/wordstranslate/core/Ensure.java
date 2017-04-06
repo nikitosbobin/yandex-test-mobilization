@@ -4,11 +4,10 @@ import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 
 import okhttp3.Response;
 
-// not need tests
-// refactored
 public class Ensure {
     public static void notNull(Object o, String name) {
         if (o == null)
@@ -18,7 +17,7 @@ public class Ensure {
     public static void notNullOrEmpty(String s, String name) {
         Ensure.notNull(s, name);
 
-        if (s.equals(""))
+        if (s.equals(Strings.empty))
             throw new IllegalArgumentException(String.format("[%s] should not be empty", name));
     }
 
@@ -56,6 +55,7 @@ public class Ensure {
     public static void greaterThan(int argument, int targetValue, String name) {
         if (argument <= targetValue)
             throw new IllegalArgumentException(String.format(
+                    Locale.getDefault(),
                     "Argument: [%s] should be greater than: %d",
                     name,
                     targetValue));

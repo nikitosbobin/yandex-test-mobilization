@@ -3,8 +3,7 @@ package com.nikit.bobin.wordstranslate.storage;
 import android.content.SharedPreferences;
 
 import com.nikit.bobin.wordstranslate.core.Ensure;
-// not need tests
-// refactored
+
 public class SettingsProvider {
     private final String CACHING = "caching";
     private final String DICTIONARY = "dictionary";

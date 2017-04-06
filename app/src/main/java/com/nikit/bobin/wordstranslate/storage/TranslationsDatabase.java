@@ -3,15 +3,14 @@ package com.nikit.bobin.wordstranslate.storage;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.nikit.bobin.wordstranslate.translating.models.Language;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 import java.util.ArrayList;
-// refactored
+
 public class TranslationsDatabase
         extends AbstractDatabaseOneTableContext<TranslatedText>
         implements ITranslationsDatabase {
-    private String[] columns = new String[] {"id", "translated", "original", "direction", "favorite"};
+    private String[] columns = new String[]{"id", "translated", "original", "direction", "favorite"};
 
     public TranslationsDatabase() {
         super(
@@ -65,11 +64,6 @@ public class TranslationsDatabase
     }
 
     @Override
-    public int getAllTranslationsCount() {
-        return (int) getCount(null, null);
-    }
-
-    @Override
     public TranslatedText[] getFavoriteTranslations(boolean orderDescending) {
         ArrayList<TranslatedText> translations = extractAllData(
                 columns,
@@ -77,11 +71,6 @@ public class TranslationsDatabase
                 null,
                 "id " + (orderDescending ? "desc" : "asc"));
         return translations.toArray(new TranslatedText[translations.size()]);
-    }
-
-    @Override
-    public int getFavoriteTranslationsCount() {
-        return (int) getCount("favorite=1", null);
     }
 
     @Override

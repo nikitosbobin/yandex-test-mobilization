@@ -59,7 +59,7 @@ public class FavoriteTranslationsFragment extends Fragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorite, container, false);
         // Dependency and views injection
-        IocSetup.getComponent().injectFavoriteTranslationsFragment(this);
+        IocSetup.getComponent().inject(this);
         ButterKnife.bind(this, view);
 
         adapter = new TranslationHistoryAdapter(getContext(), translationsDatabase);

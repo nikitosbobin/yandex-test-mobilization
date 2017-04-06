@@ -7,15 +7,12 @@ import com.nikit.bobin.wordstranslate.net.HttpSender;
 import com.nikit.bobin.wordstranslate.net.IHttpSender;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
 
-import org.jdeferred.DeferredManager;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
-// not need tests
-// refactored
+
 @Module
 public class NetModule {
     @Provides

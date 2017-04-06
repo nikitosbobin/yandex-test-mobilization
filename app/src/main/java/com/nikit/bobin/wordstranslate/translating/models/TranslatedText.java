@@ -1,8 +1,7 @@
 package com.nikit.bobin.wordstranslate.translating.models;
 
 import com.nikit.bobin.wordstranslate.core.Ensure;
-// refactored
-// tested
+
 public class TranslatedText {
     private boolean success;
     private String translatedText;

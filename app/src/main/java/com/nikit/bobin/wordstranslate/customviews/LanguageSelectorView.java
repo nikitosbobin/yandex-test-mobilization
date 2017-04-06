@@ -86,7 +86,7 @@ public class LanguageSelectorView extends RelativeLayout implements
         inflate(getContext(), R.layout.language_selector_layout, this);
         if (isInEditMode()) return;
 
-        IocSetup.getComponent().injectSelectorView(this);
+        IocSetup.getComponent().inject(this);
         ButterKnife.bind(this);
 
         rotateAnimation = animationsFactory.createRotateAnimation(300);

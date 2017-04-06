@@ -16,7 +16,8 @@ public class WordLookup {
         this.synonyms = synonyms;
     }
 
-    private WordLookup(){}
+    private WordLookup() {
+    }
 
     public static WordLookup empty(Translation translation) {
         WordLookup wordLookup = new WordLookup();

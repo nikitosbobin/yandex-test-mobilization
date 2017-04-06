@@ -2,6 +2,7 @@ package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
 import android.animation.Animator;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -30,7 +31,6 @@ import com.nikit.bobin.wordstranslate.translating.models.Translation;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import org.jdeferred.DoneCallback;
-import org.jdeferred.FailCallback;
 import org.jdeferred.Promise;
 
 import javax.inject.Inject;
@@ -80,7 +80,7 @@ public class TranslationFragment extends Fragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_translation, container, false);
         // Dependency and views injection
-        IocSetup.getComponent().injectTranslationFragment(this);
+        IocSetup.getComponent().inject(this);
         ButterKnife.bind(this, view);
 
         translationCardOutAnimation = animationsFactory
@@ -110,9 +110,14 @@ public class TranslationFragment extends Fragment
         return view;
     }
 
+    private void notifyIfNoConnection() {
+        if (!networkConnectionInfoProvider.isConnectedToInternet())
+            Snackbar.make(input, R.string.no_internet, Snackbar.LENGTH_SHORT).show();
+    }
+
     @OnTextChanged(R.id.translation_input)
     public void onTextChanged(CharSequence s) {
-        networkConnectionInfoProvider.notifyIfNoConnection(input);
+        notifyIfNoConnection();
         if (s == null || s.length() == 0) {
             clearButton.setVisibility(View.GONE);
             clearTranslationCard();

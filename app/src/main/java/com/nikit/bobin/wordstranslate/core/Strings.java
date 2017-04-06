@@ -1,8 +1,7 @@
 package com.nikit.bobin.wordstranslate.core;
 
 import java.util.Collection;
-// not need tests
-// refactored
+
 public final class Strings {
     public static String join(Object[] objects, String separator) {
         StringBuilder stringBuilder = new StringBuilder();

@@ -7,8 +7,7 @@ import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-// refactored
-// tested
+
 public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
     private String translationKey;
     private String yandexTranslatorApiPrefix = "https://translate.yandex.net/api/v1.5/tr.json/";

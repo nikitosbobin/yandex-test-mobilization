@@ -11,7 +11,8 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public abstract class AbstractDatabaseOneTableContext<TItem> implements Closeable {
+public abstract class AbstractDatabaseOneTableContext<TItem>
+        implements Closeable {
     protected final String databaseName;
     protected final String tableName;
     private String columnsDescription;
