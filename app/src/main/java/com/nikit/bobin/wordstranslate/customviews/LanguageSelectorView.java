@@ -176,7 +176,6 @@ public class LanguageSelectorView extends RelativeLayout implements
         swap();
     }
 
-    // todo: перенести переводы правильно
     private void swap() {
         if (languageFrom == null || languageTo == null)
             return;

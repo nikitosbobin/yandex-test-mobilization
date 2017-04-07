@@ -31,8 +31,8 @@ public class YandexTranslatorCache_Tests {
 
         when(translationsDatabase.getAllTranslations(false))
                 .thenReturn(new TranslatedText[]{
-                        TranslatedText.fromDatabase(1, "hi", "привет", "ru-en", false),
-                        TranslatedText.fromDatabase(1, "bye", "пока", "ru-en", false)
+                        TranslatedText.fullCustomInit(1, "hi", "привет", "ru-en", false),
+                        TranslatedText.fullCustomInit(1, "bye", "пока", "ru-en", false)
                 });
 
         cache = new YandexTranslatorCache(translationsDatabase, languagesDatabase, 10);
@@ -217,7 +217,7 @@ public class YandexTranslatorCache_Tests {
 
     @Test
     public void getTranslation_should_return_translation_from_database() {
-        TranslatedText expectedTranslation = TranslatedText.fromDatabase(1, "hi", "привет", "ru-en", false);
+        TranslatedText expectedTranslation = TranslatedText.fullCustomInit(1, "hi", "привет", "ru-en", false);
 
         TranslatedText translation = cache.getTranslation(new Translation("привет", "ru-en"));
 

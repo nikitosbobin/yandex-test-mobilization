@@ -38,15 +38,6 @@ public class YandexRestApiUriFactory_Tests {
         new YandexRestApiUriFactory("appKey", Strings.empty);
     }
 
-    @Test
-    public void getLangs_should_return_correct_uri() {
-        String expectedUrl = "https://translate.yandex.net/api/v1.5/tr.json/getLangs?key=appKey";
-
-        String actualUrl = factory.getLangs();
-
-        assertEquals(expectedUrl, actualUrl);
-    }
-
     @Test(expected = NullPointerException.class)
     public void getLangs_should_fail_when_ui_null() {
         factory.getLangs(null);

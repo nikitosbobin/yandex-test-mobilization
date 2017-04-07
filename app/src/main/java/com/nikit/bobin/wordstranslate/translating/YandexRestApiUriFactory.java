@@ -7,8 +7,10 @@ import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 
 public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
+    private final int maxCacheSize = 10000;
     private String translationKey;
     private String yandexTranslatorApiPrefix = "https://translate.yandex.net/api/v1.5/tr.json/";
     private String yandexDictionaryApiPrefix = "https://dictionary.yandex.net/api/v1/dicservice.json/";
@@ -21,11 +23,6 @@ public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
 
         this.translationKey = translationKey;
         this.dictionaryKey = dictionaryKey;
-    }
-
-    @Override
-    public String getLangs() {
-        return String.format("%sgetLangs?key=%s", yandexTranslatorApiPrefix, translationKey);
     }
 
     @Override

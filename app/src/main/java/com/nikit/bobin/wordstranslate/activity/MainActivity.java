@@ -25,7 +25,6 @@ import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
-import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import javax.inject.Inject;
 
@@ -33,7 +32,6 @@ import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-// refactored
 public class MainActivity extends AppCompatActivity
         implements FavoriteTranslationsFragment.CurrentTranslationChangeListener,
         ViewPager.OnPageChangeListener, BottomNavigationView.OnNavigationItemSelectedListener {
@@ -60,9 +58,11 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         // Dependency and views injection
         ButterKnife.bind(this);
         IocSetup.getComponent().inject(this);
+
         // fragments initializing
         Fragment[] fragments = new Fragment[]{
                 new TranslationFragment(),
@@ -74,17 +74,12 @@ public class MainActivity extends AppCompatActivity
                 getSupportFragmentManager(),
                 fragments);
 
-        viewPager.setOnPageChangeListener(this);
+        viewPager.addOnPageChangeListener(this);
         viewPager.setAdapter(pagerAdapter);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         notifyIfNoConnection();
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-    }
-
-    private void notifyIfNoConnection() {
-        if (!networkConnectionInfoProvider.isConnectedToInternet())
-            Snackbar.make(viewPager, R.string.no_internet, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -134,5 +129,10 @@ public class MainActivity extends AppCompatActivity
         }
         viewPager.setCurrentItem(position);
         return true;
+    }
+
+    private void notifyIfNoConnection() {
+        if (!networkConnectionInfoProvider.isConnectedToInternet())
+            Snackbar.make(viewPager, R.string.no_internet, Snackbar.LENGTH_SHORT).show();
     }
 }

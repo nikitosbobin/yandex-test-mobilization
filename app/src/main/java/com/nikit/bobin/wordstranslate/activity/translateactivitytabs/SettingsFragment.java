@@ -23,7 +23,6 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
-// refactored
 public class SettingsFragment extends Fragment {
     @BindView(R.id.determine_lang_switch)
     Switch languagePredictSwitch;
@@ -51,9 +50,11 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
+
         // Dependency and views injection
         IocSetup.getComponent().inject(this);
         ButterKnife.bind(this, view);
+
         // initializing switches values
         languagePredictSwitch.setChecked(settingsProvider.isEnableLangPrediction());
         dictionarySwitch.setChecked(settingsProvider.isEnableDictionary());

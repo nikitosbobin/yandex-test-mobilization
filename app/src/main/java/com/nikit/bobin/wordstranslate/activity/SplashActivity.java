@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-// refactored
 public class SplashActivity extends AppCompatActivity {
     @Inject
     ILog log;
@@ -52,6 +51,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
         // Configuring DI container
         IocSetup.setup(this);
 

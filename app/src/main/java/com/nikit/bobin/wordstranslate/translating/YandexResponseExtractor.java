@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Locale;
 
 import okhttp3.Response;
 
@@ -121,9 +122,12 @@ public class YandexResponseExtractor implements IYandexResponseExtractor {
     private static void ensureYandexApiResponseIsSuccess(JSONObject response) {
         try {
             int code = response.getInt("code");
-            if (code >= 400) //code from class 2xx is success
+            if (code >= 400) //code from class 4xx is not success
                 throw new RuntimeException(
-                        String.format("Response not success, actual code is: %d", code));
+                        String.format(
+                                Locale.getDefault(),
+                                "Response not success, actual code is: %d",
+                                code));
         } catch (JSONException e) {
             throw new RuntimeException("Response has not Yandex api code", e);
         }

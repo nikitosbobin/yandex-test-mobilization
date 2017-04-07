@@ -108,12 +108,6 @@ public class FavoriteTranslationsFragment extends Fragment
             onCurrentTranslationChangeListener.onChangeTranslation(id);
     }
 
-    public FavoriteTranslationsFragment setOnCurrentTranslationChangeListener(
-            CurrentTranslationChangeListener onCurrentTranslationChangeListener) {
-        this.onCurrentTranslationChangeListener = onCurrentTranslationChangeListener;
-        return this;
-    }
-
     @Override
     public void onCheckedChanged(CircularCustomToggle toggleView, boolean isChecked) {
         if (toggleView.getId() == R.id.favorite_button) {
@@ -126,6 +120,7 @@ public class FavoriteTranslationsFragment extends Fragment
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
+        // ignore
     }
 
     @Override
@@ -135,6 +130,12 @@ public class FavoriteTranslationsFragment extends Fragment
             circleButton.hide();
         else
             circleButton.show();
+    }
+
+    public FavoriteTranslationsFragment setOnCurrentTranslationChangeListener(
+            CurrentTranslationChangeListener onCurrentTranslationChangeListener) {
+        this.onCurrentTranslationChangeListener = onCurrentTranslationChangeListener;
+        return this;
     }
 
     public interface CurrentTranslationChangeListener {

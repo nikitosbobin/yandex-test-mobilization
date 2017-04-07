@@ -43,8 +43,8 @@ public class TranslatedText extends SugarRecord {
         return result;
     }
 
-    public static TranslatedText fromDatabase(long id, String translatedText, String originalText,
-                                              String direction, boolean isFavorite) {
+    public static TranslatedText fullCustomInit(long id, String translatedText, String originalText,
+                                                String direction, boolean isFavorite) {
         Ensure.notNullOrEmpty(translatedText, "translatedText");
         Ensure.notNullOrEmpty(originalText, "originalText");
         Ensure.notNullOrEmpty(direction, "direction");

@@ -79,6 +79,7 @@ public class TranslationFragment extends Fragment
                              ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_translation, container, false);
+
         // Dependency and views injection
         IocSetup.getComponent().inject(this);
         ButterKnife.bind(this, view);
@@ -90,8 +91,7 @@ public class TranslationFragment extends Fragment
                         translationCard.setVisibility(View.GONE);
                     }
                 });
-        translationCardInAnimation = animationsFactory
-                .createSlideInUpAnimation(300);
+        translationCardInAnimation = animationsFactory.createSlideInUpAnimation(300);
 
         if (savedInstanceState != null) {
             if (savedInstanceState.getBoolean("direction-saved", false)) {
@@ -247,6 +247,7 @@ public class TranslationFragment extends Fragment
     }
 
     @Override
+    // todo: create normal serializator/deserializator
     public void onSaveInstanceState(Bundle outState) {
         Direction direction = selectorView.getDirection();
         outState.putString("language-from-key", direction.getFrom().getKey());

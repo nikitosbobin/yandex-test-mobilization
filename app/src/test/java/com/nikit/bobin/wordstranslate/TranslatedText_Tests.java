@@ -65,22 +65,22 @@ public class TranslatedText_Tests {
 
     @Test(expected = IllegalArgumentException.class)
     public void fromDatabase_should_fail_when_translated_text_empty() {
-        TranslatedText.fromDatabase(0, Strings.empty, "original", "en-fr", true);
+        TranslatedText.fullCustomInit(0, Strings.empty, "original", "en-fr", true);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void fromDatabase_should_fail_when_original_text_empty() {
-        TranslatedText.fromDatabase(0, "text", Strings.empty, "en-fr", true);
+        TranslatedText.fullCustomInit(0, "text", Strings.empty, "en-fr", true);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void fromDatabase_should_fail_when_direction_empty() {
-        TranslatedText.fromDatabase(0, "text", "original", Strings.empty, true);
+        TranslatedText.fullCustomInit(0, "text", "original", Strings.empty, true);
     }
 
     @Test
     public void fromDatabase_should_correctly_init_fields() {
-        TranslatedText translated = TranslatedText.fromDatabase(123, "text", "original", "fr-en", true);
+        TranslatedText translated = TranslatedText.fullCustomInit(123, "text", "original", "fr-en", true);
 
         assertEquals("text", translated.getTranslatedText());
 
