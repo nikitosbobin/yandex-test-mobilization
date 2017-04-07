@@ -37,11 +37,9 @@ public class YandexTranslatorCache {
     private HashMap<Translation, TranslatedText> getTranslationsCache() {
         if (translationsCache == null) {
             translationsCache = new HashMap<>();
-            if (translationsDatabase.isConnected()) {
-                TranslatedText[] allTranslations = translationsDatabase.getAllTranslations(false);
-                for (TranslatedText t : allTranslations)
-                    translationsCache.put(t.getTranslation(), t);
-            }
+            TranslatedText[] allTranslations = translationsDatabase.getAllTranslations(false);
+            for (TranslatedText t : allTranslations)
+                translationsCache.put(t.getTranslation(), t);
         }
         if (translationsCache.size() >= cacheMaxSize)
             translationsCache = new HashMap<>();

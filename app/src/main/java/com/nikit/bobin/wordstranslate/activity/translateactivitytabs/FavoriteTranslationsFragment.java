@@ -20,8 +20,8 @@ import com.nikit.bobin.wordstranslate.adapters.TranslationHistoryAdapter;
 import com.nikit.bobin.wordstranslate.customviews.CircularCustomToggle;
 import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
-import com.nikit.bobin.wordstranslate.storage.AbstractDatabaseOneTableContext;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
+import com.nikit.bobin.wordstranslate.storage.OnItemsUpdateListener;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 import javax.inject.Inject;
@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
 public class FavoriteTranslationsFragment extends Fragment
         implements AdapterView.OnItemClickListener,
         CircularCustomToggle.OnCheckedChangeListener,
-        AbstractDatabaseOneTableContext.OnItemsUpdateListener,
+        OnItemsUpdateListener,
         AbsListView.OnScrollListener {
     @BindView(R.id.favorite_list)
     ListView favoriteListView;

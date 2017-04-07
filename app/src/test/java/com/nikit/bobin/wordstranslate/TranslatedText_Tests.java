@@ -41,7 +41,7 @@ public class TranslatedText_Tests {
         TranslatedText translated = TranslatedText.success("translated", translation);
 
         assertEquals("translated", translated.getTranslatedText());
-        assertEquals(-1, translated.getId());
+        assertEquals(Long.valueOf(-1), translated.getId());
         assertSame(translation, translated.getTranslation());
         assertTrue(translated.isSuccess());
         assertFalse(translated.isFavorite());
@@ -57,7 +57,7 @@ public class TranslatedText_Tests {
         TranslatedText translated = TranslatedText.fail(translation);
 
         assertEquals(null, translated.getTranslatedText());
-        assertEquals(-1, translated.getId());
+        assertEquals(Long.valueOf(-1), translated.getId());
         assertSame(translation, translated.getTranslation());
         assertFalse(translated.isSuccess());
         assertFalse(translated.isFavorite());
@@ -83,7 +83,8 @@ public class TranslatedText_Tests {
         TranslatedText translated = TranslatedText.fromDatabase(123, "text", "original", "fr-en", true);
 
         assertEquals("text", translated.getTranslatedText());
-        assertEquals(123, translated.getId());
+
+        assertEquals(Long.valueOf(123), translated.getId());
         assertEquals(translation, translated.getTranslation());
         assertTrue(translated.isSuccess());
         assertTrue(translated.isFavorite());
@@ -109,16 +110,16 @@ public class TranslatedText_Tests {
     }
 
     @Test
-    public void changeFavoriteState_should_create_new_instance_with_changed_favorite_state() {
+    public void changeFavoriteState_should_not_create_new_instance_with_changed_favorite_state() {
         TranslatedText translated = TranslatedText.success("translated", translation);
 
-        TranslatedText newTranslated = translated.changeFavoriteState(true);
+        TranslatedText newTranslated = translated.setFavorite(true);
 
         assertTrue(newTranslated.isFavorite());
-        assertNotSame(translated, newTranslated);
+        assertSame(translated, newTranslated);
         assertTrue(newTranslated.isSuccess());
         assertEquals("translated", newTranslated.getTranslatedText());
-        assertNotSame(translation, newTranslated.getTranslation());
+        assertSame(translation, newTranslated.getTranslation());
         assertEquals("original", newTranslated.getTranslation().getOriginalText());
         assertEquals("fr-en", newTranslated.getTranslation().getDirection().toString());
     }

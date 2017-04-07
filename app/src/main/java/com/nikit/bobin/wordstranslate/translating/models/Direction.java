@@ -19,7 +19,7 @@ public class Direction {
     public static Direction parse(String direction) {
         Ensure.notNullOrEmpty(direction, "direction");
 
-        String[] segments = direction.split("\\-");
+        String[] segments = direction.split("-");
         if (segments.length != 2)
             throw new IllegalArgumentException(
                     String.format("Target direction: %s have not correct format", direction));

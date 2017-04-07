@@ -1,19 +1,15 @@
 package com.nikit.bobin.wordstranslate.storage;
 
-import android.content.Context;
-
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
-import java.io.Closeable;
-
-public interface ITranslationsDatabase extends Closeable {
+public interface ITranslationsDatabase {
     TranslatedText getById(long id);
 
     TranslatedText[] getAllTranslations(boolean orderDescending);
 
     TranslatedText[] getFavoriteTranslations(boolean orderDescending);
 
-    boolean addOrUpdate(TranslatedText translatedText);
+    boolean save(TranslatedText translatedText);
 
     boolean delete(TranslatedText translatedText);
 
@@ -21,9 +17,5 @@ public interface ITranslationsDatabase extends Closeable {
 
     void deleteAllFavorites();
 
-    void addOnItemsUpdateListener(AbstractDatabaseOneTableContext.OnItemsUpdateListener onItemsUpdateListener);
-
-    void connect(Context context);
-
-    boolean isConnected();
+    void addOnItemsUpdateListener(OnItemsUpdateListener onItemsUpdateListener);
 }

@@ -59,10 +59,6 @@ public class SplashActivity extends AppCompatActivity {
         IocSetup.getComponent().inject(this);
         ButterKnife.bind(this);
 
-        // Connecting to databases
-        translationsDatabase.connect(this);
-        languagesDatabase.connect(this);
-
         if (languagesDatabase.isLanguagesSaved(ui)) {
             openMainActivityWithDelay(200);
         } else {

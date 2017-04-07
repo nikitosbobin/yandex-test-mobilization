@@ -1,16 +1,26 @@
 package com.nikit.bobin.wordstranslate.translating.models;
 
 import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
+import com.orm.dsl.Table;
 
-public class TranslatedText {
+@Table
+public class TranslatedText extends SugarRecord {
+    @Ignore
     private boolean success;
     private String translatedText;
+    @Ignore
     private Translation translation;
-    private int id;
+    private String direction;
+    private String originalText;
+    private Long id;
     private boolean isFavorite;
 
-    private TranslatedText() {
-        id = -1;
+    // Don't use this constructor. It only for Sugar ORM usage.
+    @Deprecated
+    public TranslatedText() {
+        id = (long) -1;
     }
 
     public static TranslatedText success(String translatedText, Translation translation) {
@@ -20,7 +30,7 @@ public class TranslatedText {
         TranslatedText result = new TranslatedText();
         result.success = true;
         result.translatedText = translatedText;
-        result.translation = translation;
+        result.setTranslation(translation);
         return result;
     }
 
@@ -29,11 +39,11 @@ public class TranslatedText {
 
         TranslatedText result = new TranslatedText();
         result.success = false;
-        result.translation = translation;
+        result.setTranslation(translation);
         return result;
     }
 
-    public static TranslatedText fromDatabase(int id, String translatedText, String originalText,
+    public static TranslatedText fromDatabase(long id, String translatedText, String originalText,
                                               String direction, boolean isFavorite) {
         Ensure.notNullOrEmpty(translatedText, "translatedText");
         Ensure.notNullOrEmpty(originalText, "originalText");
@@ -44,6 +54,8 @@ public class TranslatedText {
         result.id = id;
         result.translatedText = translatedText;
         result.translation = new Translation(originalText, Direction.parse(direction));
+        result.originalText = originalText;
+        result.direction = direction;
         result.isFavorite = isFavorite;
         return result;
     }
@@ -57,9 +69,15 @@ public class TranslatedText {
     }
 
     public Translation getTranslation() {
+        if (translation == null)
+            translation = new Translation(originalText, direction);
         return translation;
     }
-
+    private void setTranslation(Translation translation) {
+        this.translation = translation;
+        originalText = translation.getOriginalText();
+        direction = translation.getDirection().toString();
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,28 +86,26 @@ public class TranslatedText {
         if (success != that.success) return false;
         return translatedText != null
                 ? translatedText.equals(that.translatedText)
-                : that.translatedText == null && translation.equals(that.translation);
+                : that.translatedText == null && getTranslation().equals(that.getTranslation());
     }
 
     @Override
     public int hashCode() {
+        if (direction == null && originalText == null && translatedText == null)
+            return super.hashCode();
         int result = (success ? 1 : 0);
         result = 31 * result + (translatedText != null ? translatedText.hashCode() : 0);
-        result = 31 * result + translation.hashCode();
+        result = 31 * result + getTranslation().hashCode();
         return result;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public TranslatedText changeFavoriteState(boolean value) {
-        return fromDatabase(
-                getId(),
-                translatedText,
-                getTranslation().getOriginalText(),
-                getTranslation().getDirection().toString(),
-                value);
+    public TranslatedText setFavorite(boolean value) {
+        isFavorite = value;
+        return this;
     }
 
     public boolean isFavorite() {

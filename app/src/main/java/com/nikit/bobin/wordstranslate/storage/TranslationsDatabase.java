@@ -1,95 +1,83 @@
 package com.nikit.bobin.wordstranslate.storage;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class TranslationsDatabase
-        extends AbstractDatabaseOneTableContext<TranslatedText>
-        implements ITranslationsDatabase {
-    private String[] columns = new String[]{"id", "translated", "original", "direction", "favorite"};
+public class TranslationsDatabase implements ITranslationsDatabase {
+    private ArrayList<OnItemsUpdateListener> onItemsUpdateListeners;
 
     public TranslationsDatabase() {
-        super(
-                "translations.db",
-                "translations",
-                "id integer primary key autoincrement, " +
-                        "original text not null," +
-                        "translated text not null," +
-                        "direction text not null," +
-                        "favorite integer default 0",
-                "id");
-    }
-
-    @Override
-    TranslatedText deserialize(Cursor cursor) {
-        return TranslatedText.fromDatabase(
-                cursor.getInt(0),
-                cursor.getString(1),
-                cursor.getString(2),
-                cursor.getString(3),
-                cursor.getInt(4) == 1);
-    }
-
-    @Override
-    ContentValues serialize(TranslatedText translatedText) {
-        ContentValues initialValues = new ContentValues();
-        int id = translatedText.getId();
-        if (id != -1) initialValues.put("id", id);
-        initialValues.put("translated", translatedText.getTranslatedText());
-        initialValues.put("original", translatedText.getTranslation().getOriginalText());
-        initialValues.put("direction", translatedText.getTranslation().getDirection().toString());
-        initialValues.put("favorite", translatedText.isFavorite() ? 1 : 0);
-        return initialValues;
+        onItemsUpdateListeners = new ArrayList<>();
     }
 
     @Override
     public TranslatedText getById(long id) {
-        ArrayList<TranslatedText> translations =
-                extractAllData(columns, "id=?", new String[]{id + ""}, null);
-        return translations.size() == 0 ? null : translations.get(0);
+        return TranslatedText.findById(TranslatedText.class, id);
     }
 
     @Override
     public TranslatedText[] getAllTranslations(boolean orderDescending) {
-        ArrayList<TranslatedText> translations = extractAllData(
-                columns,
-                null,
-                null,
-                "id " + (orderDescending ? "desc" : "asc"));
-        return translations.toArray(new TranslatedText[translations.size()]);
+        List<TranslatedText> translatedTexts =
+                TranslatedText.listAll(TranslatedText.class, "ID " + (orderDescending ? "DESC" : "ASC"));
+        return translatedTexts.toArray(new TranslatedText[translatedTexts.size()]);
     }
 
     @Override
     public TranslatedText[] getFavoriteTranslations(boolean orderDescending) {
-        ArrayList<TranslatedText> translations = extractAllData(
-                columns,
-                "favorite=1",
+        List<TranslatedText> translatedTexts = TranslatedText.find(
+                TranslatedText.class,
+                "IS_FAVORITE=?",
+                new String[]{"1"},
                 null,
-                "id " + (orderDescending ? "desc" : "asc"));
-        return translations.toArray(new TranslatedText[translations.size()]);
+                "ID " + (orderDescending ? "DESC" : "ASC"),
+                null);
+        return translatedTexts.toArray(new TranslatedText[translatedTexts.size()]);
     }
 
     @Override
-    public boolean addOrUpdate(TranslatedText translatedText) {
-        return insertOrUpdate(translatedText, true);
+    public boolean save(TranslatedText translatedText) {
+        if (translatedText != null) {
+            translatedText.save();
+            notifyDataChanged();
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean delete(TranslatedText translatedText) {
-        return delete("id=?", new String[]{translatedText.getId() + ""}, true);
+        if (TranslatedText.delete(translatedText)) {
+            notifyDataChanged();
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void deleteAllTranslations() {
-        clearTable(true);
+        if (TranslatedText.deleteAll(TranslatedText.class) > 0)
+            notifyDataChanged();
     }
 
     @Override
     public void deleteAllFavorites() {
-        delete("favorite=1", null, true);
+        if (TranslatedText.deleteAll(TranslatedText.class, "IS_FAVORITE=?", "1") > 0)
+            notifyDataChanged();
+    }
+
+    private void notifyDataChanged() {
+        if (onItemsUpdateListeners.size() != 0) {
+            for (OnItemsUpdateListener listener
+                    : onItemsUpdateListeners)
+                listener.onDatabaseChange();
+        }
+    }
+
+    @Override
+    public void addOnItemsUpdateListener(OnItemsUpdateListener onItemsUpdateListener) {
+        if (!onItemsUpdateListeners.contains(onItemsUpdateListener))
+            onItemsUpdateListeners.add(onItemsUpdateListener);
     }
 }

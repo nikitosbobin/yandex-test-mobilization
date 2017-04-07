@@ -193,7 +193,7 @@ public class TranslationFragment extends Fragment
         if (currentTranslation == null) return;
         TranslatedText[] items = translationsDatabase.getAllTranslations(true);
         if (items.length == 0 || (items.length > 0 && !items[0].equals(currentTranslation))) {
-            translationsDatabase.addOrUpdate(currentTranslation);
+            translationsDatabase.save(currentTranslation);
         }
     }
 

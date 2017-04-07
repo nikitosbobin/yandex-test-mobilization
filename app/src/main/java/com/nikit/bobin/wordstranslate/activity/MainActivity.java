@@ -25,6 +25,7 @@ import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
+import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import javax.inject.Inject;
 
@@ -69,7 +70,6 @@ public class MainActivity extends AppCompatActivity
                 new SettingsFragment()
         };
         translationFragment = (TranslationFragment) fragments[0];
-
         PagerAdapter pagerAdapter = new TranslateActivityPagerAdapter(
                 getSupportFragmentManager(),
                 fragments);

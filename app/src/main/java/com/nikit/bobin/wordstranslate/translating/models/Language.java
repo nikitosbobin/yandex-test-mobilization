@@ -1,20 +1,39 @@
 package com.nikit.bobin.wordstranslate.translating.models;
 
 import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.orm.SugarRecord;
+import com.orm.dsl.Table;
 
-public class Language implements Comparable<Language> {
+@Table
+public class Language extends SugarRecord {
+    private Long id;
     private String key;
     private String title;
+    private boolean isUi;
 
-    public Language(String key, String title) {
-        Ensure.notNullOrEmpty(key, "key");
-
-        this.key = key;
-        this.title = title;
+    // Don't use this constructor. It only for Sugar ORM usage.
+    @Deprecated
+    public Language() {
     }
 
     public Language(String key) {
         this(key, null);
+    }
+
+    public Language(String key, String title) {
+        this(key, title, false);
+    }
+
+    public Language(String key, String title, boolean isUi) {
+        Ensure.notNullOrEmpty(key, "key");
+
+        this.key = key;
+        this.title = title;
+        this.isUi = isUi;
+    }
+
+    public Language asUiLanguage() {
+        return new Language(key, title, true);
     }
 
     public String getKey() {
@@ -23,6 +42,10 @@ public class Language implements Comparable<Language> {
 
     public String getTitle() {
         return title;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public void setTitle(String title) {
@@ -41,18 +64,17 @@ public class Language implements Comparable<Language> {
 
     @Override
     public int hashCode() {
+        if (key == null)
+            return super.hashCode();
         return key.hashCode();
     }
 
-    @Override
-    public String toString() {
-        return getKey();
+    public boolean isUi() {
+        return isUi;
     }
 
     @Override
-    public int compareTo(Language o) {
-        if (title != null && o.title != null)
-            return title.compareTo(o.title);
-        return key.compareTo(o.key);
+    public Long getId() {
+        return id;
     }
 }

@@ -8,7 +8,6 @@ import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
-import org.jdeferred.DoneFilter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,8 +17,6 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class YandexTranslatorCache_Tests {
@@ -31,8 +28,6 @@ public class YandexTranslatorCache_Tests {
     public void setUp() {
         translationsDatabase = mock(ITranslationsDatabase.class);
         languagesDatabase = mock(ILanguagesDatabase.class);
-
-        when(translationsDatabase.isConnected()).thenReturn(true);
 
         when(translationsDatabase.getAllTranslations(false))
                 .thenReturn(new TranslatedText[]{

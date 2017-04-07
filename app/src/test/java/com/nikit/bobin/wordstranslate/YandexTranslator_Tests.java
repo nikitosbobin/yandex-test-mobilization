@@ -157,7 +157,7 @@ public class YandexTranslator_Tests {
     public void translateAsync_should_return_failed_translation_when_any_error_occurs()
             throws IOException {
         translator = createTranslator(false);
-        Translation translation = mock(Translation.class);
+        Translation translation = new Translation("rrr", "en-ru");
         TranslatedText expectedTranslation = TranslatedText.fail(translation);
         when(uriFactory.translate(translation.getDirection(), translation.getOriginalText()))
                 .thenReturn("http://path");

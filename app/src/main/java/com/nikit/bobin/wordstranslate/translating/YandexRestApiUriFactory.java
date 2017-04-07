@@ -66,9 +66,12 @@ public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
         Ensure.notNullOrEmpty(text, "text");
         Ensure.notNull(possibleLangs, "possibleLangs");
 
+        String[] langsKeys = new String[possibleLangs.length];
+        for (int i = 0; i < possibleLangs.length; ++i)
+            langsKeys[i] = possibleLangs[i].getKey();
         String hint = "";
         if (possibleLangs.length > 0)
-            hint = "&hint=" + Strings.join(possibleLangs, ",");
+            hint = "&hint=" + Strings.join(langsKeys, ",");
 
         return String.format(
                 "%sdetect?key=%s&text=%s%s",

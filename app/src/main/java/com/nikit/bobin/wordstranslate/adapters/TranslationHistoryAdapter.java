@@ -6,12 +6,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.nikit.bobin.wordstranslate.customviews.TranslationView;
-import com.nikit.bobin.wordstranslate.storage.AbstractDatabaseOneTableContext;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
+import com.nikit.bobin.wordstranslate.storage.OnItemsUpdateListener;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 public class TranslationHistoryAdapter extends BaseAdapter
-        implements TranslationView.OnFavoriteChangeListener, AbstractDatabaseOneTableContext.OnItemsUpdateListener {
+        implements TranslationView.OnFavoriteChangeListener, OnItemsUpdateListener {
     private Context context;
     private final ITranslationsDatabase translationsDatabase;
     private boolean needFavoriteFiltering;
@@ -68,8 +68,9 @@ public class TranslationHistoryAdapter extends BaseAdapter
 
     @Override
     public void onFavoriteChange(int position, boolean value) {
-        TranslatedText currentTranslation = getItem(position).changeFavoriteState(value);
-        translationsDatabase.addOrUpdate(currentTranslation);
+        TranslatedText currentTranslation = getItem(position);
+        currentTranslation.setFavorite(value);
+        translationsDatabase.save(currentTranslation);
     }
 
     @Override

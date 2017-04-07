@@ -247,7 +247,10 @@ public class LanguageSelectorView extends RelativeLayout implements
             recentLanguages.remove(0);
 
         SharedPreferences.Editor edit = preferences.edit();
-        String stringToSave = Strings.join(recentLanguages, " ");
+        String[] langsKeys = new String[recentLanguages.size()];
+        for (int i = 0; i < langsKeys.length; ++i)
+            langsKeys[i] = recentLanguages.get(i).getKey();
+        String stringToSave = Strings.join(langsKeys, " ");
         edit.putString(RECENT_LANGUAGES, stringToSave);
         edit.apply();
     }
