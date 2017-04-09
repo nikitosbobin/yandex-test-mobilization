@@ -5,18 +5,12 @@ import com.nikit.bobin.wordstranslate.core.Strings;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.HashMap;
-
 public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
-    private final int maxCacheSize = 10000;
     private String translationKey;
     private String yandexTranslatorApiPrefix = "https://translate.yandex.net/api/v1.5/tr.json/";
     private String yandexDictionaryApiPrefix = "https://dictionary.yandex.net/api/v1/dicservice.json/";
     private String dictionaryKey;
 
-    //todo: add caching
     public YandexRestApiUriFactory(String translationKey, String dictionaryKey) {
         Ensure.notNullOrEmpty(translationKey, "translationKey");
         Ensure.notNullOrEmpty(dictionaryKey, "dictionaryKey");
@@ -42,7 +36,7 @@ public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
                 yandexTranslatorApiPrefix,
                 translationKey,
                 direction.toString(),
-                screenSpecialSymbols(text));
+                Strings.screenSpecialSymbols(text));
     }
 
     @Override
@@ -55,7 +49,7 @@ public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
                 yandexDictionaryApiPrefix,
                 dictionaryKey,
                 direction.toString(),
-                screenSpecialSymbols(text));
+                Strings.screenSpecialSymbols(text));
     }
 
     @Override
@@ -74,15 +68,7 @@ public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
                 "%sdetect?key=%s&text=%s%s",
                 yandexTranslatorApiPrefix,
                 translationKey,
-                screenSpecialSymbols(text),
+                Strings.screenSpecialSymbols(text),
                 hint);
-    }
-
-    private static String screenSpecialSymbols(String text) {
-        try {
-            return URLEncoder.encode(text, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            return text;
-        }
     }
 }

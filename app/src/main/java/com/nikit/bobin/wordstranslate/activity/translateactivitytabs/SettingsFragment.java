@@ -70,35 +70,6 @@ public class SettingsFragment extends Fragment {
         clearHistoryDialog.show();
     }
 
-    @OnClick(R.id.clear_favorite_button)
-    public void clearFavorites() {
-        if (clearFavoriteDialog == null)
-            clearFavoriteDialog = createClearFavoritesDialog();
-        clearFavoriteDialog.show();
-    }
-
-    @OnClick(R.id.about_button)
-    public void openAboutDialog() {
-        if (aboutDialog == null)
-            aboutDialog = createAboutDialog();
-        aboutDialog.show();
-    }
-
-    @OnCheckedChanged(R.id.caching_switch)
-    public void setCachingState(boolean isChecked) {
-        settingsProvider.setEnableCaching(isChecked);
-    }
-
-    @OnCheckedChanged(R.id.determine_lang_switch)
-    public void setPredictionState(boolean isChecked) {
-        settingsProvider.setEnableLangPrediction(isChecked);
-    }
-
-    @OnCheckedChanged(R.id.show_dictionary_switch)
-    public void setDictionaryState(boolean isChecked) {
-        settingsProvider.setEnableDictionary(isChecked);
-    }
-
     private MaterialDialog createClearHistoryDialog() {
         return new MaterialDialog.Builder(getContext())
                 .title(R.string.confirm_delete)
@@ -111,6 +82,13 @@ public class SettingsFragment extends Fragment {
                     }
                 })
                 .build();
+    }
+
+    @OnClick(R.id.clear_favorite_button)
+    public void clearFavorites() {
+        if (clearFavoriteDialog == null)
+            clearFavoriteDialog = createClearFavoritesDialog();
+        clearFavoriteDialog.show();
     }
 
     private MaterialDialog createClearFavoritesDialog() {
@@ -127,11 +105,33 @@ public class SettingsFragment extends Fragment {
                 .build();
     }
 
+    @OnClick(R.id.about_button)
+    public void openAboutDialog() {
+        if (aboutDialog == null)
+            aboutDialog = createAboutDialog();
+        aboutDialog.show();
+    }
+
     private MaterialDialog createAboutDialog() {
         return new MaterialDialog.Builder(getContext())
                 .title(R.string.app_name)
                 .content(R.string.about_description)
                 .negativeText(R.string.cancel)
                 .build();
+    }
+
+    @OnCheckedChanged(R.id.caching_switch)
+    public void setCachingState(boolean isChecked) {
+        settingsProvider.setEnableCaching(isChecked);
+    }
+
+    @OnCheckedChanged(R.id.determine_lang_switch)
+    public void setPredictionState(boolean isChecked) {
+        settingsProvider.setEnableLangPrediction(isChecked);
+    }
+
+    @OnCheckedChanged(R.id.show_dictionary_switch)
+    public void setDictionaryState(boolean isChecked) {
+        settingsProvider.setEnableDictionary(isChecked);
     }
 }

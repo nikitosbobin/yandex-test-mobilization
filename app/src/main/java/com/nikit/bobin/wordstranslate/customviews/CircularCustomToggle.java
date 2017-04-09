@@ -43,6 +43,7 @@ public class CircularCustomToggle extends CircleButton implements View.OnClickLi
     }
 
     private void init(Context context, AttributeSet attrs) {
+        // Dependency injection
         IocSetup.getComponent().inject(this);
 
         initAnimations();
@@ -92,6 +93,14 @@ public class CircularCustomToggle extends CircleButton implements View.OnClickLi
                 });
     }
 
+    @Override
+    public void onClick(View v) {
+        isChecked = !isChecked;
+        setImageDrawable(isChecked ? activeImage : passiveImage);
+        if (onCheckedChangeListener != null)
+            onCheckedChangeListener.onCheckedChanged(this, isChecked);
+    }
+
     public boolean isChecked() {
         return isChecked;
     }
@@ -99,14 +108,6 @@ public class CircularCustomToggle extends CircleButton implements View.OnClickLi
     public void setChecked(boolean checked) {
         isChecked = checked;
         setImageDrawable(isChecked ? activeImage : passiveImage);
-    }
-
-    @Override
-    public void onClick(View v) {
-        isChecked = !isChecked;
-        setImageDrawable(isChecked ? activeImage : passiveImage);
-        if (onCheckedChangeListener != null)
-            onCheckedChangeListener.onCheckedChanged(this, isChecked);
     }
 
     public void hide() {

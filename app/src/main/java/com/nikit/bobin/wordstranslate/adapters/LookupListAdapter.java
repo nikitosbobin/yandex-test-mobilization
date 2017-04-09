@@ -72,6 +72,7 @@ public class LookupListAdapter extends BaseAdapter {
         TextView meanView;
 
         LookupViewHolder(View view) {
+            // Views injection
             ButterKnife.bind(this, view);
         }
     }

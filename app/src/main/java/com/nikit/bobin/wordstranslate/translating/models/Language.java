@@ -44,10 +44,6 @@ public class Language extends SugarRecord {
         return title;
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
-
     public void setTitle(String title) {
         Ensure.notNullOrEmpty(title, "title");
 

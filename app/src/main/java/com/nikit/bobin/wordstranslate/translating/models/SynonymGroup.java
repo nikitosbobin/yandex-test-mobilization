@@ -31,7 +31,6 @@ public class SynonymGroup {
         SynonymGroup group = (SynonymGroup) o;
         if (!Arrays.equals(mean, group.mean)) return false;
         return Arrays.equals(synonyms, group.synonyms);
-
     }
 
     @Override

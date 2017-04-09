@@ -5,8 +5,6 @@ import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
-import org.jdeferred.Promise;
-
 public interface ITranslator {
     TranslatedText translate(Translation translation);
 

@@ -5,44 +5,39 @@ import android.content.SharedPreferences;
 import com.nikit.bobin.wordstranslate.core.Ensure;
 
 public class SettingsProvider {
-    private final String CACHING = "caching";
-    private final String DICTIONARY = "dictionary";
-    private final String PREDICTION = "prediction";
-    private SharedPreferences preferences;
+    private BooleanSetting enabledCachingSetting;
+    private BooleanSetting enabledDictionarySetting;
+    private BooleanSetting enabledPredictionSetting;
 
     public SettingsProvider(SharedPreferences sharedPreferences) {
         Ensure.notNull(sharedPreferences, "sharedPreferences");
 
-        preferences = sharedPreferences;
+        enabledCachingSetting = new BooleanSetting(sharedPreferences, "caching", true);
+        enabledDictionarySetting = new BooleanSetting(sharedPreferences, "dictionary", true);
+        enabledPredictionSetting = new BooleanSetting(sharedPreferences, "prediction", true);
     }
 
     public void setEnableCaching(boolean value) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(CACHING, value);
-        editor.apply();
+        enabledCachingSetting.setValue(value);
     }
 
     public boolean isEnableCaching() {
-        return preferences.getBoolean(CACHING, true);
+        return enabledCachingSetting.getValue();
     }
 
     public void setEnableDictionary(boolean value) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(DICTIONARY, value);
-        editor.apply();
+        enabledDictionarySetting.setValue(value);
     }
 
     public boolean isEnableDictionary() {
-        return preferences.getBoolean(DICTIONARY, true);
+        return enabledDictionarySetting.getValue();
     }
 
     public void setEnableLangPrediction(boolean value) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(PREDICTION, value);
-        editor.apply();
+        enabledPredictionSetting.setValue(value);
     }
 
     public boolean isEnableLangPrediction() {
-        return preferences.getBoolean(PREDICTION, true);
+        return enabledPredictionSetting.getValue();
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 public class LanguagesDatabase implements ILanguagesDatabase {
     @Override
     public Language getLanguage(String languageKey, Language ui) {
-        if (languageKey != null && isLanguagesSaved(ui)) {
+        if (languageKey != null && ui != null && isLanguagesSaved(ui)) {
             List<Language> languages = Language.find(Language.class, "KEY=?", languageKey);
             if (languages.size() > 0)
                 return languages.get(0);
@@ -28,10 +28,9 @@ public class LanguagesDatabase implements ILanguagesDatabase {
 
     @Override
     public boolean replaceLanguages(Language[] languages, Language ui) {
-        Ensure.notNull(languages, "languages");
-        Ensure.notNull(ui, "ui");
-
-        if (isLanguagesSaved(ui) && Language.count(Language.class) == languages.length)
+        if(languages == null
+                || ui == null
+                || (isLanguagesSaved(ui) && Language.count(Language.class) == languages.length))
             return false;
         if (Language.count(Language.class) > 0)
             Language.deleteAll(Language.class);
@@ -49,8 +48,8 @@ public class LanguagesDatabase implements ILanguagesDatabase {
 
     @Override
     public boolean isLanguagesSaved(Language ui) {
-        Ensure.notNull(ui, "ui");
-
+        if (ui == null)
+            return false;
         long count = Language.count(
                 Language.class,
                 "KEY=? and IS_UI=1",

@@ -86,6 +86,7 @@ public class LanguageSelectorView extends RelativeLayout implements
         inflate(getContext(), R.layout.language_selector_layout, this);
         if (isInEditMode()) return;
 
+        // Dependency and views injection
         IocSetup.getComponent().inject(this);
         ButterKnife.bind(this);
 

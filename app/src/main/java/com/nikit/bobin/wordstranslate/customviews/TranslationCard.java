@@ -47,6 +47,21 @@ public class TranslationCard extends RelativeLayout {
         init();
     }
 
+    private void init() {
+        inflate(getContext(), R.layout.translation_card, this);
+        if (isInEditMode()) return;
+
+        // Views injection
+        ButterKnife.bind(this);
+
+        originalTextView.setMovementMethod(new ScrollingMovementMethod());
+        translatedTextView.setMovementMethod(new ScrollingMovementMethod());
+
+        adapter = new LookupListAdapter(getContext());
+        lookupList.setAdapter(adapter);
+        clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+    }
+
     @OnClick(R.id.copy_translation_button)
     public void copyTranslationToClipboard() {
         if (translatedText != null) {
@@ -73,19 +88,5 @@ public class TranslationCard extends RelativeLayout {
         lookupList.setVisibility(lookup.isEmpty() ? GONE : VISIBLE);
         adapter.setNewLookup(lookup);
         lookupList.invalidateViews();
-    }
-
-    private void init() {
-        inflate(getContext(), R.layout.translation_card, this);
-        if (isInEditMode()) return;
-
-        ButterKnife.bind(this);
-
-        originalTextView.setMovementMethod(new ScrollingMovementMethod());
-        translatedTextView.setMovementMethod(new ScrollingMovementMethod());
-
-        adapter = new LookupListAdapter(getContext());
-        lookupList.setAdapter(adapter);
-        clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
     }
 }

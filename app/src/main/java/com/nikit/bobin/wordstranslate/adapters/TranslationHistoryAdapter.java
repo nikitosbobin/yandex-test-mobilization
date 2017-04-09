@@ -62,9 +62,6 @@ public class TranslationHistoryAdapter extends BaseAdapter
         return translationView;
     }
 
-    public void setFavoriteFilteringState(boolean state) {
-        this.needFavoriteFiltering = state;
-    }
 
     @Override
     public void onFavoriteChange(int position, boolean value) {
@@ -77,5 +74,9 @@ public class TranslationHistoryAdapter extends BaseAdapter
     public void onDatabaseChange() {
         favoriteTranslations = translationsDatabase.getFavoriteTranslations(true);
         allTranslations = translationsDatabase.getAllTranslations(true);
+    }
+
+    public void setFavoriteFilteringState(boolean state) {
+        this.needFavoriteFiltering = state;
     }
 }

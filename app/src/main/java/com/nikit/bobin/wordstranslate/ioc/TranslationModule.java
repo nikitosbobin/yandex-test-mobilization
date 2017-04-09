@@ -15,8 +15,6 @@ import com.nikit.bobin.wordstranslate.translating.YandexTranslator;
 import com.nikit.bobin.wordstranslate.translating.YandexTranslatorCache;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
-import org.jdeferred.DeferredManager;
-
 import java.util.Locale;
 
 import javax.inject.Singleton;

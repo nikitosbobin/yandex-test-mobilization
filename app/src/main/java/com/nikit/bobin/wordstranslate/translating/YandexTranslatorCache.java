@@ -71,9 +71,7 @@ public class YandexTranslatorCache {
     }
 
     public boolean hasTranslation(Translation translation) {
-        if (translation == null)
-            return false;
-        return getTranslationsCache().containsKey(translation);
+        return translation != null && getTranslationsCache().containsKey(translation);
     }
 
     public void addTranslation(TranslatedText result) {
@@ -83,9 +81,7 @@ public class YandexTranslatorCache {
     }
 
     public boolean hasLookup(Translation translation) {
-        if (translation == null)
-            return false;
-        return getLookupsCache().containsKey(translation);
+        return translation != null && getLookupsCache().containsKey(translation);
     }
 
     public WordLookup getWordLookup(Translation translation) {
@@ -102,9 +98,7 @@ public class YandexTranslatorCache {
     }
 
     public boolean hasDetection(String text) {
-        if (text == null)
-            return false;
-        return getDetectionsCache().containsKey(text);
+        return text != null && getDetectionsCache().containsKey(text);
     }
 
     public Language getDetection(String text) {
@@ -123,9 +117,7 @@ public class YandexTranslatorCache {
     public boolean hasLanguages(Language ui) {
         if (ui == null)
             return false;
-        if (getLanguagesCache().containsKey(ui))
-            return true;
-        return languagesDatabase.isLanguagesSaved(ui);
+        return getLanguagesCache().containsKey(ui) || languagesDatabase.isLanguagesSaved(ui);
     }
 
     public Language[] getLanguages(Language ui) {

@@ -48,7 +48,7 @@ public class TranslationsDatabase implements ITranslationsDatabase {
 
     @Override
     public boolean delete(TranslatedText translatedText) {
-        if (TranslatedText.delete(translatedText)) {
+        if (translatedText != null && TranslatedText.delete(translatedText)) {
             notifyDataChanged();
             return true;
         }
@@ -77,7 +77,8 @@ public class TranslationsDatabase implements ITranslationsDatabase {
 
     @Override
     public void addOnItemsUpdateListener(OnItemsUpdateListener onItemsUpdateListener) {
-        if (!onItemsUpdateListeners.contains(onItemsUpdateListener))
+        if (onItemsUpdateListener != null &&
+                !onItemsUpdateListeners.contains(onItemsUpdateListener))
             onItemsUpdateListeners.add(onItemsUpdateListener);
     }
 }

@@ -5,10 +5,8 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.nikit.bobin.wordstranslate.R;
-
 
 public class CustomToggle extends android.support.v7.widget.AppCompatImageView
         implements View.OnClickListener {
@@ -66,7 +64,7 @@ public class CustomToggle extends android.support.v7.widget.AppCompatImageView
         this.onCheckedChangeListener = onCheckedChangeListener;
     }
 
-    public interface OnCheckedChangeListener {
+    interface OnCheckedChangeListener {
         void onCheckedChanged(CustomToggle toggleView, boolean isChecked);
     }
 }
