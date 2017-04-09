@@ -2,7 +2,8 @@ package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
 import android.animation.Animator;
 import android.os.Bundle;
-import android.speech.tts.Voice;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -31,7 +32,9 @@ import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
+import org.jdeferred.DeferredManager;
 import org.jdeferred.DoneCallback;
+import org.jdeferred.DoneFilter;
 import org.jdeferred.Promise;
 
 import javax.inject.Inject;
@@ -64,6 +67,8 @@ public class TranslationFragment extends Fragment
     @Inject
     ILanguagesDatabase languagesDatabase;
     @Inject
+    DeferredManager deferredManager;
+    @Inject
     SettingsProvider settingsProvider;
     @Inject
     NetworkConnectionInfoProvider networkConnectionInfoProvider;
@@ -71,10 +76,10 @@ public class TranslationFragment extends Fragment
     AnimationsFactory animationsFactory;
     @Inject
     Language ui;
+    @Inject
+    Handler uiHandler;
     private TranslatedText currentTranslation;
-    private Promise<TranslatedText, Throwable, Void> currentTranslationPromise;
-    private Promise<Language, Throwable, Void> currentPredictionPromise;
-    private Promise<WordLookup, Throwable, Void> currentLookupPromise;
+    private Promise currentPromise;
     private YoYo.AnimationComposer translationCardOutAnimation;
     private YoYo.AnimationComposer translationCardInAnimation;
 
@@ -110,14 +115,12 @@ public class TranslationFragment extends Fragment
         return view;
     }
 
-    private void notifyIfNoConnection() {
-        if (!networkConnectionInfoProvider.isConnectedToInternet())
-            Snackbar.make(input, R.string.no_internet, Snackbar.LENGTH_SHORT).show();
-    }
-
     @OnTextChanged(R.id.translation_input)
     public void onTextChanged(CharSequence s) {
-        notifyIfNoConnection();
+        if (!networkConnectionInfoProvider.isConnectedToInternet()) {
+            Snackbar.make(input, R.string.no_internet, Snackbar.LENGTH_SHORT).show();
+            return;
+        }
         if (s == null || s.length() == 0) {
             clearButton.setVisibility(View.GONE);
             clearTranslationCard();
@@ -129,60 +132,111 @@ public class TranslationFragment extends Fragment
                 selectorView.getDirection());
         if (currentTranslation == null ||
                 !targetTranslation.equals(currentTranslation.getTranslation())) {
-            tryDetectLang(targetTranslation);
-            performTranslation(targetTranslation);
+            doTranslation(targetTranslation);
         }
     }
 
-    private void performTranslation(final Translation targetTranslation) {
-        if (currentTranslationPromise != null
-                && !currentTranslationPromise.isResolved()
-                && !currentTranslationPromise.isRejected())
-            return;
-        currentTranslationPromise = translator
-                .translateAsync(targetTranslation)
-                .then(new DoneCallback<TranslatedText>() {
-                    public void onDone(final TranslatedText result) {
-                        if (!result.isSuccess()) return;
-                        currentTranslation = result;
-                        fillTranslationCard(result);
-                        if (!needDictionary() || targetTranslation.getWordCount() != 1)
-                            translationCard.setLookup(WordLookup.empty(result.getTranslation()));
-                        else
-                            tryLoadLookup(result);
-                    }
-                });
+    private void clearTranslationCard() {
+        translationCardOutAnimation.playOn(translationCard);
+        currentTranslation = null;
     }
 
-    private void tryLoadLookup(TranslatedText result) {
-        if (currentLookupPromise != null
-                && !currentLookupPromise.isResolved()
-                && !currentLookupPromise.isRejected())
-            return;
-        currentLookupPromise = translator
-                .getWordLookupAsync(result.getTranslation())
-                .then(new DoneCallback<WordLookup>() {
-                    public void onDone(final WordLookup result) {
-                        if (result != null)
-                            translationCard.setLookup(result);
-                    }
-                });
+    public void fillTranslationCard(final TranslatedText translatedText) {
+        uiHandler.post(new Runnable() {
+            public void run() {
+                translationCard.fillTranslation(translatedText);
+                if (translationCard.getVisibility() != View.VISIBLE) {
+                    translationCard.setVisibility(View.VISIBLE);
+                    translationCardInAnimation.playOn(translationCard);
+                }
+            }
+        });
     }
 
-    private void tryDetectLang(Translation targetTranslation) {
-        if ((currentPredictionPromise != null
-                && !currentPredictionPromise.isResolved()
-                && !currentPredictionPromise.isRejected())
-                || !needPredict() || targetTranslation.getWordCount() != 1)
+    private void doTranslation(final Translation targetTranslation) {
+        if (currentPromise != null
+                && !currentPromise.isResolved()
+                && !currentPromise.isRejected())
             return;
-        currentPredictionPromise = translator
-                .detectLanguageAsync(targetTranslation.getOriginalText())
-                .then(new DoneCallback<Language>() {
-                    public void onDone(final Language result) {
-                        if (result != null)
-                            selectorView.setLanguageFrom(result, true);
-                    }
-                });
+        currentPromise = deferredManager
+                .when(detectLanguage(targetTranslation))
+                .then(translateTextContinuation(targetTranslation))
+                .then(handleTranslationContinuation(targetTranslation))
+                .then(loadLookupContinuation(targetTranslation));
+    }
+
+    @NonNull
+    private Runnable detectLanguage(final Translation targetTranslation) {
+        return new Runnable() {
+            public void run() {
+                if (needPredict()) {
+                    final Language detection = translator
+                            .detectLanguage(targetTranslation.getOriginalText());
+                    if (detection != null)
+                        setLanguageFrom(detection);
+                }
+            }
+        };
+    }
+
+    private boolean needPredict() {
+        return settingsProvider.isEnableLangPrediction();
+    }
+
+    private void setLanguageFrom(final Language from) {
+        uiHandler.post(new Runnable() {
+            public void run() {
+                selectorView.setLanguageFrom(from, false);
+            }
+        });
+    }
+
+    @NonNull
+    private DoneFilter<Void, TranslatedText> translateTextContinuation(final Translation targetTranslation) {
+        return new DoneFilter<Void, TranslatedText>() {
+            public TranslatedText filterDone(Void result) {
+                return translator.translate(targetTranslation);
+            }
+        };
+    }
+
+    @NonNull
+    private DoneFilter<TranslatedText, Boolean> handleTranslationContinuation(final Translation targetTranslation) {
+        return new DoneFilter<TranslatedText, Boolean>() {
+            public Boolean filterDone(TranslatedText result) {
+                if (!result.isSuccess()) return false;
+                currentTranslation = result;
+                fillTranslationCard(result);
+                if (needDictionary() && targetTranslation.getWordCount() == 1)
+                    return true;
+                setLookup(WordLookup.empty(result.getTranslation()));
+                return false;
+            }
+        };
+    }
+
+    private boolean needDictionary() {
+        return settingsProvider.isEnableDictionary();
+    }
+
+    private void setLookup(final WordLookup lookup) {
+        uiHandler.post(new Runnable() {
+            public void run() {
+                translationCard.setLookup(lookup);
+            }
+        });
+    }
+
+    @NonNull
+    private DoneCallback<Boolean> loadLookupContinuation(final Translation targetTranslation) {
+        return new DoneCallback<Boolean>() {
+            public void onDone(Boolean result) {
+                if (!result) return;
+                final WordLookup wordLookup = translator.getWordLookup(targetTranslation);
+                if (wordLookup != null)
+                    setLookup(wordLookup);
+            }
+        };
     }
 
     @OnClick(R.id.clear_button)
@@ -200,19 +254,6 @@ public class TranslationFragment extends Fragment
         }
     }
 
-    private void clearTranslationCard() {
-        translationCardOutAnimation.playOn(translationCard);
-        currentTranslation = null;
-    }
-
-    public void fillTranslationCard(TranslatedText translatedText) {
-        translationCard.fillTranslation(translatedText);
-        if (translationCard.getVisibility() != View.VISIBLE) {
-            translationCard.setVisibility(View.VISIBLE);
-            translationCardInAnimation.playOn(translationCard);
-        }
-    }
-
     public void setCurrentTranslation(long translationId) {
         TranslatedText item = translationsDatabase.getById(translationId);
         if (item != null) {
@@ -226,20 +267,12 @@ public class TranslationFragment extends Fragment
         }
     }
 
-    private boolean needPredict() {
-        return settingsProvider.isEnableLangPrediction();
-    }
-
-    private boolean needDictionary() {
-        return settingsProvider.isEnableDictionary();
-    }
-
     @Override
     public void onLanguagesChange(Direction direction) {
         Editable text = input.getText();
         if (direction == null || text == null || text.length() == 0) return;
         Translation targetTranslation = new Translation(text.toString(), direction);
-        performTranslation(targetTranslation);
+        doTranslation(targetTranslation);
     }
 
     @Override

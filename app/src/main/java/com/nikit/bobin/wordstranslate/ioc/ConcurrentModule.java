@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 
 import org.jdeferred.DeferredManager;
-import org.jdeferred.android.AndroidDeferredManager;
+import org.jdeferred.impl.DefaultDeferredManager;
 
 import javax.inject.Singleton;
 
@@ -16,7 +16,7 @@ public class ConcurrentModule {
     @Provides
     @Singleton
     DeferredManager provideDeferredManager() {
-        return new AndroidDeferredManager();
+        return new DefaultDeferredManager();
     }
 
     @Provides

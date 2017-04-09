@@ -8,11 +8,11 @@ import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 import org.jdeferred.Promise;
 
 public interface ITranslator {
-    Promise<TranslatedText, Throwable, Void> translateAsync(Translation translation);
+    TranslatedText translate(Translation translation);
 
-    Promise<Language[], Throwable, Void> getLanguagesAsync();
+    Language[] getLanguages();
 
-    Promise<Language, Throwable, Void> detectLanguageAsync(String text);
+    Language detectLanguage(String text);
 
-    Promise<WordLookup, Throwable, Void> getWordLookupAsync(Translation translation);
+    WordLookup getWordLookup(Translation translation);
 }

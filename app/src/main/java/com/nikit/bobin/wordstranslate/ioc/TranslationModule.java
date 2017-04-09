@@ -40,7 +40,6 @@ public class TranslationModule {
 
     @Provides
     ITranslator provideTranslator(
-            DeferredManager deferredManager,
             IHttpSender httpSender,
             Language ui,
             IYandexRestApiUriFactory uriFactory,
@@ -52,7 +51,6 @@ public class TranslationModule {
         if (!enableCaching)
             yandexTranslatorCache = null;
         return new YandexTranslator(
-                deferredManager,
                 httpSender,
                 ui,
                 uriFactory,
