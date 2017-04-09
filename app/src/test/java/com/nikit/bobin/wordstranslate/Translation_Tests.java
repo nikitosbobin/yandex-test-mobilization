@@ -11,12 +11,12 @@ import static junit.framework.Assert.assertTrue;
 public class Translation_Tests {
     @Test(expected = NullPointerException.class)
     public void should_fail_if_text_is_null() {
-        new Translation(null, Direction.parse("ru-en"));
+        new Translation(null, Direction.parseKeySerialized("ru-en"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void should_fail_if_text_is_empty() {
-        new Translation("", Direction.parse("ru-en"));
+        new Translation("", Direction.parseKeySerialized("ru-en"));
     }
 
     @Test(expected = NullPointerException.class)
@@ -36,16 +36,16 @@ public class Translation_Tests {
 
     @Test
     public void equals_should_correctly_detect_equality() {
-        Translation translation1 = new Translation("text", Direction.parse("ru-en"));
-        Translation translation2 = new Translation("text", Direction.parse("ru-en"));
+        Translation translation1 = new Translation("text", Direction.parseKeySerialized("ru-en"));
+        Translation translation2 = new Translation("text", Direction.parseKeySerialized("ru-en"));
 
         assertTrue(translation1.equals(translation2));
     }
 
     @Test
     public void hashCode_should_correctly_return_hash_code() {
-        Translation translation1 = new Translation("text", Direction.parse("ru-en"));
-        Translation translation2 = new Translation("text", Direction.parse("ru-en"));
+        Translation translation1 = new Translation("text", Direction.parseKeySerialized("ru-en"));
+        Translation translation2 = new Translation("text", Direction.parseKeySerialized("ru-en"));
 
         int translation1HashCode = translation1.hashCode();
         int translation2HashCode = translation2.hashCode();
@@ -64,7 +64,7 @@ public class Translation_Tests {
 
     @Test
     public void getWordCount_should_return_words_count_in_text_another_ctor() {
-        Translation translation = new Translation("original text", Direction.parse("en-ru"));
+        Translation translation = new Translation("original text", Direction.parseKeySerialized("en-ru"));
 
         int wordCount = translation.getWordCount();
 
@@ -76,6 +76,6 @@ public class Translation_Tests {
         Translation translation = new Translation("original text", "en-ru");
 
         assertEquals("original text", translation.getOriginalText());
-        assertEquals(Direction.parse("en-ru"), translation.getDirection());
+        assertEquals(Direction.parseKeySerialized("en-ru"), translation.getDirection());
     }
 }

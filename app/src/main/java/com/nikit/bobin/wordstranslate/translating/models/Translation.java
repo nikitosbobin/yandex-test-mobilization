@@ -20,7 +20,7 @@ public class Translation {
         Ensure.notNullOrEmpty(originalText, "originalText");
         Ensure.notNullOrEmpty(direction, "direction");
 
-        this.direction = Direction.parse(direction);
+        this.direction = Direction.parseKeySerialized(direction);
         this.originalText = originalText;
         wordCount = originalText.split(" ").length;
     }

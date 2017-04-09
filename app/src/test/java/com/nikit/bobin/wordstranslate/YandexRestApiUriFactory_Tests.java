@@ -59,19 +59,19 @@ public class YandexRestApiUriFactory_Tests {
 
     @Test(expected = NullPointerException.class)
     public void translate_should_fail_when_text_is_null() {
-        factory.translate(Direction.parse("en-en"), null);
+        factory.translate(Direction.parseKeySerialized("en-en"), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void translate_should_fail_when_text_is_empty() {
-        factory.translate(Direction.parse("en-en"), Strings.empty);
+        factory.translate(Direction.parseKeySerialized("en-en"), Strings.empty);
     }
 
     @Test
     public void translate_should_return_correct_uri() {
         String expectedUrl = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=appKey&lang=en-ru&text=text";
 
-        String actualUrl = factory.translate(Direction.parse("en-ru"), "text");
+        String actualUrl = factory.translate(Direction.parseKeySerialized("en-ru"), "text");
 
         assertEquals(expectedUrl, actualUrl);
     }
@@ -80,7 +80,7 @@ public class YandexRestApiUriFactory_Tests {
     public void translate_should_return_correct_uri_with_screening_special_symbols() {
         String expectedUrl = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=appKey&lang=en-ru&text=text+%27some+data%27%27%27";
 
-        String actualUrl = factory.translate(Direction.parse("en-ru"), "text 'some data'''");
+        String actualUrl = factory.translate(Direction.parseKeySerialized("en-ru"), "text 'some data'''");
 
         assertEquals(expectedUrl, actualUrl);
     }
@@ -92,19 +92,19 @@ public class YandexRestApiUriFactory_Tests {
 
     @Test(expected = NullPointerException.class)
     public void dictionaryLookup_should_fail_when_text_null() {
-        factory.dictionaryLookup(Direction.parse("en-ru"), null);
+        factory.dictionaryLookup(Direction.parseKeySerialized("en-ru"), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void dictionaryLookup_should_fail_when_text_empty() {
-        factory.dictionaryLookup(Direction.parse("en-ru"), Strings.empty);
+        factory.dictionaryLookup(Direction.parseKeySerialized("en-ru"), Strings.empty);
     }
 
     @Test
     public void dictionaryLookup_should_return_correct_uri() {
         String expectedUrl = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=dictKey&lang=en-ru&text=text";
 
-        String actualUrl = factory.dictionaryLookup(Direction.parse("en-ru"), "text");
+        String actualUrl = factory.dictionaryLookup(Direction.parseKeySerialized("en-ru"), "text");
 
         assertEquals(expectedUrl, actualUrl);
     }
@@ -113,7 +113,7 @@ public class YandexRestApiUriFactory_Tests {
     public void dictionaryLookup_should_return_correct_uri_with_screening_special_symbols() {
         String expectedUrl = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=dictKey&lang=en-ru&text=text+%27some+data%27%27%27";
 
-        String actualUrl = factory.dictionaryLookup(Direction.parse("en-ru"), "text 'some data'''");
+        String actualUrl = factory.dictionaryLookup(Direction.parseKeySerialized("en-ru"), "text 'some data'''");
 
         assertEquals(expectedUrl, actualUrl);
     }

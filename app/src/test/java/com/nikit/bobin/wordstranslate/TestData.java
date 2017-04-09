@@ -66,12 +66,12 @@ public class TestData {
 
     public static Direction[] getExtractedDirections() {
         return new Direction[]{
-                Direction.parse("ru-en"),
-                Direction.parse("ru-fr"),
-                Direction.parse("en-fr"),
-                Direction.parse("en-ru"),
-                Direction.parse("fr-en"),
-                Direction.parse("fr-ru")
+                Direction.parseKeySerialized("ru-en"),
+                Direction.parseKeySerialized("ru-fr"),
+                Direction.parseKeySerialized("en-fr"),
+                Direction.parseKeySerialized("en-ru"),
+                Direction.parseKeySerialized("fr-en"),
+                Direction.parseKeySerialized("fr-ru")
         };
     }
 

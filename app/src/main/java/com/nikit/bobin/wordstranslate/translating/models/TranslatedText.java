@@ -53,7 +53,7 @@ public class TranslatedText extends SugarRecord {
         result.success = true;
         result.id = id;
         result.translatedText = translatedText;
-        result.translation = new Translation(originalText, Direction.parse(direction));
+        result.translation = new Translation(originalText, Direction.parseKeySerialized(direction));
         result.originalText = originalText;
         result.direction = direction;
         result.isFavorite = isFavorite;

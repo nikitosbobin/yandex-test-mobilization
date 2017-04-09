@@ -2,6 +2,7 @@ package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
 
 import android.animation.Animator;
 import android.os.Bundle;
+import android.speech.tts.Voice;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -43,6 +44,9 @@ import butterknife.OnTextChanged;
 public class TranslationFragment extends Fragment
         implements LanguageSelectorView.OnLanguagesChangeListener,
         LanguageSelectorView.OnLanguagesSwapListener {
+    private final String DIRECTION_SAVED_FLAG = "direction-saved";
+    private final String DIRECTION = "direction";
+
     @BindView(R.id.translation_input)
     EditText input;
     @BindView(R.id.clear_button)
@@ -94,14 +98,10 @@ public class TranslationFragment extends Fragment
         translationCardInAnimation = animationsFactory.createSlideInUpAnimation(300);
 
         if (savedInstanceState != null) {
-            if (savedInstanceState.getBoolean("direction-saved", false)) {
-                Language from = new Language(
-                        savedInstanceState.getString("language-from-key"),
-                        savedInstanceState.getString("language-from-title"));
-                Language to = new Language(
-                        savedInstanceState.getString("language-to-key"),
-                        savedInstanceState.getString("language-to-title"));
-                selectorView.setDirection(new Direction(from, to), true);
+            if (savedInstanceState.getBoolean(DIRECTION_SAVED_FLAG, false)) {
+                String serializedDirection = savedInstanceState.getString(DIRECTION);
+                Direction direction = Direction.parseFullSerialized(serializedDirection);
+                selectorView.setDirection(direction, true);
             }
         }
 
@@ -124,8 +124,11 @@ public class TranslationFragment extends Fragment
             return;
         }
         clearButton.setVisibility(View.VISIBLE);
-        Translation targetTranslation = new Translation(s.toString().trim(), selectorView.getDirection());
-        if (currentTranslation == null || !targetTranslation.equals(currentTranslation.getTranslation())) {
+        Translation targetTranslation = new Translation(
+                s.toString().trim(),
+                selectorView.getDirection());
+        if (currentTranslation == null ||
+                !targetTranslation.equals(currentTranslation.getTranslation())) {
             tryDetectLang(targetTranslation);
             performTranslation(targetTranslation);
         }
@@ -199,6 +202,7 @@ public class TranslationFragment extends Fragment
 
     private void clearTranslationCard() {
         translationCardOutAnimation.playOn(translationCard);
+        currentTranslation = null;
     }
 
     public void fillTranslationCard(TranslatedText translatedText) {
@@ -247,13 +251,9 @@ public class TranslationFragment extends Fragment
     }
 
     @Override
-    // todo: create normal serializator/deserializator
     public void onSaveInstanceState(Bundle outState) {
         Direction direction = selectorView.getDirection();
-        outState.putString("language-from-key", direction.getFrom().getKey());
-        outState.putString("language-from-title", direction.getFrom().getTitle());
-        outState.putString("language-to-key", direction.getTo().getKey());
-        outState.putString("language-to-title", direction.getTo().getTitle());
-        outState.putBoolean("direction-saved", true);
+        outState.putString(DIRECTION, direction.fullSerialize());
+        outState.putBoolean(DIRECTION_SAVED_FLAG, true);
     }
 }

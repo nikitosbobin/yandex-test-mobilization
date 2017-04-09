@@ -61,7 +61,7 @@ public class YandexResponseExtractor_Tests {
     public void extractTranslation_should_extract_translation_from_correct_response() throws Exception {
         String translationJson = TestData.createTranslationJson("ru-en", "time");
         Response fakeResponse = TestData.createFakeResponse(200, translationJson, "http://do-translate/");
-        Translation translation = new Translation("время", Direction.parse("ru-en"));
+        Translation translation = new Translation("время", Direction.parseKeySerialized("ru-en"));
         TranslatedText expectedTranslatedText = TranslatedText.success("time", translation);
         TranslatedText translatedText = extractor.extractTranslation(fakeResponse, translation);
 
