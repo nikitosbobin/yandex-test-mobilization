@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import com.daimajia.androidanimations.library.YoYo;
 import com.nikit.bobin.wordstranslate.AnimationsFactory;
 import com.nikit.bobin.wordstranslate.R;
-import com.nikit.bobin.wordstranslate.core.Strings;
+import com.nikit.bobin.wordstranslate.helpers.Strings;
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
 import com.nikit.bobin.wordstranslate.customviews.TranslationCard;
 import com.nikit.bobin.wordstranslate.ioc.IocSetup;
@@ -44,6 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
+//Component that displays translation dialog
 public class TranslationFragment extends Fragment
         implements LanguageSelectorView.OnLanguagesChangeListener,
         LanguageSelectorView.OnLanguagesSwapListener {
@@ -58,6 +59,7 @@ public class TranslationFragment extends Fragment
     TranslationCard translationCard;
     @BindView(R.id.lang_selector)
     LanguageSelectorView selectorView;
+
     @Inject
     ITranslator translator;
     @Inject
@@ -78,12 +80,14 @@ public class TranslationFragment extends Fragment
     Language ui;
     @Inject
     Handler uiHandler;
+
     private TranslatedText currentTranslation;
     private Promise currentPromise;
     private YoYo.AnimationComposer translationCardOutAnimation;
     private YoYo.AnimationComposer translationCardInAnimation;
 
     @Override
+    //Entry point on fragment created
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
@@ -116,6 +120,7 @@ public class TranslationFragment extends Fragment
     }
 
     @OnTextChanged(R.id.translation_input)
+    //Translation text changed event handler
     public void onTextChanged(CharSequence s) {
         if (!networkConnectionInfoProvider.isConnectedToInternet()) {
             Snackbar.make(input, R.string.no_internet, Snackbar.LENGTH_SHORT).show();
@@ -132,15 +137,17 @@ public class TranslationFragment extends Fragment
                 selectorView.getDirection());
         if (currentTranslation == null ||
                 !targetTranslation.equals(currentTranslation.getTranslation())) {
-            doTranslation(targetTranslation);
+            performTranslation(targetTranslation);
         }
     }
 
+    //Hide translation card with animation
     private void clearTranslationCard() {
         translationCardOutAnimation.playOn(translationCard);
         currentTranslation = null;
     }
 
+    //Fill translation card with new translation and open with animation (run in ui thread)
     public void fillTranslationCard(final TranslatedText translatedText) {
         uiHandler.post(new Runnable() {
             public void run() {
@@ -153,7 +160,8 @@ public class TranslationFragment extends Fragment
         });
     }
 
-    private void doTranslation(final Translation targetTranslation) {
+    //Create async translation chain
+    private void performTranslation(final Translation targetTranslation) {
         if (currentPromise != null
                 && !currentPromise.isResolved()
                 && !currentPromise.isRejected())
@@ -166,6 +174,7 @@ public class TranslationFragment extends Fragment
     }
 
     @NonNull
+    //Create runnable, then detect current input text, if needed
     private Runnable detectLanguage(final Translation targetTranslation) {
         return new Runnable() {
             public void run() {
@@ -179,10 +188,12 @@ public class TranslationFragment extends Fragment
         };
     }
 
+    //Indicate language prediction requirement
     private boolean needPredict() {
         return settingsProvider.isEnableLangPrediction();
     }
 
+    //Set from translation language for selectorView (run in ui thread)
     private void setLanguageFrom(final Language from) {
         uiHandler.post(new Runnable() {
             public void run() {
@@ -192,6 +203,8 @@ public class TranslationFragment extends Fragment
     }
 
     @NonNull
+    /*Create done filter for deferred manager, then send translation request to
+        yandex translation api*/
     private DoneFilter<Void, TranslatedText> translateTextContinuation(final Translation targetTranslation) {
         return new DoneFilter<Void, TranslatedText>() {
             public TranslatedText filterDone(Void result) {
@@ -201,7 +214,10 @@ public class TranslationFragment extends Fragment
     }
 
     @NonNull
-    private DoneFilter<TranslatedText, Boolean> handleTranslationContinuation(final Translation targetTranslation) {
+    /*Create done filter for deferred manager, then handle translation response from
+        yandex translation api*/
+    private DoneFilter<TranslatedText, Boolean> handleTranslationContinuation(
+            final Translation targetTranslation) {
         return new DoneFilter<TranslatedText, Boolean>() {
             public Boolean filterDone(TranslatedText result) {
                 if (!result.isSuccess()) return false;
@@ -215,10 +231,12 @@ public class TranslationFragment extends Fragment
         };
     }
 
+    //Indicate lookup loading requirement
     private boolean needDictionary() {
         return settingsProvider.isEnableDictionary();
     }
 
+    //Fill lookup listView in translation card (run in ui thread)
     private void setLookup(final WordLookup lookup) {
         uiHandler.post(new Runnable() {
             public void run() {
@@ -228,6 +246,8 @@ public class TranslationFragment extends Fragment
     }
 
     @NonNull
+    /*Create done callback for deferred manager, then load translation lookup from
+        yandex dictionary api*/
     private DoneCallback<Boolean> loadLookupContinuation(final Translation targetTranslation) {
         return new DoneCallback<Boolean>() {
             public void onDone(Boolean result) {
@@ -240,12 +260,14 @@ public class TranslationFragment extends Fragment
     }
 
     @OnClick(R.id.clear_button)
+    //Save current translation and clear main input on target button click
     public void clearInputView() {
         commitTranslation();
         input.setText(Strings.empty);
         clearButton.setVisibility(View.GONE);
     }
 
+    //Save current translation to database
     private void commitTranslation() {
         if (currentTranslation == null) return;
         TranslatedText[] items = translationsDatabase.getAllTranslations(true);
@@ -254,6 +276,7 @@ public class TranslationFragment extends Fragment
         }
     }
 
+    //Public method allow out modules to change displayed translation by id from database
     public void setCurrentTranslation(long translationId) {
         TranslatedText item = translationsDatabase.getById(translationId);
         if (item != null) {
@@ -268,14 +291,16 @@ public class TranslationFragment extends Fragment
     }
 
     @Override
+    //Languages selector languages changed event handler
     public void onLanguagesChange(Direction direction) {
         Editable text = input.getText();
         if (direction == null || text == null || text.length() == 0) return;
         Translation targetTranslation = new Translation(text.toString(), direction);
-        doTranslation(targetTranslation);
+        performTranslation(targetTranslation);
     }
 
     @Override
+    //Languages selector languages swapped event handler
     public void onLanguagesSwap(Direction newSwappedDirection) {
         if (currentTranslation != null) {
             input.setText(currentTranslation.getTranslatedText());
@@ -284,6 +309,7 @@ public class TranslationFragment extends Fragment
     }
 
     @Override
+    //Android save current fragment state user handler
     public void onSaveInstanceState(Bundle outState) {
         Direction direction = selectorView.getDirection();
         outState.putString(DIRECTION, direction.fullSerialize());

@@ -46,7 +46,7 @@
         android:layout_below="@+id/favorite_toolbar"
         android:layout_alignParentBottom="true" />
 
-    <com.nikit.bobin.wordstranslate.customviews.CircularCustomToggle
+    <com.nikit.bobin.wordstranslate.customviews.FloatingActionToggle
         android:id="@+id/favorite_button"
         android:layout_width="70dp"
         android:layout_height="70dp"

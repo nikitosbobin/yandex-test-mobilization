@@ -2,6 +2,7 @@ package com.nikit.bobin.wordstranslate.ioc;
 
 import android.content.Context;
 
+//Inversion of control main module
 public final class IocSetup {
     private static AppComponent component;
 

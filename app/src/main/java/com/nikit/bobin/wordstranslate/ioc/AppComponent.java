@@ -5,7 +5,7 @@ import com.nikit.bobin.wordstranslate.activity.SplashActivity;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTranslationsFragment;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.SettingsFragment;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment;
-import com.nikit.bobin.wordstranslate.customviews.CircularCustomToggle;
+import com.nikit.bobin.wordstranslate.customviews.FloatingActionToggle;
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
 
 import javax.inject.Singleton;
@@ -32,5 +32,5 @@ public interface AppComponent {
 
     void inject(LanguageSelectorView languageSelectorView);
 
-    void inject(CircularCustomToggle circularCustomToggle);
+    void inject(FloatingActionToggle circularCustomToggle);
 }

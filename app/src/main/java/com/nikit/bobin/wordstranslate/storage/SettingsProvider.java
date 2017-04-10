@@ -2,7 +2,7 @@ package com.nikit.bobin.wordstranslate.storage;
 
 import android.content.SharedPreferences;
 
-import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.nikit.bobin.wordstranslate.helpers.Ensure;
 
 public class SettingsProvider {
     private BooleanSetting enabledCachingSetting;

@@ -1,18 +1,15 @@
 package com.nikit.bobin.wordstranslate;
 
-import com.nikit.bobin.wordstranslate.core.Strings;
+import com.nikit.bobin.wordstranslate.helpers.Strings;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.HttpMethod;
 import com.nikit.bobin.wordstranslate.net.HttpSender;
 
-import org.jdeferred.DeferredManager;
-import org.jdeferred.impl.DefaultDeferredManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 
 import java.io.IOException;
-import java.util.concurrent.Callable;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;

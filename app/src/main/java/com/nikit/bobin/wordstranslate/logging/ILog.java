@@ -1,5 +1,6 @@
 package com.nikit.bobin.wordstranslate.logging;
 
+//Logger abstraction
 public interface ILog {
     void info(Object object);
 

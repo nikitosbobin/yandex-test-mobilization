@@ -16,28 +16,28 @@ import javax.inject.Inject;
 
 import at.markushi.ui.CircleButton;
 
-public class CircularCustomToggle extends CircleButton implements View.OnClickListener {
+public class FloatingActionToggle extends CircleButton implements View.OnClickListener {
     @Inject
     AnimationsFactory animationsFactory;
     private boolean isChecked;
     private Drawable activeImage;
     private Drawable passiveImage;
-    private CircularCustomToggle.OnCheckedChangeListener onCheckedChangeListener;
+    private FloatingActionToggle.OnCheckedChangeListener onCheckedChangeListener;
     private boolean animatingShow;
     private boolean animatingHide;
     private YoYo.AnimationComposer hideAnimation;
     private YoYo.AnimationComposer showAnimation;
 
-    public CircularCustomToggle(Context context) {
+    public FloatingActionToggle(Context context) {
         super(context);
     }
 
-    public CircularCustomToggle(Context context, AttributeSet attrs) {
+    public FloatingActionToggle(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
-    public CircularCustomToggle(Context context, AttributeSet attrs, int defStyle) {
+    public FloatingActionToggle(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context, attrs);
     }
@@ -123,11 +123,11 @@ public class CircularCustomToggle extends CircleButton implements View.OnClickLi
     }
 
     public void setOnCheckedChangeListener(
-            CircularCustomToggle.OnCheckedChangeListener onCheckedChangeListener) {
+            FloatingActionToggle.OnCheckedChangeListener onCheckedChangeListener) {
         this.onCheckedChangeListener = onCheckedChangeListener;
     }
 
     public interface OnCheckedChangeListener {
-        void onCheckedChanged(CircularCustomToggle toggleView, boolean isChecked);
+        void onCheckedChanged(FloatingActionToggle toggleView, boolean isChecked);
     }
 }

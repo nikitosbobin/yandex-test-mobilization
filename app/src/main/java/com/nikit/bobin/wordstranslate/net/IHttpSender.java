@@ -8,6 +8,7 @@ import java.io.IOException;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+//Abstraction for component which allow app connect to internet
 public interface IHttpSender {
     Response sendRequest(@NonNull String url,
                          @NonNull HttpMethod method,

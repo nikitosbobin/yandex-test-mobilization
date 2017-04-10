@@ -3,8 +3,9 @@ package com.nikit.bobin.wordstranslate.net;
 import android.content.Context;
 import android.net.ConnectivityManager;
 
-import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.nikit.bobin.wordstranslate.helpers.Ensure;
 
+//Simple component than response for detecting internet availability
 public class NetworkConnectionInfoProvider {
     private ConnectivityManager connectivityManager;
 

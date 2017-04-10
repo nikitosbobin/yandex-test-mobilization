@@ -6,7 +6,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nikit.bobin.wordstranslate.R;
-import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.nikit.bobin.wordstranslate.helpers.Ensure;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
 public class TranslationView extends RelativeLayout

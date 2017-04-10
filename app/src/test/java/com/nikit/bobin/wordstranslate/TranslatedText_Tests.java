@@ -1,6 +1,6 @@
 package com.nikit.bobin.wordstranslate;
 
-import com.nikit.bobin.wordstranslate.core.Strings;
+import com.nikit.bobin.wordstranslate.helpers.Strings;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
 

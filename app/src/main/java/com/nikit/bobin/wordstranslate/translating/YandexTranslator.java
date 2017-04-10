@@ -2,7 +2,7 @@ package com.nikit.bobin.wordstranslate.translating;
 
 import android.support.annotation.Nullable;
 
-import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.nikit.bobin.wordstranslate.helpers.Ensure;
 import com.nikit.bobin.wordstranslate.net.HttpMethod;
 import com.nikit.bobin.wordstranslate.net.IHttpSender;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;

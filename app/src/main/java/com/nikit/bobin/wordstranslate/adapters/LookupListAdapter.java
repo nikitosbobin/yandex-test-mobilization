@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.nikit.bobin.wordstranslate.R;
-import com.nikit.bobin.wordstranslate.core.Strings;
+import com.nikit.bobin.wordstranslate.helpers.Strings;
 import com.nikit.bobin.wordstranslate.translating.models.SynonymGroup;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 

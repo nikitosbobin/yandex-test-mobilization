@@ -2,6 +2,7 @@ package com.nikit.bobin.wordstranslate.logging;
 
 import android.util.Log;
 
+//Android logcat logger implementation
 public class SimpleLogger implements ILog {
     private String tag;
 

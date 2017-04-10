@@ -32,6 +32,7 @@ import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+//Main activity that manage all fragments in app
 public class MainActivity extends AppCompatActivity
         implements FavoriteTranslationsFragment.CurrentTranslationChangeListener,
         ViewPager.OnPageChangeListener, BottomNavigationView.OnNavigationItemSelectedListener {
@@ -45,16 +46,19 @@ public class MainActivity extends AppCompatActivity
     Drawable favoriteTabIcon;
     @BindDrawable(R.drawable.settings)
     Drawable settingsTabIcon;
+
     @Inject
     NetworkConnectionInfoProvider networkConnectionInfoProvider;
     @Inject
     ITranslator translator;
     @Inject
     ILog log;
+
     private InputMethodManager inputMethodManager;
     private TranslationFragment translationFragment;
 
     @Override
+    //Entry point on activity created
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -83,6 +87,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    /*This event called when user click on any translation item in listView.
+    Notify fragment manager when need to change current translation on TranslationFragment*/
     public void onChangeTranslation(long translationId) {
         viewPager.setCurrentItem(0);
         translationFragment.setCurrentTranslation(translationId);
@@ -94,6 +100,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    //Fragment selected event handler
     public void onPageSelected(int position) {
         View currentFocus = getCurrentFocus();
         if (currentFocus != null) {
@@ -111,6 +118,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    //Navigation bottom bar tab selected event handler
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         int position;
@@ -131,6 +139,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    //Notify user when internet not available
     private void notifyIfNoConnection() {
         if (!networkConnectionInfoProvider.isConnectedToInternet())
             Snackbar.make(viewPager, R.string.no_internet, Snackbar.LENGTH_SHORT).show();

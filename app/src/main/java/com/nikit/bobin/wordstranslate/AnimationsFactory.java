@@ -7,6 +7,7 @@ import com.daimajia.androidanimations.library.BaseViewAnimator;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
+//Single point of creating animations
 public class AnimationsFactory {
     public YoYo.AnimationComposer createFadeInAnimation(long duration) {
         return YoYo.with(Techniques.FadeIn).duration(duration);
@@ -32,6 +33,7 @@ public class AnimationsFactory {
         return YoYo.with(Techniques.SlideOutRight).duration(duration);
     }
 
+    //Private class creates simple rotation animation
     private class RotateAnimator extends BaseViewAnimator {
         protected void prepare(View target) {
             getAnimatorAgent().playTogether(

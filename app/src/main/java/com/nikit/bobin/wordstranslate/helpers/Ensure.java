@@ -1,4 +1,4 @@
-package com.nikit.bobin.wordstranslate.core;
+package com.nikit.bobin.wordstranslate.helpers;
 
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import okhttp3.Response;
 
+//Provide static methods that check correctness of the input arguments
 public class Ensure {
     public static void notNull(Object o, String name) {
         if (o == null)

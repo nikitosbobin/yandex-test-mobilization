@@ -17,5 +17,5 @@ public interface ITranslationsDatabase {
 
     void deleteAllFavorites();
 
-    void addOnItemsUpdateListener(OnItemsUpdateListener onItemsUpdateListener);
+    void addOnItemsUpdateListener(OnTranslationDatabaseUpdateListener onItemsUpdateListener);
 }

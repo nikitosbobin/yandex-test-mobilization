@@ -3,7 +3,7 @@ package com.nikit.bobin.wordstranslate.net;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.nikit.bobin.wordstranslate.helpers.Ensure;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 
 import java.io.IOException;
@@ -15,6 +15,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+//Implementation of component which allow app connect to internet using okHttp library
 public class HttpSender implements IHttpSender {
     private OkHttpClient client;
     private final String defaultMediaType = "application/x-www-form-urlencoded";
@@ -29,6 +30,7 @@ public class HttpSender implements IHttpSender {
     }
 
     @Override
+    //Execute okHttp call in present thread. Fail when called from ui thread
     public Response sendRequest(
             @NonNull String url,
             @NonNull HttpMethod method,
@@ -41,6 +43,7 @@ public class HttpSender implements IHttpSender {
         return call.execute();
     }
 
+    //Create okHttp call with necessary arguments processing
     private Call createCall(String url, HttpMethod method, RequestBody body) {
         String httpMethod = method.name();
         log.info("Perform HTTP %s request to: %s", httpMethod, url);

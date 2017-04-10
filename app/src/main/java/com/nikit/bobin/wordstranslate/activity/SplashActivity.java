@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+//Activity that manage app loading
 public class SplashActivity extends AppCompatActivity {
     @Inject
     ILog log;
@@ -48,6 +49,7 @@ public class SplashActivity extends AppCompatActivity {
     private Intent openMainActivityIntent;
 
     @Override
+    //Entry point on activity created
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
@@ -75,6 +77,8 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+    /*Load languages with current ui in another thread.
+        Then save loaded languages and open main activity from ui thread*/
     private void loadLanguagesThenOpenMainActivity(final Language ui) {
         deferredManager.when(new Runnable() {
             public void run() {
@@ -94,6 +98,7 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
+    //Set loading status to display for user (run on ui thread)
     private void setStatus(@StringRes final int stringResource) {
         uiHandler.post(new Runnable() {
             @Override
@@ -103,6 +108,7 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
+    //Wait delay in another thread, then open main activity in ui thread
     private void openMainActivityWithDelay(final long delay) {
         deferredManager.when(new Runnable() {
             public void run() {
@@ -116,6 +122,7 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
+    //Start main activity intent in ui thread
     private void openMainActivityInUiThread() {
         uiHandler.post(new Runnable() {
             public void run() {

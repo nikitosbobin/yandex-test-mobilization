@@ -1,6 +1,6 @@
 package com.nikit.bobin.wordstranslate.translating;
 
-import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.nikit.bobin.wordstranslate.helpers.Ensure;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 import com.nikit.bobin.wordstranslate.translating.models.SynonymGroup;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;

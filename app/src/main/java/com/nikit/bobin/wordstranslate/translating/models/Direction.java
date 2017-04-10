@@ -1,7 +1,7 @@
 package com.nikit.bobin.wordstranslate.translating.models;
 
-import com.nikit.bobin.wordstranslate.core.Ensure;
-import com.nikit.bobin.wordstranslate.core.Strings;
+import com.nikit.bobin.wordstranslate.helpers.Ensure;
+import com.nikit.bobin.wordstranslate.helpers.Strings;
 
 public class Direction {
     private Language from;

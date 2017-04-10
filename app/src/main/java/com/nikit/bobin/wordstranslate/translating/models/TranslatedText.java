@@ -1,6 +1,6 @@
 package com.nikit.bobin.wordstranslate.translating.models;
 
-import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.nikit.bobin.wordstranslate.helpers.Ensure;
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
 import com.orm.dsl.Table;

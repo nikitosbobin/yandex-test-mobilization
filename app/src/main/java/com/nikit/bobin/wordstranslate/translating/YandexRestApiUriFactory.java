@@ -1,7 +1,7 @@
 package com.nikit.bobin.wordstranslate.translating;
 
-import com.nikit.bobin.wordstranslate.core.Ensure;
-import com.nikit.bobin.wordstranslate.core.Strings;
+import com.nikit.bobin.wordstranslate.helpers.Ensure;
+import com.nikit.bobin.wordstranslate.helpers.Strings;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 

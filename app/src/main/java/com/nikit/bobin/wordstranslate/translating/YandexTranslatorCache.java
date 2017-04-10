@@ -1,6 +1,6 @@
 package com.nikit.bobin.wordstranslate.translating;
 
-import com.nikit.bobin.wordstranslate.core.Ensure;
+import com.nikit.bobin.wordstranslate.helpers.Ensure;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.translating.models.Language;

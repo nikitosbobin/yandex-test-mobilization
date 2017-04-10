@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TranslationsDatabase implements ITranslationsDatabase {
-    private ArrayList<OnItemsUpdateListener> onItemsUpdateListeners;
+    private ArrayList<OnTranslationDatabaseUpdateListener> onItemsUpdateListeners;
 
     public TranslationsDatabase() {
         onItemsUpdateListeners = new ArrayList<>();
@@ -69,14 +69,14 @@ public class TranslationsDatabase implements ITranslationsDatabase {
 
     private void notifyDataChanged() {
         if (onItemsUpdateListeners.size() != 0) {
-            for (OnItemsUpdateListener listener
+            for (OnTranslationDatabaseUpdateListener listener
                     : onItemsUpdateListeners)
-                listener.onDatabaseChange();
+                listener.onTranslationDatabaseChange();
         }
     }
 
     @Override
-    public void addOnItemsUpdateListener(OnItemsUpdateListener onItemsUpdateListener) {
+    public void addOnItemsUpdateListener(OnTranslationDatabaseUpdateListener onItemsUpdateListener) {
         if (onItemsUpdateListener != null &&
                 !onItemsUpdateListeners.contains(onItemsUpdateListener))
             onItemsUpdateListeners.add(onItemsUpdateListener);
