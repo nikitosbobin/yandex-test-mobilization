@@ -204,7 +204,8 @@ public class TranslationFragment extends Fragment
 
     @NonNull
     /*Create done filter for deferred manager, then send translation request to
-        yandex translation api*/
+    *    yandex translation api
+    */
     private DoneFilter<Void, TranslatedText> translateTextContinuation(final Translation targetTranslation) {
         return new DoneFilter<Void, TranslatedText>() {
             public TranslatedText filterDone(Void result) {
@@ -215,7 +216,8 @@ public class TranslationFragment extends Fragment
 
     @NonNull
     /*Create done filter for deferred manager, then handle translation response from
-        yandex translation api*/
+    *   yandex translation api
+    */
     private DoneFilter<TranslatedText, Boolean> handleTranslationContinuation(
             final Translation targetTranslation) {
         return new DoneFilter<TranslatedText, Boolean>() {
@@ -247,7 +249,8 @@ public class TranslationFragment extends Fragment
 
     @NonNull
     /*Create done callback for deferred manager, then load translation lookup from
-        yandex dictionary api*/
+    *   yandex dictionary api
+    */
     private DoneCallback<Boolean> loadLookupContinuation(final Translation targetTranslation) {
         return new DoneCallback<Boolean>() {
             public void onDone(Boolean result) {

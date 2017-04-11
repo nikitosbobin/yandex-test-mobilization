@@ -30,6 +30,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/*Custom view that provides the ability to nice and conveniently
+*   change translation direction in ui
+*/
 public class LanguageSelectorView extends RelativeLayout implements
         PopupMenu.OnMenuItemClickListener {
     private final int GROUP_ID_FROM_LANGUAGE_MENU = 0;

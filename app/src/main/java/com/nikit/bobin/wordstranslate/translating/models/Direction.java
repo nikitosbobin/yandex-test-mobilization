@@ -3,6 +3,7 @@ package com.nikit.bobin.wordstranslate.translating.models;
 import com.nikit.bobin.wordstranslate.helpers.Ensure;
 import com.nikit.bobin.wordstranslate.helpers.Strings;
 
+//Model describes direction of future translation
 public class Direction {
     private Language from;
     private Language to;

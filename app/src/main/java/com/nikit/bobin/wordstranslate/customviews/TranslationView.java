@@ -9,6 +9,7 @@ import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.helpers.Ensure;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
+//Custom view that used in history listView as one translation item
 public class TranslationView extends RelativeLayout
         implements CustomToggle.OnCheckedChangeListener {
     private OnFavoriteChangeListener onFavoriteChangeListener;

@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import okhttp3.Response;
 
+//Basic implementation of IYandexResponseExtractor
 public class YandexResponseExtractor implements IYandexResponseExtractor {
 
     @Override

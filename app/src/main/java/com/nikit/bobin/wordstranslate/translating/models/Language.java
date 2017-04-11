@@ -5,6 +5,7 @@ import com.orm.SugarRecord;
 import com.orm.dsl.Table;
 
 @Table
+//Model describes language: short language key and title (optionals)
 public class Language extends SugarRecord {
     private Long id;
     private String key;

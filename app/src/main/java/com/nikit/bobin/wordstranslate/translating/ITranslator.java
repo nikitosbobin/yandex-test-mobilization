@@ -5,6 +5,7 @@ import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import com.nikit.bobin.wordstranslate.translating.models.Translation;
 import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
+//Abstraction of a component that provides methods for working with text translation
 public interface ITranslator {
     TranslatedText translate(Translation translation);
 

@@ -4,6 +4,7 @@ import com.nikit.bobin.wordstranslate.helpers.Ensure;
 
 import java.util.Arrays;
 
+//Model describes some dictionary hints of some translation
 public class WordLookup {
     private Translation translation;
     private SynonymGroup[] synonyms;

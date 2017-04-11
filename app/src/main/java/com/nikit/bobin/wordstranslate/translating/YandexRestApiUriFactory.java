@@ -5,6 +5,7 @@ import com.nikit.bobin.wordstranslate.helpers.Strings;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
+//Basic implementation of IYandexRestApiUriFactory
 public class YandexRestApiUriFactory implements IYandexRestApiUriFactory {
     private String translationKey;
     private String yandexTranslatorApiPrefix = "https://translate.yandex.net/api/v1.5/tr.json/";

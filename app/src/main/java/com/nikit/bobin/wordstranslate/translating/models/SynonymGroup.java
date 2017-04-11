@@ -4,6 +4,7 @@ import com.nikit.bobin.wordstranslate.helpers.Ensure;
 
 import java.util.Arrays;
 
+//Model describes group of synonyms. Uses in WordLookup
 public class SynonymGroup {
     private String[] mean;
     private String[] synonyms;

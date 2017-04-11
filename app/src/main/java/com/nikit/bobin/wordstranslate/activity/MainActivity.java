@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -20,7 +20,6 @@ import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTranslationsFragment;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.SettingsFragment;
 import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment;
-import com.nikit.bobin.wordstranslate.adapters.TranslateActivityPagerAdapter;
 import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
@@ -56,6 +55,8 @@ public class MainActivity extends AppCompatActivity
 
     private InputMethodManager inputMethodManager;
     private TranslationFragment translationFragment;
+    private Fragment[] fragments;
+    private FragmentPagerAdapter fragmentPagerAdapter;
 
     @Override
     //Entry point on activity created
@@ -68,18 +69,25 @@ public class MainActivity extends AppCompatActivity
         IocSetup.getComponent().inject(this);
 
         // fragments initializing
-        Fragment[] fragments = new Fragment[]{
+        fragments = new Fragment[]{
                 new TranslationFragment(),
                 new FavoriteTranslationsFragment().setOnCurrentTranslationChangeListener(this),
                 new SettingsFragment()
         };
         translationFragment = (TranslationFragment) fragments[0];
-        PagerAdapter pagerAdapter = new TranslateActivityPagerAdapter(
-                getSupportFragmentManager(),
-                fragments);
+
+        fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+            public Fragment getItem(int position) {
+                return fragments[position];
+            }
+
+            public int getCount() {
+                return fragments.length;
+            }
+        };
 
         viewPager.addOnPageChangeListener(this);
-        viewPager.setAdapter(pagerAdapter);
+        viewPager.setAdapter(fragmentPagerAdapter);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         notifyIfNoConnection();
@@ -88,7 +96,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     /*This event called when user click on any translation item in listView.
-    Notify fragment manager when need to change current translation on TranslationFragment*/
+    *   Notify fragment manager when need to change current translation on TranslationFragment
+    */
     public void onChangeTranslation(long translationId) {
         viewPager.setCurrentItem(0);
         translationFragment.setCurrentTranslation(translationId);

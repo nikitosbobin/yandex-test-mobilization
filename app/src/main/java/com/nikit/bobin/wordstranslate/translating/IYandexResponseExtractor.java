@@ -7,6 +7,9 @@ import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import okhttp3.Response;
 
+/*The abstraction of the component that extracts the translation
+*    results from the Yandex api response
+*/
 public interface IYandexResponseExtractor {
     Language[] extractLanguages(Response response);
 

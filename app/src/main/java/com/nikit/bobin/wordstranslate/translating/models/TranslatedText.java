@@ -6,6 +6,7 @@ import com.orm.dsl.Ignore;
 import com.orm.dsl.Table;
 
 @Table
+//Model describes translation: translated text and and original translation
 public class TranslatedText extends SugarRecord {
     @Ignore
     private boolean success;

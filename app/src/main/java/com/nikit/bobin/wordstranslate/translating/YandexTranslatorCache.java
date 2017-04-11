@@ -10,6 +10,9 @@ import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import java.util.HashMap;
 
+/*Component used in YandexTranslator.
+*    Need to cache same Yandex api responses to reduction of internet traffic
+*/
 public class YandexTranslatorCache {
     private HashMap<Translation, TranslatedText> translationsCache;
     private HashMap<Translation, WordLookup> lookupsCache;

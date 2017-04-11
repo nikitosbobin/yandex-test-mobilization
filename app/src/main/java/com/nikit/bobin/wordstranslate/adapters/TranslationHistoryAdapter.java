@@ -10,6 +10,7 @@ import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.storage.OnTranslationDatabaseUpdateListener;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
+//Custom adapter for translation history listView in second fragment of app
 public class TranslationHistoryAdapter extends BaseAdapter
         implements TranslationView.OnFavoriteChangeListener, OnTranslationDatabaseUpdateListener {
     private Context context;

@@ -20,6 +20,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/*Custom view that which is located under the input field on the first page of the app.
+*   Displays current state of translation and translation lookup
+*/
 public class TranslationCard extends RelativeLayout {
     @BindView(R.id.lookup_list)
     ListView lookupList;

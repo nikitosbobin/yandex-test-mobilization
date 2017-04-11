@@ -16,6 +16,10 @@ import javax.inject.Inject;
 
 import at.markushi.ui.CircleButton;
 
+/*Custom toggle that provides the ability to conveniently
+*   change images for different switch states from markup.
+*   Works same as floating action button, but unlike fab this view has nice click animation
+*/
 public class FloatingActionToggle extends CircleButton implements View.OnClickListener {
     @Inject
     AnimationsFactory animationsFactory;

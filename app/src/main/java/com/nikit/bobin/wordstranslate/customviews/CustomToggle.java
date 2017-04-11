@@ -8,6 +8,9 @@ import android.view.View;
 
 import com.nikit.bobin.wordstranslate.R;
 
+/*Custom toggle that provides the ability to conveniently
+*    change images for different switch states from markup
+*/
 public class CustomToggle extends android.support.v7.widget.AppCompatImageView
         implements View.OnClickListener {
     private Drawable activeImage;

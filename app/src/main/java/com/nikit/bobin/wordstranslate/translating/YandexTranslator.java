@@ -13,6 +13,7 @@ import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 
 import okhttp3.Response;
 
+//Implementation of ITranslator, uses Yandex api
 public class YandexTranslator implements ITranslator {
     private final IYandexRestApiUriFactory uriFactory;
     private final IYandexResponseExtractor responseExtractor;

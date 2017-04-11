@@ -15,6 +15,7 @@ import com.nikit.bobin.wordstranslate.translating.models.WordLookup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+//Custom adapter for lookup listView in TranslationCard
 public class LookupListAdapter extends BaseAdapter {
     private WordLookup lookup;
     private LayoutInflater inflater;

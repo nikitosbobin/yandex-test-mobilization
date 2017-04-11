@@ -78,7 +78,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     /*Load languages with current ui in another thread.
-        Then save loaded languages and open main activity from ui thread*/
+    *   Then save loaded languages and open main activity from ui thread
+    */
     private void loadLanguagesThenOpenMainActivity(final Language ui) {
         deferredManager.when(new Runnable() {
             public void run() {
