@@ -9,6 +9,7 @@ public class SettingsProvider {
     private BooleanSetting enabledCachingSetting;
     private BooleanSetting enabledDictionarySetting;
     private BooleanSetting enabledPredictionSetting;
+    private StringArraySetting recentLanguagesInSelectorView;
 
     public SettingsProvider(SharedPreferences sharedPreferences) {
         Ensure.notNull(sharedPreferences, "sharedPreferences");
@@ -16,6 +17,10 @@ public class SettingsProvider {
         enabledCachingSetting = new BooleanSetting(sharedPreferences, "caching", true);
         enabledDictionarySetting = new BooleanSetting(sharedPreferences, "dictionary", true);
         enabledPredictionSetting = new BooleanSetting(sharedPreferences, "prediction", true);
+        recentLanguagesInSelectorView = new StringArraySetting(
+                sharedPreferences,
+                "recent_translations_languages",
+                new String[0]);
     }
 
     public void setEnableCaching(boolean value) {
@@ -40,5 +45,13 @@ public class SettingsProvider {
 
     public boolean isEnableLangPrediction() {
         return enabledPredictionSetting.getValue();
+    }
+
+    public String[] getRecentLanguagesInSelectorView() {
+        return recentLanguagesInSelectorView.getValue();
+    }
+
+    public void saveRecentLanguagesInSelectorView(String[] recentLanguages) {
+        recentLanguagesInSelectorView.setValue(recentLanguages);
     }
 }

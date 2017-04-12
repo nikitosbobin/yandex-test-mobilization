@@ -19,6 +19,7 @@ import com.nikit.bobin.wordstranslate.helpers.Strings;
 import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
+import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
 import com.nikit.bobin.wordstranslate.storage.StringArraySetting;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
@@ -50,7 +51,7 @@ public class LanguageSelectorView extends RelativeLayout implements
     @Inject
     ILanguagesDatabase languagesDatabase;
     @Inject
-    SharedPreferences preferences;
+    SettingsProvider settingsProvider;
     @Inject
     Language ui;
     @Inject
@@ -69,7 +70,6 @@ public class LanguageSelectorView extends RelativeLayout implements
     private YoYo.AnimationComposer fadeInAnimation;
     private OnLanguagesChangeListener onLanguagesChangeListener;
     private OnLanguagesSwapListener onLanguagesSwapListener;
-    private StringArraySetting recentLanguagesSetting;
 
     public LanguageSelectorView(Context context) {
         super(context);
@@ -94,10 +94,6 @@ public class LanguageSelectorView extends RelativeLayout implements
         IocSetup.getComponent().inject(this);
         ButterKnife.bind(this);
 
-        recentLanguagesSetting = new StringArraySetting(
-                preferences,
-                "recent_translations_languages",
-                new String[0]);
         rotateAnimation = animationsFactory.createRotateAnimation(300);
         fadeInAnimation = animationsFactory.createFadeInAnimation(300);
 
@@ -127,7 +123,7 @@ public class LanguageSelectorView extends RelativeLayout implements
 
     private void loadRecentTranslationsLanguages() {
         recentLanguages = new ArrayList<>();
-        String[] recentLangsKeys = recentLanguagesSetting.getValue();
+        String[] recentLangsKeys = settingsProvider.getRecentLanguagesInSelectorView();
         if (recentLangsKeys.length == 0) {
             if (supportedLanguages.length > 0) {
                 setLanguageFrom(supportedLanguages[0], false);
@@ -256,7 +252,7 @@ public class LanguageSelectorView extends RelativeLayout implements
         String[] langsKeys = new String[recentLanguages.size()];
         for (int i = 0; i < langsKeys.length; ++i)
             langsKeys[i] = recentLanguages.get(i).getKey();
-        recentLanguagesSetting.setValue(langsKeys);
+        settingsProvider.saveRecentLanguagesInSelectorView(langsKeys);
     }
 
     public void setLanguageTo(Language to, boolean needNotify) {
