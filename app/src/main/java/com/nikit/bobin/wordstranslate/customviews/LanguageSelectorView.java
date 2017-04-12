@@ -19,6 +19,7 @@ import com.nikit.bobin.wordstranslate.helpers.Strings;
 import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
+import com.nikit.bobin.wordstranslate.storage.StringArraySetting;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
@@ -39,7 +40,6 @@ public class LanguageSelectorView extends RelativeLayout implements
     private final int GROUP_ID_RECENT_FROM_LANGUAGE_MENU = 1;
     private final int GROUP_ID_TO_LANGUAGE_MENU = 2;
     private final int GROUP_ID_RECENT_TO_LANGUAGE_MENU = 3;
-    private final String RECENT_LANGUAGES = "recent_translations_languages";
 
     @BindView(R.id.from_language_view)
     TextView languageFromView;
@@ -69,6 +69,7 @@ public class LanguageSelectorView extends RelativeLayout implements
     private YoYo.AnimationComposer fadeInAnimation;
     private OnLanguagesChangeListener onLanguagesChangeListener;
     private OnLanguagesSwapListener onLanguagesSwapListener;
+    private StringArraySetting recentLanguagesSetting;
 
     public LanguageSelectorView(Context context) {
         super(context);
@@ -93,6 +94,10 @@ public class LanguageSelectorView extends RelativeLayout implements
         IocSetup.getComponent().inject(this);
         ButterKnife.bind(this);
 
+        recentLanguagesSetting = new StringArraySetting(
+                preferences,
+                "recent_translations_languages",
+                new String[0]);
         rotateAnimation = animationsFactory.createRotateAnimation(300);
         fadeInAnimation = animationsFactory.createFadeInAnimation(300);
 
@@ -122,17 +127,16 @@ public class LanguageSelectorView extends RelativeLayout implements
 
     private void loadRecentTranslationsLanguages() {
         recentLanguages = new ArrayList<>();
-        String recentString = preferences.getString(RECENT_LANGUAGES, "");
-        if (recentString.length() == 0) {
+        String[] recentLangsKeys = recentLanguagesSetting.getValue();
+        if (recentLangsKeys.length == 0) {
             if (supportedLanguages.length > 0) {
                 setLanguageFrom(supportedLanguages[0], false);
                 setLanguageTo(supportedLanguages[0], false);
             }
             return;
         }
-        String[] keys = recentString.split(" ");
-        for (int i = 0; i < keys.length; ++i) {
-            Language language = languagesDatabase.getLanguage(keys[i], ui);
+        for (int i = 0; i < recentLangsKeys.length; ++i) {
+            Language language = languagesDatabase.getLanguage(recentLangsKeys[i], ui);
             if (language != null)
                 recentLanguages.add(language);
         }
@@ -249,13 +253,10 @@ public class LanguageSelectorView extends RelativeLayout implements
         if (recentLanguages.size() == 4)
             recentLanguages.remove(0);
 
-        SharedPreferences.Editor edit = preferences.edit();
         String[] langsKeys = new String[recentLanguages.size()];
         for (int i = 0; i < langsKeys.length; ++i)
             langsKeys[i] = recentLanguages.get(i).getKey();
-        String stringToSave = Strings.join(langsKeys, " ");
-        edit.putString(RECENT_LANGUAGES, stringToSave);
-        edit.apply();
+        recentLanguagesSetting.setValue(langsKeys);
     }
 
     public void setLanguageTo(Language to, boolean needNotify) {

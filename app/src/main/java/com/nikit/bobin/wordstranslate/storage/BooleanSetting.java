@@ -2,6 +2,7 @@ package com.nikit.bobin.wordstranslate.storage;
 
 import android.content.SharedPreferences;
 
+//Boolean extension of Setting class
 public final class BooleanSetting extends Setting<Boolean> {
     public BooleanSetting(SharedPreferences sharedPreferences, String key, Boolean initialValue) {
         super(sharedPreferences, key, initialValue);

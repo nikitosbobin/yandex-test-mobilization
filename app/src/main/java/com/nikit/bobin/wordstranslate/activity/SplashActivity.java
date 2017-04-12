@@ -31,11 +31,7 @@ public class SplashActivity extends AppCompatActivity {
     @Inject
     ILanguagesDatabase languagesDatabase;
     @Inject
-    ITranslationsDatabase translationsDatabase;
-    @Inject
     ITranslator translator;
-    @Inject
-    SettingsProvider settingsProvider;
     @Inject
     DeferredManager deferredManager;
     @Inject

@@ -5,8 +5,12 @@ import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import java.util.List;
 
+//Implementation of ILanguagesDatabase. Uses Sugar ORM
 public class LanguagesDatabase implements ILanguagesDatabase {
     @Override
+    /*Returns language from database by target key with current ui language title.
+    *   Returns null when ui is not suitable or languageKey not saved.
+    */
     public Language getLanguage(String languageKey, Language ui) {
         if (languageKey != null && ui != null && isLanguagesSaved(ui)) {
             List<Language> languages = Language.find(Language.class, "KEY=?", languageKey);

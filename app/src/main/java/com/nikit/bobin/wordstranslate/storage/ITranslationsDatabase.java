@@ -2,6 +2,7 @@ package com.nikit.bobin.wordstranslate.storage;
 
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 
+//Abstraction that provides some methods to store success translations information
 public interface ITranslationsDatabase {
     TranslatedText getById(long id);
 

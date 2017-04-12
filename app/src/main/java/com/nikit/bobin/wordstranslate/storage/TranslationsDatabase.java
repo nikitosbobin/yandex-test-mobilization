@@ -5,6 +5,7 @@ import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
 import java.util.ArrayList;
 import java.util.List;
 
+//Implementation of ITranslationsDatabase. Uses Sugar ORM
 public class TranslationsDatabase implements ITranslationsDatabase {
     private ArrayList<OnTranslationDatabaseUpdateListener> onItemsUpdateListeners;
 
@@ -20,7 +21,9 @@ public class TranslationsDatabase implements ITranslationsDatabase {
     @Override
     public TranslatedText[] getAllTranslations(boolean orderDescending) {
         List<TranslatedText> translatedTexts =
-                TranslatedText.listAll(TranslatedText.class, "ID " + (orderDescending ? "DESC" : "ASC"));
+                TranslatedText.listAll(
+                        TranslatedText.class,
+                        "ID " + (orderDescending ? "DESC" : "ASC"));
         return translatedTexts.toArray(new TranslatedText[translatedTexts.size()]);
     }
 

@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 
 import com.nikit.bobin.wordstranslate.helpers.Ensure;
 
+//Provides boolean settings than user can change in settings fragment
 public class SettingsProvider {
     private BooleanSetting enabledCachingSetting;
     private BooleanSetting enabledDictionarySetting;

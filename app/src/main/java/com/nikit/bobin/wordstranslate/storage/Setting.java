@@ -4,6 +4,9 @@ import android.content.SharedPreferences;
 
 import com.nikit.bobin.wordstranslate.helpers.Ensure;
 
+/*Abstract class provides convenient access to shared preferences.
+* Encapsulate working with SharedPreferences class
+*/
 public abstract class Setting<TSetting> {
     private SharedPreferences sharedPreferences;
     private TSetting value;
