@@ -25,7 +25,7 @@ public class Direction {
         if (segments.length != 2)
             throw new IllegalArgumentException(
                     String.format("Target keysSerializedDirection: %s " +
-                            "have incorrect format: <fromKey>-<toKey>",
+                                    "have incorrect format: <fromKey>-<toKey>",
                             keysSerializedDirection));
         return new Direction(new Language(segments[0]), new Language(segments[1]));
     }
@@ -35,7 +35,7 @@ public class Direction {
         if (segments.length < 2)
             throw new IllegalArgumentException(
                     String.format("Target fullSerializedDirection: %s " +
-                            "have incorrect format: <fromKey>|<toKey>|<fromTitle>|<toTitle>",
+                                    "have incorrect format: <fromKey>|<toKey>|<fromTitle>|<toTitle>",
                             fullSerializedDirection));
 
         String fromTitle = null;

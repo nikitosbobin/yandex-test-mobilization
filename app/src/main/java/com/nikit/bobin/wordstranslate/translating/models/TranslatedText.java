@@ -74,11 +74,13 @@ public class TranslatedText extends SugarRecord {
             translation = new Translation(originalText, direction);
         return translation;
     }
+
     private void setTranslation(Translation translation) {
         this.translation = translation;
         originalText = translation.getOriginalText();
         direction = translation.getDirection().toString();
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

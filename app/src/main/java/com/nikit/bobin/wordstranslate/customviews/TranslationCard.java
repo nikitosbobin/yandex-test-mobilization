@@ -30,9 +30,9 @@ public class TranslationCard extends RelativeLayout {
     TextView originalTextView;
     @BindView(R.id.translated_text_label)
     TextView translatedTextView;
+
     private ClipboardManager clipboard;
     private TranslatedText translatedText;
-
     private LookupListAdapter adapter;
 
     public TranslationCard(Context context) {

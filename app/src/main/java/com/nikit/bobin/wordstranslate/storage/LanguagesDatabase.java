@@ -1,6 +1,5 @@
 package com.nikit.bobin.wordstranslate.storage;
 
-
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public class LanguagesDatabase implements ILanguagesDatabase {
 
     @Override
     public boolean replaceLanguages(Language[] languages, Language ui) {
-        if(languages == null
+        if (languages == null
                 || ui == null
                 || (isLanguagesSaved(ui) && Language.count(Language.class) == languages.length))
             return false;

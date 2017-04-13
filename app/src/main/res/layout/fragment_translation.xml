@@ -5,17 +5,17 @@
     android:layout_height="match_parent"
     tools:context="com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/translations_toolbar"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
+            style="@style/Base.ThemeOverlay.AppCompat.Light"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/colorPrimary"
-            style="@style/Base.ThemeOverlay.AppCompat.Light">
+            android:background="@color/colorPrimary">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -33,37 +33,34 @@
 
     <com.nikit.bobin.wordstranslate.customviews.TranslationCard
         android:id="@+id/current_translation"
-        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_below="@+id/translation_input" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/translation_input"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/translation_input"
         android:layout_width="wrap_content"
         android:layout_height="120dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/translations_toolbar"
         android:background="@drawable/card_edit_text"
         android:ems="10"
         android:gravity="bottom"
+        android:hint="@string/tap_to_start_translate"
         android:inputType="textCapSentences|textMultiLine"
         android:scrollHorizontally="false"
-        android:hint="@string/tap_to_start_translate"
-        android:textColorHint="@color/colorHint"
-        android:layout_below="@+id/translations_toolbar"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:textColorHint="@color/colorHint" />
 
     <ImageView
         android:id="@+id/clear_button"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginEnd="14dp"
-        android:visibility="gone"
-        android:layout_marginTop="14dp"
-        app:srcCompat="@drawable/clear"
+        android:layout_alignParentEnd="true"
         android:layout_below="@+id/translations_toolbar"
-        android:layout_alignParentEnd="true" />
-
-
-
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="14dp"
+        android:visibility="gone"
+        app:srcCompat="@drawable/clear" />
 </RelativeLayout>

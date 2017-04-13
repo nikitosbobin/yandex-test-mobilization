@@ -1,7 +1,6 @@
 package com.nikit.bobin.wordstranslate.customviews;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Menu;
@@ -15,12 +14,10 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.nikit.bobin.wordstranslate.AnimationsFactory;
 import com.nikit.bobin.wordstranslate.R;
 import com.nikit.bobin.wordstranslate.helpers.Ensure;
-import com.nikit.bobin.wordstranslate.helpers.Strings;
 import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
-import com.nikit.bobin.wordstranslate.storage.StringArraySetting;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
@@ -48,6 +45,7 @@ public class LanguageSelectorView extends RelativeLayout implements
     TextView languageToView;
     @BindView(R.id.language_selector_arrow)
     ImageView arrow;
+
     @Inject
     ILanguagesDatabase languagesDatabase;
     @Inject
@@ -58,6 +56,7 @@ public class LanguageSelectorView extends RelativeLayout implements
     ILog log;
     @Inject
     AnimationsFactory animationsFactory;
+
     private ArrayList<Language> recentLanguages;
 
     private Language languageFrom;

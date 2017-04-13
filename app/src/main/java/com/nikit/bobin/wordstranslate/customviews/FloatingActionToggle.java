@@ -23,6 +23,7 @@ import at.markushi.ui.CircleButton;
 public class FloatingActionToggle extends CircleButton implements View.OnClickListener {
     @Inject
     AnimationsFactory animationsFactory;
+
     private boolean isChecked;
     private Drawable activeImage;
     private Drawable passiveImage;

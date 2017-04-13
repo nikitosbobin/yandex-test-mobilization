@@ -1,50 +1,50 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTranslationsFragment">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/favorite_toolbar"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:clipChildren="false"
             android:background="@color/colorPrimary"
+            android:clipChildren="false"
             android:theme="@style/Base.ThemeOverlay.AppCompat.Light">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="15dp">
 
                 <TextView
-                    android:text="@string/history"
-                    android:textSize="20sp"
-                    android:textColor="@color/colorHint"
+                    android:id="@+id/favorite_fragment_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/favorite_fragment_title"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true" />
+                    android:text="@string/history"
+                    android:textColor="@color/colorHint"
+                    android:textSize="20sp" />
             </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
     <ListView
+        android:id="@+id/favorite_list"
         android:layout_width="match_parent"
         android:layout_height="331dp"
-        android:id="@+id/favorite_list"
-        android:dividerHeight="0dp"
-        android:divider="@null"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/favorite_toolbar"
-        android:layout_alignParentBottom="true" />
+        android:divider="@null"
+        android:dividerHeight="0dp" />
 
     <com.nikit.bobin.wordstranslate.customviews.FloatingActionToggle
         android:id="@+id/favorite_button"
@@ -52,16 +52,16 @@
         android:layout_height="70dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="12dp"
         android:adjustViewBounds="false"
         android:cropToPadding="false"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="5dp"
-        android:paddingTop="18dp"
-        android:paddingEnd="18dp"
         android:paddingBottom="18dp"
+        android:paddingEnd="18dp"
         android:paddingStart="24dp"
+        android:paddingTop="18dp"
+        app:activeImage="@drawable/favorite_list"
         app:cb_color="@color/colorAccent"
         app:cb_pressedRingWidth="8dip"
-        app:passiveImage="@drawable/all_list"
-        app:activeImage="@drawable/favorite_list"/>
+        app:passiveImage="@drawable/all_list" />
 </RelativeLayout>

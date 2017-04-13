@@ -12,8 +12,6 @@ import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
-import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
-import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 
@@ -40,8 +38,10 @@ public class SplashActivity extends AppCompatActivity {
     NetworkConnectionInfoProvider connectionInfoProvider;
     @Inject
     Handler uiHandler;
+
     @BindView(R.id.splash_screen_status_text)
     TextView splashScreenStatus;
+
     private Intent openMainActivityIntent;
 
     @Override
@@ -113,7 +113,10 @@ public class SplashActivity extends AppCompatActivity {
                     Thread.sleep(delay);
                     openMainActivityInUiThread();
                 } catch (Exception e) {
-                    log.error("Opening MainActivity with delay: %d ends with error: %s", delay, e.getMessage());
+                    log.error(
+                            "Opening MainActivity with delay: %d ends with error: %s",
+                            delay,
+                            e.getMessage());
                 }
             }
         });

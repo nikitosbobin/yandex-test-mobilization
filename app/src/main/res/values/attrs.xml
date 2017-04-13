@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="CustomToggle">
-        <attr name="activeImage" format="reference"/>
-        <attr name="passiveImage" format="reference"/>
+        <attr name="activeImage" format="reference" />
+        <attr name="passiveImage" format="reference" />
     </declare-styleable>
 </resources>

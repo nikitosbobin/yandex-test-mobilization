@@ -3,102 +3,103 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.nikit.bobin.wordstranslate.activity.translateactivitytabs.SettingsFragment">
-    <android.support.design.widget.AppBarLayout
+
+    <android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/appBarLayout">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
+            android:id="@+id/settings_toolbar"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@color/colorPrimary"
-            android:id="@+id/settings_toolbar"
             android:theme="@style/Base.ThemeOverlay.AppCompat.Light">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="15dp">
 
                 <TextView
-                    android:text="@string/settings"
-                    android:textSize="20sp"
-                    android:textColor="@color/colorHint"
+                    android:id="@+id/favorite_fragment_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/favorite_fragment_title"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true" />
+                    android:text="@string/settings"
+                    android:textColor="@color/colorHint"
+                    android:textSize="20sp" />
             </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
     <Switch
-        android:text="@string/predict_lang"
+        android:id="@+id/determine_lang_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:id="@+id/determine_lang_switch"
-        android:textSize="18sp"
-        android:layout_below="@+id/appBarLayout"
-        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="10dp"/>
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/appBarLayout"
+        android:layout_margin="10dp"
+        android:layout_marginTop="36dp"
+        android:text="@string/predict_lang"
+        android:textSize="18sp" />
 
     <Switch
-        android:text="@string/show_dictionary"
+        android:id="@+id/show_dictionary_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/determine_lang_switch"
-        android:layout_marginTop="10dp"
-        android:textSize="18sp"
-        android:id="@+id/show_dictionary_switch"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true" />
+        android:layout_marginTop="10dp"
+        android:text="@string/show_dictionary"
+        android:textSize="18sp" />
 
     <Switch
-        android:text="@string/caching"
+        android:id="@+id/caching_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:layout_below="@+id/show_dictionary_switch"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
+        android:layout_below="@+id/show_dictionary_switch"
         android:layout_margin="10dp"
-        android:id="@+id/caching_switch"
-        android:layout_alignParentEnd="true" />
+        android:text="@string/caching"
+        android:textSize="18sp" />
 
     <Button
-        android:text="@string/about"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
         android:id="@+id/about_button"
-        android:theme="@style/Button"
-        android:layout_marginTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_alignEnd="@+id/caching_switch"
         android:layout_below="@+id/clear_favorite_button"
-        android:layout_alignEnd="@+id/caching_switch" />
+        android:layout_marginTop="50dp"
+        android:text="@string/about"
+        android:theme="@style/Button" />
 
     <Button
-        android:text="@string/clear_favorites"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
         android:id="@+id/clear_favorite_button"
-        android:theme="@style/Button"
-        android:layout_marginTop="12dp"
-        android:layout_below="@+id/clear_history_button"
-        android:layout_alignStart="@+id/clear_history_button" />
-
-    <Button
-        android:text="@string/clear_history"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
+        android:layout_alignStart="@+id/clear_history_button"
+        android:layout_below="@+id/clear_history_button"
+        android:layout_marginTop="12dp"
+        android:text="@string/clear_favorites"
+        android:theme="@style/Button" />
+
+    <Button
         android:id="@+id/clear_history_button"
-        android:theme="@style/Button"
-        android:layout_marginTop="64dp"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_alignStart="@+id/caching_switch"
         android:layout_below="@+id/caching_switch"
-        android:layout_alignStart="@+id/caching_switch" />
+        android:layout_marginTop="64dp"
+        android:text="@string/clear_history"
+        android:theme="@style/Button" />
 
 </RelativeLayout>

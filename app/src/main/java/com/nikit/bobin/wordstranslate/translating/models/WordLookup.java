@@ -46,7 +46,6 @@ public class WordLookup {
         if (translation != null ? !translation.equals(that.translation) : that.translation != null)
             return false;
         return Arrays.equals(synonyms, that.synonyms);
-
     }
 
     @Override
