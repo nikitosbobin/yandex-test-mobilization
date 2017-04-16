@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
-import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
+import com.nikit.bobin.wordstranslate.storage.settings.SettingsProvider;
 import com.nikit.bobin.wordstranslate.translating.ITranslator;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
@@ -85,6 +86,7 @@ public class TranslationFragment extends Fragment
     private Promise currentPromise;
     private YoYo.AnimationComposer translationCardOutAnimation;
     private YoYo.AnimationComposer translationCardInAnimation;
+    private Translation queuedTranslation;
 
     @Override
     //Entry point on fragment created
@@ -105,15 +107,9 @@ public class TranslationFragment extends Fragment
                     }
                 });
         translationCardInAnimation = animationsFactory.createSlideInUpAnimation(300);
-
-        if (savedInstanceState != null) {
-            if (savedInstanceState.getBoolean(DIRECTION_SAVED_FLAG, false)) {
-                String serializedDirection = savedInstanceState.getString(DIRECTION);
-                Direction direction = Direction.parseFullSerialized(serializedDirection);
-                selectorView.setDirection(direction, true);
-            }
-        }
-
+        Direction lastDirection = settingsProvider.getLastDirection();
+        if (lastDirection != null)
+            selectorView.setDirection(lastDirection, true);
         selectorView.setOnLanguagesChangeListener(this);
         selectorView.setOnLanguagesSwapListener(this);
         return view;
@@ -164,13 +160,24 @@ public class TranslationFragment extends Fragment
     private void performTranslation(final Translation targetTranslation) {
         if (currentPromise != null
                 && !currentPromise.isResolved()
-                && !currentPromise.isRejected())
+                && !currentPromise.isRejected()) {
+            queuedTranslation = targetTranslation;
             return;
+        }
         currentPromise = deferredManager
                 .when(detectLanguage(targetTranslation))
                 .then(translateTextContinuation(targetTranslation))
                 .then(handleTranslationContinuation(targetTranslation))
-                .then(loadLookupContinuation(targetTranslation));
+                .then(loadLookupContinuation(targetTranslation))
+                .then(new DoneCallback<Boolean>() {
+                    public void onDone(Boolean result) {
+                        if (queuedTranslation != null
+                                && !targetTranslation.equals(queuedTranslation)) {
+                            performTranslation(queuedTranslation);
+                            queuedTranslation = null;
+                        }
+                    }
+                });
     }
 
     @NonNull
@@ -312,10 +319,25 @@ public class TranslationFragment extends Fragment
     }
 
     @Override
-    //Android save current fragment state user handler
-    public void onSaveInstanceState(Bundle outState) {
+    public void onPause() {
+        super.onPause();
+        saveCurrentDirection();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        saveCurrentDirection();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        saveCurrentDirection();
+    }
+
+    private void saveCurrentDirection() {
         Direction direction = selectorView.getDirection();
-        outState.putString(DIRECTION, direction.fullSerialize());
-        outState.putBoolean(DIRECTION_SAVED_FLAG, true);
+        settingsProvider.saveLastDirection(direction);
     }
 }

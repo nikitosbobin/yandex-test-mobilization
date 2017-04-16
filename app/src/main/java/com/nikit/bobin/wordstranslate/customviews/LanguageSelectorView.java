@@ -17,7 +17,7 @@ import com.nikit.bobin.wordstranslate.helpers.Ensure;
 import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
-import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
+import com.nikit.bobin.wordstranslate.storage.settings.SettingsProvider;
 import com.nikit.bobin.wordstranslate.translating.models.Direction;
 import com.nikit.bobin.wordstranslate.translating.models.Language;
 

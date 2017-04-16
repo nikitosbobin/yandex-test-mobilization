@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
 
         viewPager.addOnPageChangeListener(this);
         viewPager.setAdapter(fragmentPagerAdapter);
-
+        viewPager.setOffscreenPageLimit(2);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         notifyIfNoConnection();
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

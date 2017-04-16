@@ -2,7 +2,7 @@ package com.nikit.bobin.wordstranslate;
 
 import android.content.SharedPreferences;
 
-import com.nikit.bobin.wordstranslate.storage.StringArraySetting;
+import com.nikit.bobin.wordstranslate.storage.settings.StringArraySetting;
 
 import org.junit.Before;
 import org.junit.Test;

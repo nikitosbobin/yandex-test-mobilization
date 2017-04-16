@@ -1,8 +1,9 @@
-package com.nikit.bobin.wordstranslate.storage;
+package com.nikit.bobin.wordstranslate.storage.settings;
 
 import android.content.SharedPreferences;
 
 import com.nikit.bobin.wordstranslate.helpers.Ensure;
+import com.nikit.bobin.wordstranslate.translating.models.Direction;
 
 //Provides boolean settings than user can change in settings fragment
 public class SettingsProvider {
@@ -10,6 +11,7 @@ public class SettingsProvider {
     private BooleanSetting enabledDictionarySetting;
     private BooleanSetting enabledPredictionSetting;
     private StringArraySetting recentLanguagesInSelectorView;
+    private StringSetting lastDirectionSetting;
 
     public SettingsProvider(SharedPreferences sharedPreferences) {
         Ensure.notNull(sharedPreferences, "sharedPreferences");
@@ -21,6 +23,7 @@ public class SettingsProvider {
                 sharedPreferences,
                 "recent_translations_languages",
                 new String[0]);
+        lastDirectionSetting = new StringSetting(sharedPreferences, "last_direction", null);
     }
 
     public void setEnableCaching(boolean value) {
@@ -53,5 +56,17 @@ public class SettingsProvider {
 
     public void saveRecentLanguagesInSelectorView(String[] recentLanguages) {
         recentLanguagesInSelectorView.setValue(recentLanguages);
+    }
+
+    public Direction getLastDirection() {
+        String value = lastDirectionSetting.getValue();
+        if (value == null)
+            return null;
+        return Direction.parseFullSerialized(value);
+    }
+
+    public void saveLastDirection(Direction direction) {
+        if (direction != null)
+            lastDirectionSetting.setValue(direction.fullSerialize());
     }
 }

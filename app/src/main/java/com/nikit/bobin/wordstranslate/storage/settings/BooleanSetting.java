@@ -1,4 +1,4 @@
-package com.nikit.bobin.wordstranslate.storage;
+package com.nikit.bobin.wordstranslate.storage.settings;
 
 import android.content.SharedPreferences;
 

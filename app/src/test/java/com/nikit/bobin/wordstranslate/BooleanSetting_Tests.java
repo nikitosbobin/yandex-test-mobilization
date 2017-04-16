@@ -3,7 +3,7 @@ package com.nikit.bobin.wordstranslate;
 import android.content.SharedPreferences;
 
 import com.nikit.bobin.wordstranslate.helpers.Strings;
-import com.nikit.bobin.wordstranslate.storage.BooleanSetting;
+import com.nikit.bobin.wordstranslate.storage.settings.BooleanSetting;
 
 import org.junit.Before;
 import org.junit.Test;

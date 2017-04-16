@@ -1,8 +1,9 @@
-package com.nikit.bobin.wordstranslate.storage;
+package com.nikit.bobin.wordstranslate.storage.settings;
 
 import android.content.SharedPreferences;
 
 import com.nikit.bobin.wordstranslate.helpers.Strings;
+import com.nikit.bobin.wordstranslate.storage.settings.Setting;
 
 //Strings array extension of Setting class
 public class StringArraySetting extends Setting<String[]> {

@@ -8,7 +8,7 @@ import com.nikit.bobin.wordstranslate.storage.ILanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.storage.LanguagesDatabase;
 import com.nikit.bobin.wordstranslate.storage.TranslationsDatabase;
-import com.nikit.bobin.wordstranslate.storage.SettingsProvider;
+import com.nikit.bobin.wordstranslate.storage.settings.SettingsProvider;
 
 import javax.inject.Singleton;
 

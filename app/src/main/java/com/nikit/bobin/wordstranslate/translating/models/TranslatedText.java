@@ -8,8 +8,6 @@ import com.orm.dsl.Table;
 @Table
 //Model describes translation: translated text and and original translation
 public class TranslatedText extends SugarRecord {
-    @Ignore
-    private boolean success;
     private String translatedText;
     @Ignore
     private Translation translation;
@@ -29,7 +27,6 @@ public class TranslatedText extends SugarRecord {
         Ensure.notNull(translation, "translation");
 
         TranslatedText result = new TranslatedText();
-        result.success = true;
         result.translatedText = translatedText;
         result.setTranslation(translation);
         return result;
@@ -39,7 +36,6 @@ public class TranslatedText extends SugarRecord {
         Ensure.notNull(translation, "translation");
 
         TranslatedText result = new TranslatedText();
-        result.success = false;
         result.setTranslation(translation);
         return result;
     }
@@ -51,7 +47,6 @@ public class TranslatedText extends SugarRecord {
         Ensure.notNullOrEmpty(direction, "direction");
 
         TranslatedText result = new TranslatedText();
-        result.success = true;
         result.id = id;
         result.translatedText = translatedText;
         result.translation = new Translation(originalText, Direction.parseKeySerialized(direction));
@@ -62,7 +57,7 @@ public class TranslatedText extends SugarRecord {
     }
 
     public boolean isSuccess() {
-        return success;
+        return translatedText != null;
     }
 
     public String getTranslatedText() {
@@ -86,18 +81,18 @@ public class TranslatedText extends SugarRecord {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TranslatedText that = (TranslatedText) o;
-        if (success != that.success) return false;
-        return translatedText != null
-                ? translatedText.equals(that.translatedText)
-                : that.translatedText == null && getTranslation().equals(that.getTranslation());
+        if (translatedText != null
+                ? !translatedText.equals(that.translatedText)
+                : that.translatedText != null)
+            return false;
+        return getTranslation().equals(that.getTranslation());
     }
 
     @Override
     public int hashCode() {
         if (direction == null && originalText == null && translatedText == null)
             return super.hashCode();
-        int result = (success ? 1 : 0);
-        result = 31 * result + (translatedText != null ? translatedText.hashCode() : 0);
+        int result = translatedText != null ? translatedText.hashCode() : 0;
         result = 31 * result + getTranslation().hashCode();
         return result;
     }

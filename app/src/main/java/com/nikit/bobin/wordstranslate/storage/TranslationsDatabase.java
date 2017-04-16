@@ -1,6 +1,7 @@
 package com.nikit.bobin.wordstranslate.storage;
 
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
+import com.nikit.bobin.wordstranslate.translating.models.Translation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,8 +67,15 @@ public class TranslationsDatabase implements ITranslationsDatabase {
 
     @Override
     public void deleteAllFavorites() {
-        if (TranslatedText.deleteAll(TranslatedText.class, "IS_FAVORITE=?", "1") > 0)
-            notifyDataChanged();
+        List<TranslatedText> favoriteTranslations = TranslatedText.find(
+                TranslatedText.class,
+                "IS_FAVORITE=?",
+                "1");
+        for (TranslatedText translatedText : favoriteTranslations) {
+            translatedText.setFavorite(false);
+        }
+        TranslatedText.saveInTx(favoriteTranslations);
+        notifyDataChanged();
     }
 
     private void notifyDataChanged() {
