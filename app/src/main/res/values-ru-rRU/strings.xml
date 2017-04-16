@@ -21,7 +21,9 @@
     <string name="lang_loading">Загрузка языков</string>
     <string name="no_internet">Отсутствует подключение к сети интернет</string>
     <string name="something_wrong">Что-то пошло не по плану…</string>
-    <string name="about_description">Использует API Яндекс.Переводчика\n\nВыполнил Бобин Никита, Екатеринбург\n\nVK: nikitosbobin\nEmail: nikitosbobin@gmail.com</string>
+    <string name="about_description">Использует API Яндекс.Переводчика и Яндекс.Словаря\n\nВыполнил Бобин Никита, Екатеринбург\n\nVK: nikitosbobin\nEmail: nikitosbobin@gmail.com</string>
     <string name="translation_copied">Перевод скопирован в буфер обмена</string>
     <string name="translate">Перевод</string>
+    <string name="translated_with_yandex_api">Переведено сервисом «&lt;a href="http://translate.yandex.ru">Яндекс.Переводчик&lt;/a>»</string>
+    <string name="lookup_got_with_yandex_api">Реализовано с помощью сервиса «&lt;a href="http://api.yandex.ru/dictionary">Яндекс.Словарь&lt;/a>»</string>
 </resources>

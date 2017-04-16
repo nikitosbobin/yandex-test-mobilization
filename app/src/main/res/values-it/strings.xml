@@ -21,7 +21,9 @@
   <string name="lang_loading">Lingue di caricamento</string>
   <string name="no_internet">Connessione a Internet è assente</string>
   <string name="something_wrong">Qualcosa di sbagliato…</string>
-  <string name="about_description">Utilizza il API\n\nCreated di Yandex.Translator da Bobin Nikita, Yekaterinburg\n\nVK: nikitosbobin\nEmail: nikitosbobin@gmail.com</string>
+  <string name="about_description">Utilizza il Yandex.Translator e Yandex.Dictionary API\n\nCreated da Bobin Nikita, Yekaterinburg\n\nVK: nikitosbobin\nEmail: nikitosbobin@gmail.com</string>
   <string name="translation_copied">Traduzione copiato negli Appunti</string>
   <string name="translate">Traduci</string>
+  <string name="translated_with_yandex_api">Servizio tradotto «&lt;a href="http://translate.yandex.ru">Яндекс.Переводчик&lt;/a>»</string>
+  <string name="lookup_got_with_yandex_api">Attuata attraverso il servizio «&lt;a href="http://api.yandex.ru/dictionary">Яндекс.Словарь&lt;/a>»</string>
 </resources>

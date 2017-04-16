@@ -21,7 +21,9 @@
   <string name="lang_loading">Завантаження мов</string>
   <string name="no_internet">Підключення до Інтернету відсутній</string>
   <string name="something_wrong">Щось не так…</string>
-  <string name="about_description">Використовує шляхом Бобін Микита, Yekaterinburg\n\nVK, Yandex.Translator API\n\nCreated: nikitosbobin\nEmail: nikitosbobin@gmail.com</string>
+  <string name="about_description">Використовує API Яндекс.Перекладач і Яндекс.Словниках\n\nВиполніл Бобін Микита, Єкатеринбург\n\nVK: nikitosbobin\nEmail: nikitosbobin@gmail.com</string>
   <string name="translation_copied">Переклад скопійовано до буфера обміну</string>
   <string name="translate">Переклад</string>
+  <string name="translated_with_yandex_api">Перекладено сервісом «&lt;a href="http://translate.yandex.ru">Яндекс.Переводчик&lt;/a>»</string>
+  <string name="lookup_got_with_yandex_api">Реалізовано за допомогою сервісу «&lt;a href="http://api.yandex.ru/dictionary">Яндекс.Словарь&lt;/a>»</string>
 </resources>

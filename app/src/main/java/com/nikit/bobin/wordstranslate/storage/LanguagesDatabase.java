@@ -15,6 +15,7 @@ public class LanguagesDatabase implements ILanguagesDatabase {
             List<Language> languages = Language.find(Language.class, "KEY=?", languageKey);
             if (languages.size() > 0)
                 return languages.get(0);
+            return new Language(languageKey);
         }
         return null;
     }

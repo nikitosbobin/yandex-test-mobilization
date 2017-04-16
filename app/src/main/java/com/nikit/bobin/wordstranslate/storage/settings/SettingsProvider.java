@@ -62,11 +62,11 @@ public class SettingsProvider {
         String value = lastDirectionSetting.getValue();
         if (value == null)
             return null;
-        return Direction.parseFullSerialized(value);
+        return Direction.parseKeySerialized(value);
     }
 
     public void saveLastDirection(Direction direction) {
         if (direction != null)
-            lastDirectionSetting.setValue(direction.fullSerialize());
+            lastDirectionSetting.setValue(direction.toString());
     }
 }
