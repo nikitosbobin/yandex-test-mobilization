@@ -102,30 +102,12 @@ public class TranslationCard extends RelativeLayout {
         Ensure.inUiThread();
 
         currentLookup = lookup;
-        if (lookupList.isShown()) {
-            int visibility = lookup.isEmpty() ? GONE : VISIBLE;
-            lookupList.setVisibility(visibility);
-            yandexDictionaryLabel.setVisibility(visibility);
-        } else {
-            lookupList.setVisibility(INVISIBLE);
-            yandexDictionaryLabel.setVisibility(INVISIBLE);
-        }
+        int visibility = lookup.isEmpty() ? GONE : VISIBLE;
+        lookupList.setVisibility(visibility);
+        yandexDictionaryLabel.setVisibility(visibility);
 
         adapter.setNewLookup(lookup);
         lookupList.invalidateViews();
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        if (h < oldh) {
-            lookupList.setVisibility(INVISIBLE);
-            yandexDictionaryLabel.setVisibility(INVISIBLE);
-        } else {
-            int visibility = currentLookup == null || currentLookup.isEmpty()
-                    ? GONE
-                    : VISIBLE;
-            lookupList.setVisibility(visibility);
-            yandexDictionaryLabel.setVisibility(visibility);
-        }
-    }
 }
