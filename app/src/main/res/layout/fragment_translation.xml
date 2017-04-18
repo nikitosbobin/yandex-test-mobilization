@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment">
+    tools:context="com.nikit.bobin.wordstranslate.activity.fragments.TranslationFragment">
 
     <android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/translations_toolbar"

@@ -2,9 +2,9 @@ package com.nikit.bobin.wordstranslate.ioc;
 
 import com.nikit.bobin.wordstranslate.activity.MainActivity;
 import com.nikit.bobin.wordstranslate.activity.SplashActivity;
-import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTranslationsFragment;
-import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.SettingsFragment;
-import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment;
+import com.nikit.bobin.wordstranslate.activity.fragments.FavoriteTranslationsFragment;
+import com.nikit.bobin.wordstranslate.activity.fragments.SettingsFragment;
+import com.nikit.bobin.wordstranslate.activity.fragments.TranslationFragment;
 import com.nikit.bobin.wordstranslate.customviews.FloatingActionToggle;
 import com.nikit.bobin.wordstranslate.customviews.LanguageSelectorView;
 

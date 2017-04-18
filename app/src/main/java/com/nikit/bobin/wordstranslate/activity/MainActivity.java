@@ -17,9 +17,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.nikit.bobin.wordstranslate.R;
-import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.FavoriteTranslationsFragment;
-import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.SettingsFragment;
-import com.nikit.bobin.wordstranslate.activity.translateactivitytabs.TranslationFragment;
+import com.nikit.bobin.wordstranslate.activity.fragments.FavoriteTranslationsFragment;
+import com.nikit.bobin.wordstranslate.activity.fragments.SettingsFragment;
+import com.nikit.bobin.wordstranslate.activity.fragments.TranslationFragment;
 import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
 import com.nikit.bobin.wordstranslate.net.NetworkConnectionInfoProvider;

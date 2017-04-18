@@ -5,7 +5,7 @@ import android.net.ConnectivityManager;
 
 import com.nikit.bobin.wordstranslate.helpers.Ensure;
 
-//Simple component than response for detecting internet availability
+//Simple component for detecting internet availability
 public class NetworkConnectionInfoProvider {
     private ConnectivityManager connectivityManager;
 

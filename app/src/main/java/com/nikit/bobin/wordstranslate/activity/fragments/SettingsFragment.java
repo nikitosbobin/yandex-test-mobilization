@@ -1,4 +1,4 @@
-package com.nikit.bobin.wordstranslate.activity.translateactivitytabs;
+package com.nikit.bobin.wordstranslate.activity.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
