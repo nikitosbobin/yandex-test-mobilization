@@ -100,11 +100,7 @@ public class TranslationFragment extends Fragment
 
         translationCardOutAnimation = animationsFactory
                 .createSlideOutDownAnimation(300)
-                .onEnd(new YoYo.AnimatorCallback() {
-                    public void call(Animator animator) {
-                        translationCard.setVisibility(View.GONE);
-                    }
-                });
+                .onEnd(animator -> translationCard.setVisibility(View.GONE));
         translationCardInAnimation = animationsFactory.createSlideInUpAnimation(300);
         Direction lastDirection = settingsProvider.getLastDirection();
         if (lastDirection != null)
@@ -144,13 +140,11 @@ public class TranslationFragment extends Fragment
 
     //Fill translation card with new translation and open with animation (run in ui thread)
     public void fillTranslationCard(final TranslatedText translatedText) {
-        uiHandler.post(new Runnable() {
-            public void run() {
-                translationCard.fillTranslation(translatedText);
-                if (translationCard.getVisibility() != View.VISIBLE) {
-                    translationCard.setVisibility(View.VISIBLE);
-                    translationCardInAnimation.playOn(translationCard);
-                }
+        uiHandler.post(() -> {
+            translationCard.fillTranslation(translatedText);
+            if (translationCard.getVisibility() != View.VISIBLE) {
+                translationCard.setVisibility(View.VISIBLE);
+                translationCardInAnimation.playOn(translationCard);
             }
         });
     }
@@ -164,34 +158,37 @@ public class TranslationFragment extends Fragment
             return;
         }
         currentPromise = deferredManager
-                .when(detectLanguage(targetTranslation))
-                .then(translateTextContinuation(targetTranslation))
-                .then(handleTranslationContinuation(targetTranslation))
-                .then(loadLookupContinuation(targetTranslation))
-                .then(new DoneCallback<Boolean>() {
-                    public void onDone(Boolean result) {
-                        if (queuedTranslation != null
-                                && !targetTranslation.equals(queuedTranslation)) {
-                            performTranslation(queuedTranslation);
-                            queuedTranslation = null;
-                        }
+                .when(() -> {
+                    if (needPredict()) {
+                        final Language detection = translator
+                                .detectLanguage(targetTranslation.getOriginalText());
+                        if (detection != null)
+                            setLanguageFrom(detection);
+                    }
+                })
+                .then((Void result) -> translator.translate(targetTranslation))
+                .then((TranslatedText result) -> {
+                    if (!result.isSuccess()) return false;
+                    currentTranslation = result;
+                    fillTranslationCard(result);
+                    if (needDictionary() && targetTranslation.getWordCount() == 1)
+                        return true;
+                    setLookup(WordLookup.empty(result.getTranslation()));
+                    return false;
+                })
+                .then(result -> {
+                    if (!result) return;
+                    final WordLookup wordLookup = translator.getWordLookup(targetTranslation);
+                    if (wordLookup != null)
+                        setLookup(wordLookup);
+                })
+                .then((Boolean result) -> {
+                    if (queuedTranslation != null
+                            && !targetTranslation.equals(queuedTranslation)) {
+                        performTranslation(queuedTranslation);
+                        queuedTranslation = null;
                     }
                 });
-    }
-
-    @NonNull
-    //Create runnable, then detect current input text, if needed
-    private Runnable detectLanguage(final Translation targetTranslation) {
-        return new Runnable() {
-            public void run() {
-                if (needPredict()) {
-                    final Language detection = translator
-                            .detectLanguage(targetTranslation.getOriginalText());
-                    if (detection != null)
-                        setLanguageFrom(detection);
-                }
-            }
-        };
     }
 
     //Indicate language prediction requirement
@@ -201,42 +198,7 @@ public class TranslationFragment extends Fragment
 
     //Set from translation language for selectorView (run in ui thread)
     private void setLanguageFrom(final Language from) {
-        uiHandler.post(new Runnable() {
-            public void run() {
-                selectorView.setLanguageFrom(from, false);
-            }
-        });
-    }
-
-    @NonNull
-    /*Create done filter for deferred manager, then send translation request to
-    *    yandex translation api
-    */
-    private DoneFilter<Void, TranslatedText> translateTextContinuation(final Translation targetTranslation) {
-        return new DoneFilter<Void, TranslatedText>() {
-            public TranslatedText filterDone(Void result) {
-                return translator.translate(targetTranslation);
-            }
-        };
-    }
-
-    @NonNull
-    /*Create done filter for deferred manager, then handle translation response from
-    *   yandex translation api
-    */
-    private DoneFilter<TranslatedText, Boolean> handleTranslationContinuation(
-            final Translation targetTranslation) {
-        return new DoneFilter<TranslatedText, Boolean>() {
-            public Boolean filterDone(TranslatedText result) {
-                if (!result.isSuccess()) return false;
-                currentTranslation = result;
-                fillTranslationCard(result);
-                if (needDictionary() && targetTranslation.getWordCount() == 1)
-                    return true;
-                setLookup(WordLookup.empty(result.getTranslation()));
-                return false;
-            }
-        };
+        uiHandler.post(() -> selectorView.setLanguageFrom(from, false));
     }
 
     //Indicate lookup loading requirement
@@ -246,26 +208,7 @@ public class TranslationFragment extends Fragment
 
     //Fill lookup listView in translation card (run in ui thread)
     private void setLookup(final WordLookup lookup) {
-        uiHandler.post(new Runnable() {
-            public void run() {
-                translationCard.setLookup(lookup);
-            }
-        });
-    }
-
-    @NonNull
-    /*Create done callback for deferred manager, then load translation lookup from
-    *   yandex dictionary api
-    */
-    private DoneCallback<Boolean> loadLookupContinuation(final Translation targetTranslation) {
-        return new DoneCallback<Boolean>() {
-            public void onDone(Boolean result) {
-                if (!result) return;
-                final WordLookup wordLookup = translator.getWordLookup(targetTranslation);
-                if (wordLookup != null)
-                    setLookup(wordLookup);
-            }
-        };
+        uiHandler.post(() -> translationCard.setLookup(lookup));
     }
 
     @OnClick(R.id.clear_button)

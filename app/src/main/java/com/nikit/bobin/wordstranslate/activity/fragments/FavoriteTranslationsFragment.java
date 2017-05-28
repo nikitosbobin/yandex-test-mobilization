@@ -20,9 +20,12 @@ import com.nikit.bobin.wordstranslate.adapters.TranslationHistoryAdapter;
 import com.nikit.bobin.wordstranslate.customviews.FloatingActionToggle;
 import com.nikit.bobin.wordstranslate.ioc.IocSetup;
 import com.nikit.bobin.wordstranslate.logging.ILog;
+import com.nikit.bobin.wordstranslate.net.IHttpSender;
 import com.nikit.bobin.wordstranslate.storage.ITranslationsDatabase;
 import com.nikit.bobin.wordstranslate.storage.OnTranslationDatabaseUpdateListener;
 import com.nikit.bobin.wordstranslate.translating.models.TranslatedText;
+
+import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -101,12 +104,7 @@ public class FavoriteTranslationsFragment extends Fragment
     //Translation database changed event handler (run in ui thread)
     public void onTranslationDatabaseChange() {
         if (uiHandler != null)
-            uiHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    favoriteListView.invalidateViews();
-                }
-            });
+            uiHandler.post(() -> favoriteListView.invalidateViews());
     }
 
     @Override

@@ -77,57 +77,42 @@ public class SplashActivity extends AppCompatActivity {
     *   Then save loaded languages and open main activity from ui thread
     */
     private void loadLanguagesThenOpenMainActivity(final Language ui) {
-        deferredManager.when(new Runnable() {
-            public void run() {
-                final Language[] languages = translator.getLanguages();
-                if (languages == null) {
-                    log.warn("Loaded languages was null");
-                    setStatus(R.string.something_wrong);
-                    return;
-                }
-                uiHandler.post(new Runnable() {
-                    public void run() {
-                        languagesDatabase.replaceLanguages(languages, ui);
-                        startActivity(openMainActivityIntent);
-                    }
-                });
+        deferredManager.when(() -> {
+            final Language[] languages = translator.getLanguages();
+            if (languages == null) {
+                log.warn("Loaded languages was null");
+                setStatus(R.string.something_wrong);
+                return;
             }
+            uiHandler.post(() -> {
+                languagesDatabase.replaceLanguages(languages, ui);
+                startActivity(openMainActivityIntent);
+            });
         });
     }
 
     //Set loading status to display for user (run on ui thread)
     private void setStatus(@StringRes final int stringResource) {
-        uiHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                splashScreenStatus.setText(stringResource);
-            }
-        });
+        uiHandler.post(() -> splashScreenStatus.setText(stringResource));
     }
 
     //Wait delay in another thread, then open main activity in ui thread
     private void openMainActivityWithDelay(final long delay) {
-        deferredManager.when(new Runnable() {
-            public void run() {
-                try {
-                    Thread.sleep(delay);
-                    openMainActivityInUiThread();
-                } catch (Exception e) {
-                    log.error(
-                            "Opening MainActivity with delay: %d ends with error: %s",
-                            delay,
-                            e.getMessage());
-                }
+        deferredManager.when(() -> {
+            try {
+                Thread.sleep(delay);
+                openMainActivityInUiThread();
+            } catch (Exception e) {
+                log.error(
+                        "Opening MainActivity with delay: %d ends with error: %s",
+                        delay,
+                        e.getMessage());
             }
         });
     }
 
     //Start main activity intent in ui thread
     private void openMainActivityInUiThread() {
-        uiHandler.post(new Runnable() {
-            public void run() {
-                startActivity(openMainActivityIntent);
-            }
-        });
+        uiHandler.post(() -> startActivity(openMainActivityIntent));
     }
 }
